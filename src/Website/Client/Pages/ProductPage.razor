@@ -114,9 +114,13 @@
                                     </button>
                                 }
 
-                                <a class="btn btn-primary" target="_blank" href="api/plugins/@LatestPlugin.Id/zip">
-                                    <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestPlugin.Version)
-                                </a>
+
+                                <form class="d-grid gap-2" method="get" action="api/plugins/@LatestPlugin.Id/zip">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestPlugin.Version)
+                                    </button>
+                                </form>
+                                
                             </div>
                         } else
                         {

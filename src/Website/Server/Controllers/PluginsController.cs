@@ -46,13 +46,15 @@ namespace Website.Server.Controllers
             return Ok();
         }
 
-        [Authorize]
         [HttpGet("{pluginId}/zip")]
         public async Task<IActionResult> GetPluginZipAsync(int pluginId)
         {
-            var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsPluginOwnerAsync(pluginId, int.Parse(User.Identity.Name)));
-            return File(pluginService.ZipPlugin(plugin), "application/zip", 
-                string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Version, ".zip"));
+            int userId = 0;
+            if (User.Identity?.IsAuthenticated ?? false)
+                userId = int.Parse(User.Identity.Name);
+            var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsPluginOwnerAsync(pluginId, userId));
+            Response.Headers.Add("Content-Disposition", "inline; filename=" + string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Version, ".zip"));
+            return File(pluginService.ZipPlugin(plugin), "application/zip");
         }
     }
 }
