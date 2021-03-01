@@ -1,0 +1,153 @@
+﻿@page "/products/{ProductId:int}"
+@using Website.Client.Pages.Components
+
+@if (Product != null)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Products</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Product.Name</li>
+        </ol>
+    </nav>
+    <div class="mb-5">
+        <div class="row">
+            <div class="col-lg-8">
+
+                @if (!ShowVersions)
+                {
+                    @if (Product.Medias.Count > 0)
+                    {
+                        <div class="mb-5">
+                            <!-- Carousel wrapper -->
+                            <div id="gallery" class="carousel slide carousel-fade" data-bs-ride="carousel">
+
+                                <!-- Inner -->
+                                <div class="carousel-inner" style="height: 450px; background-color: black;">
+                                    <!-- Single item -->
+
+                                    @for (int i = 0; i < Product.Medias.Count; i++)
+                                    {
+                                        var media = Product.Medias[i];
+
+                                        <div class="carousel-item @(i == 0 ? "active" : "") d-flex align-items-center justify-content-center" style="height: 450px;">
+                                            @if (media.ImageId != null)
+                                            {
+                                                <img src="/api/images/@media.ImageId" class="mx-auto d-block w-100" />
+                                            }
+                                            else
+                                            {
+                                                <iframe src="@media.GetEmbedUrl()" allow="encrypted-media" allowfullscreen="allowfullscreen" frameborder="0" style="width: 100%; height: 450px;">
+                                                </iframe>
+                                            }
+                                        </div>
+
+                                    }
+                                </div>
+                                <!-- Inner -->
+                                <!-- Controls -->
+                                <a class="carousel-control-prev" data-bs-target="#gallery" role="button" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" data-bs-target="#gallery" role="button" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </a>
+                            </div>
+                            <!-- Carousel wrapper -->
+                        </div>
+                        
+                    }
+
+                    <div class="mb-5">
+                        <nav>
+                            <div class="nav nav-tabs" role="tablist">
+                                @for (int i = 0; i < Product.Tabs.Count; i++)
+                                {
+                                    var tab = Product.Tabs[i];
+                                    <button class="nav-link @(i == 0 ? "active" : "")" id="nav-@tab.Id-tab" data-bs-toggle="tab" data-bs-target="#nav-@tab.Id" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
+                                        @tab.Title
+                                    </button>
+                                }
+                            </div>
+                        </nav>
+                        <div class="tab-content p-3 bg-light rounded-2">
+                            @for (int i = 0; i < Product.Tabs.Count; i++)
+                            {
+                                var tab = Product.Tabs[i];
+                                <div class="tab-pane fade @(i == 0 ? "show active" : "")" id="nav-@tab.Id" role="tabpanel" aria-labelledby="nav-@tab.Id-tab">
+                                    @(new MarkupString(tab.Content))
+                                </div>
+                            }
+                        </div>
+                    </div>
+                } else
+                {
+                    <VersionsPage Product="Product" />
+                }
+
+            </div>
+            <div class="col-lg-4 bg-light">
+                <div class="text-center mt-2 mb-4">
+                    <img src="/api/images/@Product.ImageId" width="150" height="150" />
+                    <h4 class="mt-2">@Product.Name</h4>
+                    <ul class="list-unstyled">
+                        <li>Author: @Product.Seller.Name</li>
+                        <li>Price: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
+                    </ul>
+
+                    @if (DefaultBranch != null)
+                    {
+                        if (IsCustomer)
+                        {
+                            <div class="d-grid gap-2 mt-3">
+                                @if (ShowVersions)
+                                {
+                                    <button class="btn btn-secondary" @onclick="ToggleShowVersions">
+                                        <i class="bi bi-info-circle-fill"></i> Show Information
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary" @onclick="ToggleShowVersions">
+                                        <i class="bi bi-gear-fill"></i> Show All Versions
+                                    </button>
+                                }
+
+                                <a class="btn btn-primary" target="_blank" href="api/plugins/@LatestPlugin.Id/zip">
+                                    <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestPlugin.Version)
+                                </a>
+                            </div>
+                        } else
+                        {
+                            <div class="d-grid gap-2 mt-3">
+                                @if (IsInCart)
+                                {
+                                    <a class="btn btn-primary" href="/cart">
+                                        <i class="bi bi-cart-fill"></i> Go To Cart
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary" @onclick="AddToCartAsync">
+                                        <i class="bi bi-cart-fill"></i> Add To Cart
+                                    </button>
+                                }
+                            </div>
+                        }
+
+
+
+                    }
+                    else
+                    {
+                        <strong>This plugin doesn't have any downloads</strong>
+                    }
+
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+}

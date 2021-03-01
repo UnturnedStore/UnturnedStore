@@ -1,0 +1,60 @@
+﻿
+@if (Product != null)
+{
+    <div class="mb-3">
+        <label class="form-label">Select Branch</label>
+        <select class="form-select" @bind="selectedBranchId">
+            @foreach (var branch in Product.Branches)
+            {
+                <option value="@branch.Id">@branch.Name</option>
+            }
+        </select>
+    </div>
+
+
+    @if (Branch != null)
+    {
+        @if (Branch.Plugins.Count == 0)
+        {
+            <p>This branch doesn't have any versions</p>
+        }
+
+        <Virtualize Items="plugins" Context="plugin">
+            <div class="card">
+                <div class="card-header fw-bold">
+                    @Branch.Name @plugin.Version
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@plugin.Changelog</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="text-muted">
+                            @plugin.CreateDate
+                        </div>
+                        <div class="ms-auto">
+                            <a href="/api/plugins/@plugin.Id/zip" class="btn btn-primary">Download this version</a>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </Virtualize>
+    }
+}
+
+
+@code {
+
+    [Parameter]
+    public ProductModel Product { get; set; }
+
+    private int selectedBranchId;
+
+    private BranchModel Branch => Product.Branches.FirstOrDefault(x => x.Id == selectedBranchId);
+
+    private List<PluginModel> plugins => Branch.Plugins.OrderByDescending(x => x.CreateDate).ToList();
+
+    protected override void OnParametersSet()
+    {
+        selectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
+    }
+}

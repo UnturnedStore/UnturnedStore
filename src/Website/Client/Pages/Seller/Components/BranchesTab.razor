@@ -1,0 +1,188 @@
+﻿
+<div class="mb-5">
+    <div class="d-flex align-items-center mb-1">
+        <div>
+            <label class="form-label">Select Branch</label>
+        </div>        
+        <div class="ms-auto">
+            <button class="btn btn-sm btn-primary" @onclick="AddBranch">Add New Branch</button>
+        </div>
+    </div>
+    
+    <select class="form-select" @bind="SelectedBranchId">
+        @foreach (var branch in Product.Branches)
+        {
+            <option value="@branch.Id">@branch.Name</option>
+        }
+    </select>
+</div>
+
+@if (Branch != null)
+{
+    <div class="mb-3">
+        <div class="mb-2 d-flex align-items-center">
+            <h5>Manage Branch @Branch.Name</h5>
+        </div>
+        <div class="mb-3 border border-1 border-secondary rounded-3 shadow-lg p-3">
+            <EditForm Model="@Branch" OnValidSubmit="SubmitAsync">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="Branch.Name" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <InputText class="form-control" @bind-Value="Branch.Description" />
+                </div>
+
+                <div class="mb-3 form-check">
+                    <InputCheckbox @bind-Value="Branch.IsEnabled" class="form-check-input" id="branchIsEnabledCheck" />
+                    <label class="form-check-label" for="branchIsEnabledCheck">Is Enabled</label>
+                </div>
+
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <div class="float-right">
+                        @if (isLoading)
+                        {
+                            <LoadingButton />
+                        }
+                        else
+                        {
+                            @if (Branch.Id == default)
+                            {
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            }
+                        }
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+    @if (Branch.Plugins != null)
+    {
+        <div class="mb-5">
+            <div class="mb-2 d-flex align-items-center">
+                <h5>Versions</h5>
+                @*<div class="ms-auto">
+                    <button class="btn btn-sm btn-primary">Upload New Version</button>
+                </div>*@
+            </div>
+
+            <table class="table table-bordered">
+                <caption>Total @Plugins.Count Versions</caption>
+                <thead>
+                    <tr>
+                        <th>Version</th>
+                        <th>File Name</th>
+                        <th>Create Date</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Virtualize Items="Plugins" Context="plugin">
+                        <tr>
+                            <td>@plugin.Version</td>
+                            <td>@plugin.FileName</td>
+                            <td>@plugin.CreateDate</td>
+                            <td>
+                                <a class="btn btn-sm btn-outline-primary" href="api/plugins/@plugin.Id/zip"><i class="bi bi-download"></i></a>
+                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePluginAsync(plugin)">
+                                    @if (plugin.IsEnabled)
+                                    {
+                                        <i class="bi bi-toggle-on"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-toggle-off"></i>
+                                    }
+                                </button>
+                            </td>
+                        </tr>
+                    </Virtualize>
+                </tbody>
+            </table>
+        </div>
+    }
+}
+
+
+
+
+@code {
+    [Parameter]
+    public ProductModel Product { get; set; }
+
+    [Inject]
+    public HttpClient HttpClient { get; set; }
+
+    public int SelectedBranchId { get; set; }
+
+    private BranchModel createBranch;
+    private BranchModel Branch
+    {
+        get
+        {
+            if (SelectedBranchId != 0)
+            {
+                return Product.Branches.FirstOrDefault(x => x.Id == SelectedBranchId);
+            }
+            else
+            {
+                return createBranch;
+            }
+        }
+    }
+
+    private List<PluginModel> Plugins => Branch.Plugins;
+
+    protected override void OnParametersSet()
+    {
+        SelectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
+    }
+
+    public PluginModel Plugin { get; set; }
+
+    private async Task TogglePluginAsync(PluginModel plugin)
+    {
+        await HttpClient.PatchAsync($"api/plugins/{plugin.Id}", null);
+        plugin.IsEnabled = !plugin.IsEnabled;
+    }
+
+    private void AddBranch()
+    {
+        createBranch = new BranchModel()
+        {
+            ProductId = Product.Id
+
+        };
+        SelectedBranchId = 0;
+    }
+
+    private bool isLoading;
+    private async Task SubmitAsync()
+    {
+        isLoading = true;
+
+        if (Branch.Id == default)
+        {
+            var response = await HttpClient.PostAsJsonAsync("api/branches", Branch);
+            var branch = await response.Content.ReadFromJsonAsync<BranchModel>();
+            Product.Branches.Add(branch);
+            SelectedBranchId = branch.Id;
+        }
+        else
+        {
+            await HttpClient.PutAsJsonAsync("api/branches", BranchModel.FromBranch(Branch));
+        }
+
+        isLoading = false;
+    }
+}

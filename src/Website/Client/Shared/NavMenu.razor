@@ -1,0 +1,53 @@
+﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/img/logo.png" alt="" width="40" height="40" class="d-inline-block align-top">
+            <div class="ms-2">RestoreMonarchyPlugins</div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/discord">Discord</a>
+                </li>
+            </ul>
+            <AuthorizeView>
+                <Authorized>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cart"><i class="bi bi-cart-fill"></i></a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                @context.User.Identity.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <AuthorizeView Context="context2" Roles="@RoleConstants.AdminAndSeller">
+                                    <Authorized>
+                                        <li><a class="dropdown-item" href="/seller/products">Your Products</a></li>
+                                        <li><a class="dropdown-item" href="/seller/customers">Your Customers</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    </Authorized>
+                                </AuthorizeView>
+                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                <li><a class="dropdown-item" href="/orders">Orders</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </Authorized>
+                <NotAuthorized>
+                    <a href="/signin">
+                        <img src="/img/steam/buttons/sits_small.png" />
+                    </a>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</nav>

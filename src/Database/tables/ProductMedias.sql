@@ -1,0 +1,7 @@
+﻿CREATE TABLE dbo.ProductMedias
+(
+	Id INT IDENTITY(1, 1) NOT NULL CONSTRAINT PK_ProductMedias PRIMARY KEY,
+	ProductId INT NOT NULL CONSTRAINT FK_ProductMedias_ProductId FOREIGN KEY REFERENCES dbo.Products(Id),
+	YoutubeUrl NVARCHAR(255) NULL,
+	ImageId INT NULL CONSTRAINT FK_ProductMedias_ImageId FOREIGN KEY REFERENCES dbo.Images(Id)
+)

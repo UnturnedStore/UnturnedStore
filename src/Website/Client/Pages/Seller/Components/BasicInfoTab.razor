@@ -1,0 +1,87 @@
+﻿    
+<EditForm Model="Product" OnValidSubmit="SubmitAsync">
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="Product.Name" />
+        <div class="form-text">Name should be short up to 20 characters</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <InputText class="form-control" @bind-Value="Product.Description" />
+        <div class="form-text">This is a short description of your product, for detailed information use tabs</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Price</label>
+        <InputNumber class="form-control" @bind-Value="Product.Price" />
+        <div class="form-text">Price of your product in USD ($)</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Image</label>
+        <InputFile class="form-control" OnChange="@OnInputFileChange" />
+        <div class="form-text">Image for your product, has to be .png</div>
+    </div>
+
+    @if (Product.ImageId != 0)
+    {
+        <img class="mb-3" src="api/images/@Product.ImageId" width="250" height="250" />
+    }
+
+    <div class="mb-3 form-check">
+        <InputCheckbox @bind-Value="Product.IsEnabled" class="form-check-input" id="productIsEnabledCheck" />
+        <label class="form-check-label" for="productIsEnabledCheck">Is Enabled</label>
+    </div>
+
+    <div class="mb-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </div>    
+
+    @if (isLoading)
+    {
+        <LoadingButton />
+    }
+    else
+    {
+        <button type="submit" class="btn btn-primary">Update</button>
+    }
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public ProductModel Product { get; set; }
+
+    [Inject]
+    public HttpClient HttpClient { get; set; }
+
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+
+        imageFile = await imageFile.RequestImageFileAsync("image/png", 500, 500);
+
+        var image = new ImageModel();
+
+        image.ContentType = imageFile.ContentType;
+        image.Name = imageFile.Name;
+        image.Content = new byte[imageFile.Size];
+        await imageFile.OpenReadStream().ReadAsync(image.Content);
+
+        var response = await HttpClient.PostAsJsonAsync("api/images", image);
+        Product.ImageId = int.Parse(await response.Content.ReadAsStringAsync());
+    }
+
+    private bool isLoading;
+
+    private async Task SubmitAsync()
+    {
+        isLoading = true;
+        await HttpClient.PutAsJsonAsync($"api/products", ProductModel.FromProduct(Product));
+        isLoading = false;
+    }
+}

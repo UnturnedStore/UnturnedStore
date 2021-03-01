@@ -1,0 +1,47 @@
+﻿@page "/settings"
+
+@if (User != null)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Settings</li>
+        </ol>
+    </nav>
+
+    <div class="bg-light p-3 rounded-3">
+        <EditForm Model="User" OnValidSubmit="SubmitAsync">
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <InputText class="form-control" @bind-Value="User.Name" />
+                <div class="form-text">Your name max 25 characters</div>
+            </div>
+
+            <AuthorizeView Roles="@RoleConstants.AdminAndSeller" Context="auth">
+                <Authorized>
+                    <div class="mb-3">
+                        <label class="form-label">PayPal Email</label>
+                        <InputText class="form-control" @bind-Value="User.PayPalEmail" />
+                        <div class="form-text">Your PayPal email address you want to receive payments</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">PayPal Currency</label>
+                        <InputText class="form-control" @bind-Value="User.PayPalCurrency" />
+                        <div class="form-text">Three characters currency identifier</div>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+
+            <ValidationSummary />
+            <DataAnnotationsValidator />
+
+            @if (isLoading)
+            {
+                <LoadingButton />
+            }
+            else
+            {
+                <button type="submit" class="btn btn-primary">Update</button>
+            }
+        </EditForm>
+    </div>
+}

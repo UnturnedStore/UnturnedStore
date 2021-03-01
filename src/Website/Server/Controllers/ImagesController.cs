@@ -1,0 +1,36 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Website.Data.Repositories;
+using Website.Shared.Models;
+
+namespace Website.Server.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ImagesController : ControllerBase
+    {
+        private readonly ImagesRepository imagesRepository;
+
+        public ImagesController(ImagesRepository imagesRepository)
+        {
+            this.imagesRepository = imagesRepository;
+        }
+
+        [HttpGet("{imageId}")]
+        public async Task<IActionResult> GetImageAsync(int imageId)
+        {
+            var img = await imagesRepository.GetImageAsync(imageId);
+            return File(img.Content, img.ContentType, img.Name);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostImageAsync([FromBody] ImageModel image)
+        {
+            return Ok(await imagesRepository.AddImageAsync(image));
+        }
+    }
+}
