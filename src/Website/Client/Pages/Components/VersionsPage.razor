@@ -31,7 +31,9 @@
                             @plugin.CreateDate
                         </div>
                         <div class="ms-auto">
-                            <a href="/api/plugins/@plugin.Id/zip" class="btn btn-primary">Download this version</a>
+                            <form method="get" action="/api/plugins/@plugin.Id/zip">
+                                <button type="submit" class="btn btn-primary">Download this version</button>
+                            </form>                            
                         </div>
                     </div>
                     
