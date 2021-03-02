@@ -19,6 +19,9 @@ namespace Website.Client.Pages
 
         public IEnumerable<ProductModel> Products { get; set; }
 
+        private IEnumerable<ProductModel> OrderedProducts => Products.OrderByDescending(x => x.TotalDownloadsCount);
+
+
         private bool isSuccessPayment;
 
         protected override async Task OnInitializedAsync()
