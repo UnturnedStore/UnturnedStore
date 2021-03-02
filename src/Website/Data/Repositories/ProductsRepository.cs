@@ -48,11 +48,19 @@ namespace Website.Data.Repositories
         public async Task<IEnumerable<ProductModel>> GetProductsAsync()
         {
             const string sql = "SELECT p.*, u.Id, u.Name, u.Role, u.SteamId, u.CreateDate FROM dbo.Products p JOIN dbo.Users u ON p.SellerId = u.Id WHERE IsEnabled = 1;";
-            return await connection.QueryAsync<ProductModel, UserModel, ProductModel>(sql, (p, u) => 
+            var products = await connection.QueryAsync<ProductModel, UserModel, ProductModel>(sql, (p, u) => 
             {
                 p.Seller = u;
                 return p;
             });
+
+            const string sql2 = "SELECT COALESCE(SUM(p.DownloadsCount), 0) FROM dbo.Branches b " +
+                "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.ProductId = @Id;";
+            foreach (var product in products)
+            {
+                product.TotalDownloadsCount = await connection.ExecuteScalarAsync<int>(sql2, product);
+            }
+            return products;
         }
 
         public async Task<ProductModel> GetProductAsync(int productId, int userId)
@@ -77,7 +85,7 @@ namespace Website.Data.Repositories
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
             product.Medias = (await connection.QueryAsync<ProductMediaModel>(sql1, product)).ToList();
 
-            const string sql2 = "SELECT b.*, p.Id, p.Version, p.Changelog, p.IsEnabled, p.CreateDate FROM dbo.Branches b " +
+            const string sql2 = "SELECT b.*, p.Id, p.Version, p.Changelog, p.DownloadsCount, p.IsEnabled, p.CreateDate FROM dbo.Branches b " +
                 "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id AND p.IsEnabled = 1 WHERE b.ProductId = @Id AND b.IsEnabled = 1;";
 
             product.Branches = new List<BranchModel>();

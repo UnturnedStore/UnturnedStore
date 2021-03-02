@@ -22,6 +22,7 @@ namespace Website.Shared.Models
         public string FileName { get; set; }
         [Required]
         public byte[] Data { get; set; }
+        public int DownloadsCount { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime CreateDate { get; set; }
 

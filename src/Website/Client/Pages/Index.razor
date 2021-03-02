@@ -14,7 +14,7 @@
 @if (Products != null)
 {
     <div class="mb-3 mt-5">
-        <div class="row row-cols-1 row-cols-sm-2 justify-content-center">
+        <div class="row row-cols-1 row-cols-sm-2">
             @foreach (var product in Products)
             {
                 <div class="m-2 col bg-light rounded border-2 border" style="width: 350px; height: 150px;">
@@ -31,14 +31,17 @@
                             <small style="vertical-align: middle;">@product.Description</small>
                         </div>
 
-                        <div class="d-flex">
+                        <div class="d-flex mt-auto">
+                            <div>
+                                <small class="text-muted"><i class="bi bi-download"></i> @product.TotalDownloadsCount</small>
+                            </div>
                             @if (product.Price > 0)
                             {
-                                <p class="ms-auto text-muted mt-auto">Price: $@product.Price</p>
+                                <p class="ms-auto text-muted">Price: $@product.Price</p>
                             }
                             else
                             {
-                                <p class="ms-auto text-muted mt-auto">Price: Free</p>
+                                <p class="ms-auto text-muted">Price: Free</p>
                             }
 
                         </div>

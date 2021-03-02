@@ -35,7 +35,7 @@ namespace Website.Data.Repositories
         {
             const string sql = "INSERT INTO dbo.Plugins (BranchId, Version, Changelog, FileName, Data, IsEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.BranchId, INSERTED.Version, INSERTED.Changelog, INSERTED.FileName, " +
-                "INSERTED.IsEnabled, INSERTED.CreateDate " +
+                "INSERTED.DownloadsCount, INSERTED.IsEnabled, INSERTED.CreateDate " +
                 "VALUES (@BranchId, @Version, @Changelog, @FileName, @Data, @IsEnabled);";
 
             var p = await connection.QuerySingleAsync<PluginModel>(sql, plugin);
@@ -81,6 +81,12 @@ namespace Website.Data.Repositories
             }, new { pluginId });
             
             return plugin;
+        }
+
+        public async Task IncrementDownloadsCount(int pluginId)
+        {
+            const string sql = "UPDATE dbo.Plugins SET DownloadsCount = DownloadsCount + 1 WHERE Id = @pluginId;";
+            await connection.ExecuteAsync(sql, new { pluginId });
         }
     }
 }

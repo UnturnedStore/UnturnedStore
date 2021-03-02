@@ -20,9 +20,14 @@
         }
 
         <Virtualize Items="plugins" Context="plugin">
-            <div class="card">
-                <div class="card-header fw-bold">
-                    @Branch.Name @plugin.Version
+            <div class="card mb-3">
+                <div class="card-header d-flex">
+                    <div class="fw-bold">
+                        @Branch.Name @plugin.Version
+                    </div>
+                    <div class="ms-auto">
+                        <small class="text-muted"><i class="bi bi-download"></i> @plugin.DownloadsCount</small>
+                    </div>                    
                 </div>
                 <div class="card-body">
                     <p class="card-text">@plugin.Changelog</p>

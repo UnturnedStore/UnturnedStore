@@ -52,8 +52,12 @@ namespace Website.Server.Controllers
             int userId = 0;
             if (User.Identity?.IsAuthenticated ?? false)
                 userId = int.Parse(User.Identity.Name);
+
+            await pluginsRepository.IncrementDownloadsCount(pluginId);
+
             var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsPluginOwnerAsync(pluginId, userId));
-            Response.Headers.Add("Content-Disposition", "inline; filename=" + string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Version, ".zip"));
+            Response.Headers.Add("Content-Disposition", "inline; filename=" + 
+                string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Version, ".zip"));
             return File(pluginService.ZipPlugin(plugin), "application/zip");
         }
     }

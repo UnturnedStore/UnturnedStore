@@ -13,13 +13,6 @@ namespace Website.Server.Services
 {
     public class PluginService
     {
-        private readonly PluginsRepository pluginsRepository;
-
-        public PluginService(PluginsRepository pluginsRepository)
-        {
-            this.pluginsRepository = pluginsRepository;
-        }
-
         public byte[] ZipPlugin(PluginModel plugin)
         {
             using (var output = new MemoryStream())

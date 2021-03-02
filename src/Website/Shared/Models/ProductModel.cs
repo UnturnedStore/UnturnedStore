@@ -26,6 +26,8 @@ namespace Website.Shared.Models
         public DateTime LastUpdate { get; set; }
         public DateTime CreateDate { get; set; }
 
+        public int TotalDownloadsCount { get; set; }
+
         public UserModel Seller { get; set; }
         public UserModel Customer { get; set; }
 

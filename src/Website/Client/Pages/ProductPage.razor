@@ -94,6 +94,7 @@
                     <ul class="list-unstyled">
                         <li>Author: @Product.Seller.Name</li>
                         <li>Price: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
+                        <li>Downloads: @(Product.Branches.Sum(x => x.Plugins.Sum(x => x.DownloadsCount)))</li>
                     </ul>
 
                     @if (DefaultBranch != null)
