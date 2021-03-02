@@ -13,6 +13,12 @@
     </div>
 
     <div class="mb-3">
+        <label class="form-label">Github Repo URL</label>
+        <InputText class="form-control" @bind-Value="Product.GithubUrl" />
+        <div class="form-text">Enables a Github link on product page</div>
+    </div>
+
+    <div class="mb-3">
         <label class="form-label">Price</label>
         <InputNumber class="form-control" @bind-Value="Product.Price" />
         <div class="form-text">Price of your product in USD ($)</div>
@@ -37,7 +43,7 @@
     <div class="mb-3">
         <DataAnnotationsValidator />
         <ValidationSummary />
-    </div>    
+    </div>
 
     @if (isLoading)
     {

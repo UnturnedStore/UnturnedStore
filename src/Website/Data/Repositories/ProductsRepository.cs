@@ -122,10 +122,10 @@ namespace Website.Data.Repositories
 
         public async Task<ProductModel> AddProductAsync(ProductModel product)
         {
-            const string sql = "INSERT INTO dbo.Products (Name, Description, Price, ImageId, SellerId, IsEnabled) " +
-                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Price, INSERTED.ImageId, " +
-                "INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.LastUpdate, INSERTED.CreateDate " +
-                "VALUES (@Name, @Description, @Price, @ImageId, @SellerId, @IsEnabled);";
+            const string sql = "INSERT INTO dbo.Products (Name, Description, GithubUrl, Price, ImageId, SellerId, IsEnabled) " +
+                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.GithubUrl, INSERTED.Price, " +
+                "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.LastUpdate, INSERTED.CreateDate " +
+                "VALUES (@Name, @Description, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled);";
             product = await connection.QuerySingleAsync<ProductModel>(sql, product);
 
             const string sql1 = "INSERT INTO dbo.Branches (ProductId, Name, Description) " +
@@ -142,8 +142,8 @@ namespace Website.Data.Repositories
 
         public async Task UpdateProductAsync(ProductModel product)
         {
-            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Price = @Price, " +
-                "ImageId = @ImageId, IsEnabled = @IsEnabled, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
+            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, GithubUrl = @GithubUrl, " +
+                "Price = @Price, ImageId = @ImageId, IsEnabled = @IsEnabled, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, product);
         }
 

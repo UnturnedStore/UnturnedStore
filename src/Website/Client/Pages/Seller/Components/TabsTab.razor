@@ -12,7 +12,7 @@
         @foreach (var tab in Product.Tabs)
         {
             <li class="list-group-item list-group-item-action @(Tab == tab ? "active" : "")" 
-                @onclick="() => EditTabAsync(tab)" style="cursor: pointer;">
+                @onclick="() => EditTab(tab)" style="cursor: pointer;">
                 @tab.Title
             </li>
         }
@@ -118,13 +118,13 @@
 
 
 @code {
-    [Parameter]
-    public ProductModel Product { get; set; }
+        [Parameter]
+        public ProductModel Product { get; set; }
 
-    [Inject]
-    public HttpClient HttpClient { get; set; }
-    [Inject]
-    public IJSRuntime JsRuntime { get; set; }
+        [Inject]
+        public HttpClient HttpClient { get; set; }
+        [Inject]
+        public IJSRuntime JsRuntime { get; set; }
 
     private ProductTabModel Tab { get; set; }
 
@@ -133,14 +133,14 @@
     private string htmlString => Tab.Content;
 
 
-    private async Task EditTabAsync(ProductTabModel tab)
+    private void EditTab(ProductTabModel tab)
     {
         Tab = tab;
     }
 
     private void CreateTab()
     {
-        Tab = new ProductTabModel();
+        Tab = new ProductTabModel() { IsEnabled = true };
     }
 
     private bool isLoading2;

@@ -17,6 +17,8 @@ namespace Website.Shared.Models
         [Required]
         [MaxLength(255)]
         public string Description { get; set; }
+        [MaxLength(255)]
+        public string GithubUrl { get; set; }
         [Required]
         public int ImageId { get; set; }
         [Range(0, 1000)]
@@ -43,6 +45,7 @@ namespace Website.Shared.Models
                 Id = product.Id,
                 Price = product.Price,
                 Description = product.Description,
+                GithubUrl = product.GithubUrl,
                 Name = product.Name,
                 ImageId = product.ImageId,
                 IsEnabled = product.IsEnabled,
