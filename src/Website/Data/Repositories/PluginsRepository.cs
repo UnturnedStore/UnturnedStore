@@ -34,7 +34,8 @@ namespace Website.Data.Repositories
         public async Task<PluginModel> AddPluginAsync(PluginModel plugin)
         {
             const string sql = "INSERT INTO dbo.Plugins (BranchId, Version, Changelog, FileName, Data, IsEnabled) " +
-                "OUTPUT INSERTED.Id, INSERTED.BranchId, INSERTED.Version, INSERTED.Changelog, INSERTED.IsEnabled, INSERTED.CreateDate " +
+                "OUTPUT INSERTED.Id, INSERTED.BranchId, INSERTED.Version, INSERTED.Changelog, INSERTED.FileName, " +
+                "INSERTED.IsEnabled, INSERTED.CreateDate " +
                 "VALUES (@BranchId, @Version, @Changelog, @FileName, @Data, @IsEnabled);";
 
             var p = await connection.QuerySingleAsync<PluginModel>(sql, plugin);

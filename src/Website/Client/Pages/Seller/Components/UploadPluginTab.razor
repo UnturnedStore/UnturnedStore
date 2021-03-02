@@ -107,6 +107,7 @@
         Product.Branches.First(x => x.Id == plugin.BranchId).Plugins.Add(plugin);
         Model = defaultModel;
         isLoading = false;
+        StateHasChanged();
     }
 
     private async Task OnPluginFileChange(InputFileChangeEventArgs e)
