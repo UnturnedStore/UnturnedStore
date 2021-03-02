@@ -36,6 +36,7 @@ namespace Website.Server
             services.AddTransient<OrderService>();
             services.AddTransient<PluginService>();
             services.AddTransient<PayPalService>();
+            services.AddTransient<DiscordService>();
 
             services.AddTransient(x => new SteamWebInterfaceFactory(Configuration["SteamWebAPIKey"]));           
 

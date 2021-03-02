@@ -15,12 +15,15 @@ namespace Website.Server.Controllers
         private readonly PluginsRepository pluginsRepository;
         private readonly BranchesRepository branchesRepository;
         private readonly PluginService pluginService;
+        private readonly DiscordService discordService;
 
-        public PluginsController(PluginsRepository pluginsRepository, BranchesRepository branchesRepository, PluginService pluginService)
+        public PluginsController(PluginsRepository pluginsRepository, BranchesRepository branchesRepository, PluginService pluginService, 
+            DiscordService discordService)
         {
             this.pluginsRepository = pluginsRepository;
             this.branchesRepository = branchesRepository;
             this.pluginService = pluginService;
+            this.discordService = discordService;
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
@@ -31,6 +34,8 @@ namespace Website.Server.Controllers
                 return BadRequest();
 
             plugin = await pluginsRepository.AddPluginAsync(plugin);
+
+            await discordService.SendPluginUpdateAsync(plugin, Request.Headers["Origin"]);
 
             return Ok(plugin);
         }
