@@ -8,71 +8,88 @@
 
     <div class="bg-light p-3">
         <div class="mb-5">
-            <h4>Your Products</h4>
+            <h5>Your Products</h5>
             @if (Customers != null)
             {
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Product</th>
-                            <th scope="col">Create Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var customer in Customers)
-                        {
+                @if (Customers.Count > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td class="align-middle">@customer.Id</td>
-                                <td class="align-middle">
-                                    <a href="/products/@customer.ProductId">
-                                        <div class="d-flex align-items-center">
-
-                                            <div>
-                                                <img src="/api/images/@customer.Product.ImageId" width="40" height="40" />
-                                            </div>
-                                            <div class="ms-2">
-                                                @customer.Product.Name
-                                            </div>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td class="align-middle">@customer.CreateDate</td>
+                                <th scope="col">ID</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Create Date</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var customer in Customers)
+                            {
+                                <tr>
+                                    <td class="align-middle">@customer.Id</td>
+                                    <td class="align-middle">
+                                        <a href="/products/@customer.ProductId">
+                                            <div class="d-flex align-items-center">
+
+                                                <div>
+                                                    <img src="/api/images/@customer.Product.ImageId" width="40" height="40" />
+                                                </div>
+                                                <div class="ms-2">
+                                                    @customer.Product.Name
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </td>
+                                    <td class="align-middle">@customer.CreateDate</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                if (Customers.Count == 0)
+                {
+                    <h6 class="text-muted">You aren't customer of any products</h6>
+                }
             }
         </div>
 
-        @if (Orders != null)
-        {
-            <div class="mb-3">
-                <h5>Your Latest Orders</h5>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th class="table-hide">Seller</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th class="table-hide">Create Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var order in Orders.OrderByDescending(x => x.CreateDate))
-                        {
+        
+        <div class="mb-3">
+            <h5>Your Latest Orders</h5>
+            @if (Orders != null)
+            {
+                @if (Orders.Count > 0)
+                {
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td class="align-middle">@order.Id</td>
-                                <td class="align-middle table-hide">@order.Seller.Name</td>
-                                <td class="align-middle">@order.TotalPrice @order.Currency</td>
-                                <td class="align-middle">@order.Status</td>
-                                <td class="align-middle table-hide">@order.CreateDate</td>
+                                <th>ID</th>
+                                <th class="table-hide">Seller</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th class="table-hide">Create Date</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Orders.OrderByDescending(x => x.CreateDate))
+                            {
+                                <tr>
+                                    <td class="align-middle">@order.Id</td>
+                                    <td class="align-middle table-hide">@order.Seller.Name</td>
+                                    <td class="align-middle">@order.TotalPrice @order.Currency</td>
+                                    <td class="align-middle">@order.Status</td>
+                                    <td class="align-middle table-hide">@order.CreateDate</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                if (Orders.Count == 0)
+                {
+                    <h6 class="text-muted">You didn't place any orders</h6>
+                }
+            }
+        </div>
 
     </div>
