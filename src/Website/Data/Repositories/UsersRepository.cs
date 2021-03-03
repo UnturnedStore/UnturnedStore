@@ -20,7 +20,7 @@ namespace Website.Data.Repositories
         public async Task<UserModel> GetUserFullAsync(int userId)
         {
             const string sql = "SELECT u.*, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
-                "JOIN dbo.Products p ON c.ProductId = p.Id WHERE u.Id = @userId;";
+                "LEFT JOIN dbo.Products p ON c.ProductId = p.Id WHERE u.Id = @userId;";
 
             UserModel user = null;
 
