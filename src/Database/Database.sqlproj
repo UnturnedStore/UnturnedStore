@@ -70,6 +70,8 @@
     <Build Include="tables\OrderItems.sql" />
     <Build Include="tables\Orders.sql" />
     <Build Include="tables\ProductCustomers.sql" />
+    <Build Include="tables\MessageReplies.sql" />
+    <Build Include="tables\Messages.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

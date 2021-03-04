@@ -36,7 +36,7 @@ namespace Website.Data.Repositories
                 {
                     c.Product = p;
                     user.Products.Add(c);
-                }                    
+                }
 
                 return null;
             }, new { userId });
