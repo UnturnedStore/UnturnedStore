@@ -23,3 +23,6 @@ Web app store for game plugins
 * bootstrap 5
 * highlight.js
 * quill.js
+
+### Working examples
+* [plugins.restoremonarchy.com](https://plugins.restoremonarchy.com)
