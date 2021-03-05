@@ -1,9 +1,7 @@
 ﻿using Dapper;
-using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Website.Shared.Models;
 
@@ -18,6 +16,19 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
+        public async Task<bool> IsMessageReplyUserAsync(int replyId, int userId)
+        {
+            const string sql = "SELECT COUNT(1) FROM dbo.MessageReplies r JOIN dbo.Messages m ON r.MessageId = m.Id " +
+                "WHERE r.Id = @replyId AND (m.FromUserId = @userId OR m.ToUserId = @userId)";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { replyId, userId });
+        }
+
+        public async Task<bool> IsMessageUserAsync(int messageId, int userId)
+        {
+            const string sql = "SELECT COUNT(1) FROM dbo.Messages WHERE Id = @messageId AND (FromUserId = @userId OR ToUserId = @userId);";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { messageId, userId });
+        }
+
         public async Task<MessageModel> AddMessageAsync(MessageModel message)
         {
             const string sql = "INSERT INTO dbo.Messages (FromUserId, ToUserId, Title) " +
@@ -25,9 +36,7 @@ namespace Website.Data.Repositories
                 "VALUES (@FromUserId, @ToUserId, @Title);";
 
             var msg = await connection.QuerySingleAsync<MessageModel>(sql, message);
-            msg.Replies = new List<MessageReplyModel>();
-
-            
+            msg.Replies = new List<MessageReplyModel>();            
 
             foreach (var reply in message.Replies)
             {
@@ -56,34 +65,38 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, reply);
         }
 
-        public async Task<MessageModel> GetMessageAsync()
+        public async Task<MessageModel> GetMessageAsync(int messageId)
         {
-            const string sql = "SELECT * FROM dbo.Messages m LEFT JOIN dbo.MessageReplies r ON m.Id = r.MessageId WHERE Id = @Id;";
+            const string sql = "SELECT m.*, fu.*, tu.* FROM dbo.Messages " +
+                "JOIN dbo.Users fu ON fu.Id = m.FromUserId " +
+                "JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
+                "WHERE Id = @messageId";
 
-            MessageModel message = null;
+            var msg = (await connection.QueryAsync<MessageModel, UserModel, UserModel, MessageModel>(sql, (m, fu, tu) =>
+            {
+                m.FromUser = fu;
+                m.ToUser = tu;
+                return m;
+            })).FirstOrDefault();
 
-            await connection.QueryAsync<MessageModel, MessageReplyModel, MessageModel>(sql, (m, r) => 
-            { 
-                if (message == null)
-                {
-                    message = m;
-                    message.Replies = new List<MessageReplyModel>();
-                }
+            const string sql1 = "SELECT * FROM dbo.MessageReplies WHERE MessageId = @messageId;";
 
-                if (r != null)
-                {
-                    message.Replies.Add(r);
-                }
+            msg.Replies = (await connection.QueryAsync<MessageReplyModel>(sql1, new { messageId })).ToList();
 
-                return null;
+            return msg;
+        }
+
+        public async Task<IEnumerable<MessageModel>> GetMessagesAsync(int userId)
+        {
+            const string sql = "SELECT m.*, fu.*, tu.* FROM dbo.Messages JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
+                "WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
+
+            return await connection.QueryAsync<MessageModel, UserModel, UserModel, MessageModel>(sql, (m, fu, tu) => 
+            {
+                m.FromUser = fu;
+                m.ToUser = tu;
+                return m;
             });
-
-            const string sql1 = "SELECT * FROM dbo.Users WHERE Id = @Id;";
-
-            message.FromUser = await connection.QuerySingleOrDefaultAsync<UserModel>(sql1, new { Id = message.FromUserId });
-            message.ToUser = await connection.QuerySingleOrDefaultAsync<UserModel>(sql1, new { Id = message.ToUserId });
-
-            return message;
         }
     }
 }
