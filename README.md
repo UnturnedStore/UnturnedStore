@@ -11,7 +11,7 @@ Web app store for game plugins
 
 <p float="left">
   <img src="https://user-images.githubusercontent.com/35507241/110180865-e0218d00-7e0a-11eb-911e-308bc157be48.png" width="384" height="216" />
-  <img src="https://user-images.githubusercontent.com/35507241/110180959-13fcb280-7e0b-11eb-9ff6-bfd388b2756a.png" width="384" height="216" />
+  <img src="https://user-images.githubusercontent.com/35507241/110181328-d2203c00-7e0b-11eb-9baa-a4647053f569.png" width="384" height="216" />
 </p>
 
 ### Tech Stack
