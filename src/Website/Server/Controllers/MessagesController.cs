@@ -53,7 +53,7 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PostMessageReplyAsync([FromBody] MessageReplyModel reply)
         {
             int userId = int.Parse(User.Identity.Name);
-            if (!await messagesRepository.IsMessageReplyUserAsync(reply.Id, userId))
+            if (!await messagesRepository.IsMessageUserAsync(reply.MessageId, userId))
                 return BadRequest();
 
             reply.UserId = userId;
@@ -68,6 +68,16 @@ namespace Website.Server.Controllers
                 return BadRequest();
 
             await messagesRepository.UpdateMessageReplyAsync(reply);
+            return Ok();
+        }
+
+        [HttpDelete("replies/{replyId}")]
+        public async Task<IActionResult> DeleteMessageReplyAsync(int replyId)
+        {
+            if (!await messagesRepository.IsMessageReplyUserAsync(replyId, int.Parse(User.Identity.Name)))
+                return BadRequest();
+
+            await messagesRepository.DeleteMessageReplyAsync(replyId);
             return Ok();
         }
     }
