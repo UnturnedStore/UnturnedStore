@@ -39,14 +39,24 @@ namespace Website.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> PostMessageAsync([FromBody] MessageModel message)
         {
+            int userId = int.Parse(User.Identity.Name);
+            message.FromUserId = userId;
+            foreach (var reply in message.Replies)
+            {
+                reply.UserId = userId;
+            }
+
             return Ok(await messagesRepository.AddMessageAsync(message));
         }
         
         [HttpPost("replies")]
         public async Task<IActionResult> PostMessageReplyAsync([FromBody] MessageReplyModel reply)
         {
-            if (!await messagesRepository.IsMessageReplyUserAsync(reply.Id, int.Parse(User.Identity.Name)))
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageReplyUserAsync(reply.Id, userId))
                 return BadRequest();
+
+            reply.UserId = userId;
 
             return Ok(await messagesRepository.AddMessageReplyAsync(reply));
         }

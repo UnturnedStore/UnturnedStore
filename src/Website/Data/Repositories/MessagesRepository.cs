@@ -88,15 +88,29 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MessageModel>> GetMessagesAsync(int userId)
         {
-            const string sql = "SELECT m.*, fu.*, tu.* FROM dbo.Messages JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
-                "WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
+            const string sql = "SELECT m.*, fu.*, tu.*, r.* FROM dbo.Messages JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
+                "JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
 
-            return await connection.QueryAsync<MessageModel, UserModel, UserModel, MessageModel>(sql, (m, fu, tu) => 
+            var messages = new List<MessageModel>();
+            await connection.QueryAsync<MessageModel, UserModel, UserModel, MessageReplyModel, MessageModel>(sql, (m, fu, tu, r) => 
             {
-                m.FromUser = fu;
-                m.ToUser = tu;
+                var msg = messages.FirstOrDefault(x => x.Id == m.Id);
+                if (msg == null)
+                {
+                    msg = m;
+                    m.FromUser = fu;
+                    m.ToUser = tu;
+                    msg.Replies = new List<MessageReplyModel>();
+                    messages.Add(msg);
+                }
+
+                if (r != null)
+                    msg.Replies.Add(r);
+                
                 return m;
             });
+
+            return messages;
         }
     }
 }

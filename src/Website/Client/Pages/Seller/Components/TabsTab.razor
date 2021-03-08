@@ -118,13 +118,13 @@
 
 
 @code {
-        [Parameter]
-        public ProductModel Product { get; set; }
+    [Parameter]
+    public ProductModel Product { get; set; }
 
-        [Inject]
-        public HttpClient HttpClient { get; set; }
-        [Inject]
-        public IJSRuntime JsRuntime { get; set; }
+    [Inject]
+    public HttpClient HttpClient { get; set; }
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; }
 
     private ProductTabModel Tab { get; set; }
 

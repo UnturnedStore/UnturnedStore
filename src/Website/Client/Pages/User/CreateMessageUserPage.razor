@@ -1,0 +1,74 @@
+﻿@page "/messages/create/{UserId:int}"
+
+
+@if (User != null)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/messages">Messages</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Send message to @User.Name</li>
+        </ol>
+    </nav>
+
+    <div class="mb-3">
+        <div class="card">
+            <div class="card-header">
+                Create message
+            </div>
+            <div class="card-body">
+                <EditForm Model="Message" OnValidSubmit="SubmitAsync">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <InputText class="form-control" @bind-Value="Message.Title" />
+                        <div class="form-text"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Content</label>
+                        <BlazoredTextEditor @ref="editor" DebugLevel="error">
+                            <ToolbarContent>
+                                <select class="ql-header">
+                                    <option selected=""></option>
+                                    <option value="1"></option>
+                                    <option value="2"></option>
+                                    <option value="3"></option>
+                                    <option value="4"></option>
+                                    <option value="5"></option>
+                                </select>
+                                <span class="ql-formats">
+                                    <button class="ql-bold"></button>
+                                    <button class="ql-italic"></button>
+                                    <button class="ql-underline"></button>
+                                    <button class="ql-strike"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <select class="ql-color"></select>
+                                    <select class="ql-background"></select>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-list" value="ordered"></button>
+                                    <button class="ql-list" value="bullet"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-link"></button>
+                                    <button class="ql-image"></button>
+                                </span>
+                                <span class="ql-formats">
+                                    <button class="ql-code-block"></button>
+                                </span>
+                            </ToolbarContent>
+                        </BlazoredTextEditor>
+                    </div>
+
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </EditForm>
+
+                <h5 class="card-title"></h5>
+                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                
+            </div>
+        </div>
+    </div>
+}
