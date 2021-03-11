@@ -102,7 +102,7 @@
                         <li>Downloads: @(Product.Branches.Sum(x => x.Plugins.Sum(x => x.DownloadsCount)))</li>
                         @if (!string.IsNullOrEmpty(Product.GithubUrl))
                         {
-                            <li><a href="@Product.GithubUrl" target="_blank" class="text-decoration-none"><i class="bi bi-github"></i> Github</a></li>
+                            <li><a href="@Product.GithubUrl" target="_blank" class="text-decoration-none"><i class="bi bi-github"></i> GitHub</a></li>
                         }
                     </ul>
 
