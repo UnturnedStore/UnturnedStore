@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,23 +18,25 @@ namespace Website.Server.Services
 {
     public class PayPalService
     {
-        private readonly ProductsRepository productsRepository;
+        private readonly IConfiguration configuration;
         private readonly OrdersRepository ordersRepository;
         private readonly IHttpClientFactory httpClientFactory;
         private readonly ILogger<PayPalService> logger;
         private readonly OrderService orderService;
 
-        public PayPalService(ProductsRepository productsRepository, OrdersRepository ordersRepository, IHttpClientFactory httpClientFactory, 
+        public PayPalService(IConfiguration configuration, OrdersRepository ordersRepository, IHttpClientFactory httpClientFactory, 
             ILogger<PayPalService> logger, OrderService orderService)
         {
-            this.productsRepository = productsRepository;
+            this.configuration = configuration;
             this.ordersRepository = ordersRepository;
             this.httpClientFactory = httpClientFactory;
             this.logger = logger;
             this.orderService = orderService;
         }
 
-        public static void PayPalPayment(OrderModel order, string baseUrl)
+        private string PayPalUrl => PaymentContants.GetPayPalUrl(configuration.GetValue<bool>("UseSandbox"));
+
+        public void PayPalPayment(OrderModel order, string baseUrl)
         {
             var dict = new Dictionary<string, string>()
             {
@@ -57,7 +60,7 @@ namespace Website.Server.Services
                 dict.Add("amount_" + i, item.Price.ToString());
             }
 
-            order.PaymentUrl = QueryHelpers.AddQueryString(PaymentContants.PayPalUrl, dict);
+            order.PaymentUrl = QueryHelpers.AddQueryString(PayPalUrl, dict);
         }
 
         public async Task ProcessPaymentAsync(HttpRequest request)
@@ -70,7 +73,7 @@ namespace Website.Server.Services
 
             var content = new StringContent("cmd=_notify-validate&" + requestBody);
 
-            var response = await httpClientFactory.CreateClient().PostAsync(PaymentContants.PayPalUrl, content);
+            var response = await httpClientFactory.CreateClient().PostAsync(PayPalUrl, content);
             var verification = await response.Content.ReadAsStringAsync();
 
             if (!verification.Equals("VERIFIED"))

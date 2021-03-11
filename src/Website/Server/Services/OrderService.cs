@@ -15,12 +15,14 @@ namespace Website.Server.Services
         private readonly OrdersRepository ordersRepository;
         private readonly ProductsRepository productsRepository;
         private readonly UsersRepository usersRepository;
+        private readonly PayPalService payPalService;
 
-        public OrderService(OrdersRepository ordersRepository, ProductsRepository productsRepository, UsersRepository usersRepository)
+        public OrderService(OrdersRepository ordersRepository, ProductsRepository productsRepository, UsersRepository usersRepository, PayPalService payPalService)
         {
             this.ordersRepository = ordersRepository;
             this.productsRepository = productsRepository;
             this.usersRepository = usersRepository;
+            this.payPalService = payPalService;
         }
 
         public async Task<OrderModel> CreateOrderAsync(OrderParams orderParams)
@@ -58,7 +60,7 @@ namespace Website.Server.Services
                 }
 
                 order = await ordersRepository.AddOrderAsync(order);
-                PayPalService.PayPalPayment(order, orderParams.BaseUrl);
+                payPalService.PayPalPayment(order, orderParams.BaseUrl);
                 await ordersRepository.UpdateOrderPaymentUrlAsync(order);
                 return order;
             }
