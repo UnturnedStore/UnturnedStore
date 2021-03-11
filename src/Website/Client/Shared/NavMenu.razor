@@ -38,13 +38,13 @@
                                 <li><a class="dropdown-item" href="/messages">Messages</a></li>
                                 <li><a class="dropdown-item" href="/orders">Orders</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/signout?returnUrl=@ReturnUrl">Sign Out</a></li>
+                                <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
                             </ul>
                         </li>
                     </ul>
                 </Authorized>
                 <NotAuthorized>
-                    <a href="/signin?returnUrl=@ReturnUrl">
+                    <a href="/signin">
                         <img src="/img/steam/buttons/sits_small.png" />
                     </a>
                 </NotAuthorized>
@@ -54,8 +54,4 @@
 </nav>
 
 @code {
-    [Inject]
-    public NavigationManager NavigationManager { get; set; }
-
-    private string ReturnUrl => NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
 } 
