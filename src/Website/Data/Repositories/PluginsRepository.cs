@@ -18,6 +18,13 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
+        public async Task<bool> IsPluginCustomerAsync(int pluginId, int userId)
+        {
+            const string sql = "SELECT COUNT(1) FROM dbo.Plugins v JOIN dbo.Branches b ON v.BranchId = b.Id JOIN dbo.Products p ON p.Id = b.ProductId " +
+                "JOIN dbo.ProductCustomers c ON b.ProductId = c.ProductId WHERE v.Id = @pluginId AND (c.UserId = @userId OR p.SellerId = @userId);";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { pluginId, userId });
+        }
+
         public async Task<bool> IsPluginOwnerAsync(int pluginId, int userId)
         {
             const string sql = "SELECT COUNT(1) FROM dbo.Plugins v JOIN dbo.Branches b ON v.BranchId = b.Id " +
@@ -53,7 +60,7 @@ namespace Website.Data.Repositories
 
         public async Task<PluginModel> GetPluginAsync(int pluginId, bool isSeller)
         {
-            string sql = "SELECT p.*, b.Id, b.Name, p2.Id, p2.Name, l.* FROM dbo.Plugins p JOIN dbo.Branches b ON p.BranchId = b.Id " +
+            string sql = "SELECT p.*, b.Id, b.Name, p2.Id, p2.Name, p2.Price, l.* FROM dbo.Plugins p JOIN dbo.Branches b ON p.BranchId = b.Id " +
                 "JOIN dbo.Products p2 ON p2.Id = b.ProductId LEFT JOIN dbo.PluginLibraries l ON l.PluginId = p.Id WHERE p.Id = @pluginId ";
 
             if (!isSeller)

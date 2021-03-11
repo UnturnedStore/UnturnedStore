@@ -16,14 +16,16 @@ namespace Website.Server.Controllers
         private readonly BranchesRepository branchesRepository;
         private readonly PluginService pluginService;
         private readonly DiscordService discordService;
+        private readonly ProductsRepository productsRepository;
 
         public PluginsController(PluginsRepository pluginsRepository, BranchesRepository branchesRepository, PluginService pluginService, 
-            DiscordService discordService)
+            DiscordService discordService, ProductsRepository productsRepository)
         {
             this.pluginsRepository = pluginsRepository;
             this.branchesRepository = branchesRepository;
             this.pluginService = pluginService;
             this.discordService = discordService;
+            this.productsRepository = productsRepository;
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
@@ -61,6 +63,12 @@ namespace Website.Server.Controllers
             await pluginsRepository.IncrementDownloadsCount(pluginId);
 
             var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsPluginOwnerAsync(pluginId, userId));
+            if (plugin.Branch.Product.Price > 0)
+            {
+                if (!await pluginsRepository.IsPluginCustomerAsync(pluginId, userId))
+                    return Unauthorized();
+            }
+
             Response.Headers.Add("Content-Disposition", "inline; filename=" + 
                 string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Version, ".zip"));
             return File(pluginService.ZipPlugin(plugin), "application/zip");
