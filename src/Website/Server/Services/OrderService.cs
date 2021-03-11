@@ -67,17 +67,5 @@ namespace Website.Server.Services
 
             return null;
         }
-
-        public async Task CompleteOrderAsync(OrderModel order)
-        {
-            foreach (var item in order.Items)
-            {
-                await productsRepository.AddProductCustomerAsync(new ProductCustomerModel()
-                {
-                    UserId = order.BuyerId,
-                    ProductId = item.ProductId
-                });
-            }
-        }
     }
 }

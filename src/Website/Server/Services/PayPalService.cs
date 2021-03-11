@@ -22,16 +22,16 @@ namespace Website.Server.Services
         private readonly OrdersRepository ordersRepository;
         private readonly IHttpClientFactory httpClientFactory;
         private readonly ILogger<PayPalService> logger;
-        private readonly OrderService orderService;
+        private readonly ProductsRepository productsRepository;
 
         public PayPalService(IConfiguration configuration, OrdersRepository ordersRepository, IHttpClientFactory httpClientFactory, 
-            ILogger<PayPalService> logger, OrderService orderService)
+            ILogger<PayPalService> logger, ProductsRepository productsRepository)
         {
             this.configuration = configuration;
             this.ordersRepository = ordersRepository;
             this.httpClientFactory = httpClientFactory;
             this.logger = logger;
-            this.orderService = orderService;
+            this.productsRepository = productsRepository;
         }
 
         private string PayPalUrl => PaymentContants.GetPayPalUrl(configuration.GetValue<bool>("UseSandbox"));
@@ -110,7 +110,14 @@ namespace Website.Server.Services
 
             if (order.Status == "Completed")
             {
-                await orderService.CompleteOrderAsync(order);
+                foreach (var item in order.Items)
+                {
+                    await productsRepository.AddProductCustomerAsync(new ProductCustomerModel()
+                    {
+                        UserId = order.BuyerId,
+                        ProductId = item.ProductId
+                    });
+                }
             }
         }
 
