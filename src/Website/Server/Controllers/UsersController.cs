@@ -54,9 +54,9 @@ namespace Website.Server.Controllers
 
         [ResponseCache(NoStore = true, Duration = 0)]
         [HttpGet("~/signout"), HttpPost("~/signout")]
-        public IActionResult LogOut()
+        public IActionResult LogOut([FromQuery] string returnUrl = "/")
         {
-            return SignOut(new AuthenticationProperties { RedirectUri = "/" },
+            return SignOut(new AuthenticationProperties { RedirectUri = returnUrl },
                 CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }

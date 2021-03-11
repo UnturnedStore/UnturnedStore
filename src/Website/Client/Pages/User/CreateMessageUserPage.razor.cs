@@ -35,16 +35,17 @@ namespace Website.Client.Pages.User
         public MessageModel Message { get; set; }
         private MessageModel defaultMessage => new MessageModel()
         {
-            Replies = new List<MessageReplyModel>()
-            {
-                new MessageReplyModel() { }
-            },
+            Replies = new List<MessageReplyModel>(),
             ToUserId = UserId
         };
 
         public async Task SubmitAsync()
         {
-            Message.Replies[0].Content = await editor.GetHTML();
+            Message.Replies.Add(new MessageReplyModel()
+            {
+                Content = await editor.GetHTML()
+            });
+
             var response = await HttpClient.PostAsJsonAsync("api/messages", Message);
             var msg = await response.Content.ReadFromJsonAsync<MessageModel>();
             Message = defaultMessage;

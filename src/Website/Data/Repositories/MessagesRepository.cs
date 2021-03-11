@@ -94,7 +94,7 @@ namespace Website.Data.Repositories
         public async Task<IEnumerable<MessageModel>> GetMessagesAsync(int userId)
         {
             const string sql = "SELECT m.*, fu.*, tu.*, r.* FROM dbo.Messages m JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
-                "JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
+                "LEFT JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
 
             var messages = new List<MessageModel>();
             await connection.QueryAsync<MessageModel, UserModel, UserModel, MessageReplyModel, MessageModel>(sql, (m, fu, tu, r) => 

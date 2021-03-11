@@ -11,7 +11,7 @@
 {
     <div class="mb-3">
         <div class="mb-3">
-            <h2>@Message.Title</h2>
+            <h2><span class="fw-bold">Topic:</span> @Message.Title</h2>
         </div>
         
         @foreach (var reply in Message.Replies.OrderBy(x => x.CreateDate))

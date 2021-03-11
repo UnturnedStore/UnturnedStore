@@ -93,6 +93,11 @@
                     <h4 class="mt-2">@Product.Name</h4>
                     <ul class="list-unstyled">
                         <li>Author: @Product.Seller.Name</li>
+                        <AuthorizeView>
+                            <Authorized>
+                                <li><a class="text-decoration-none" href="/messages/create/@Product.SellerId">Send Message</a></li>
+                            </Authorized>
+                        </AuthorizeView>                         
                         <li>Price: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
                         <li>Downloads: @(Product.Branches.Sum(x => x.Plugins.Sum(x => x.DownloadsCount)))</li>
                         @if (!string.IsNullOrEmpty(Product.GithubUrl))
