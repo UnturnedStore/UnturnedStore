@@ -13,7 +13,7 @@ namespace Website.Shared.Models
         public int MessageId { get; set; }
         public int UserId { get; set; }
         [Required]
-        [MaxLength(8000)]
+        [MaxLength(4000)]
         public string Content { get; set; }
         public DateTime LastUpdate { get; set; }
         public DateTime CreateDate { get; set; }
