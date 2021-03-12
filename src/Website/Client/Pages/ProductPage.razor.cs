@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Extensions;
+using Website.Client.Providers;
 using Website.Client.Services;
 using Website.Shared.Models;
 using Website.Shared.Params;
@@ -26,6 +28,10 @@ namespace Website.Client.Pages
         public CartService CartService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public AuthenticationStateProvider AuthState { get; set; }
+
+        public SteamAuthProvider SteamAuth => AuthState as SteamAuthProvider;
 
         public ProductModel Product { get; set; }
 
@@ -50,7 +56,7 @@ namespace Website.Client.Pages
         }
 
         private bool IsInCart => CartService?.Carts.Exists(x => x.Items.Exists(x => x.ProductId == ProductId)) ?? false;
-        private bool IsCustomer => Product.Price <= 0 || Product.Customer != null;
+        private bool IsCustomer => Product.Price <= 0 || Product.Customer != null || (SteamAuth.IsAuthenticated && SteamAuth.User.Id == Product.SellerId);
 
         private async Task AddToCartAsync()
         {

@@ -55,7 +55,7 @@ namespace Website.Data.Repositories
             });
 
             const string sql2 = "SELECT COALESCE(SUM(p.DownloadsCount), 0) FROM dbo.Branches b " +
-                "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.ProductId = @Id;";
+                "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.ProductId = @Id AND p.IsEnabled = 1;";
             foreach (var product in products)
             {
                 product.TotalDownloadsCount = await connection.ExecuteScalarAsync<int>(sql2, product);

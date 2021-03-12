@@ -60,14 +60,14 @@ namespace Website.Server.Controllers
             if (User.Identity?.IsAuthenticated ?? false)
                 userId = int.Parse(User.Identity.Name);
 
-            await pluginsRepository.IncrementDownloadsCount(pluginId);
-
             var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsPluginOwnerAsync(pluginId, userId));
             if (plugin.Branch.Product.Price > 0)
             {
                 if (!await pluginsRepository.IsPluginCustomerAsync(pluginId, userId))
                     return Unauthorized();
             }
+
+            await pluginsRepository.IncrementDownloadsCount(pluginId);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" + 
                 string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Version, ".zip"));

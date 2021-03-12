@@ -77,7 +77,7 @@ namespace Website.Data.Repositories
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
             product.Medias = (await connection.QueryAsync<ProductMediaModel>(sql1, product)).ToList();
 
-            const string sql2 = "SELECT b.*, p.Id, p.BranchId, p.FileName, p.Version, p.Changelog, p.IsEnabled, p.CreateDate " +
+            const string sql2 = "SELECT b.*, p.Id, p.BranchId, p.FileName, p.Version, p.Changelog, p.DownloadsCount, p.IsEnabled, p.CreateDate " +
                 "FROM dbo.Branches b LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.ProductId = @Id;";
             product.Branches = new List<BranchModel>();
             await connection.QueryAsync<BranchModel, PluginModel, BranchModel>(sql2, (b, p) =>
