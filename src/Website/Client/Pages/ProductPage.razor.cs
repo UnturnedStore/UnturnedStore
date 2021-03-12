@@ -56,7 +56,8 @@ namespace Website.Client.Pages
         }
 
         private bool IsInCart => CartService?.Carts.Exists(x => x.Items.Exists(x => x.ProductId == ProductId)) ?? false;
-        private bool IsCustomer => Product.Price <= 0 || Product.Customer != null || (SteamAuth.IsAuthenticated && SteamAuth.User.Id == Product.SellerId);
+        private bool IsCustomer => Product.Price <= 0 || Product.Customer != null || IsSeller;
+        private bool IsSeller => SteamAuth.IsAuthenticated && SteamAuth.User.Id == Product.SellerId;
 
         private async Task AddToCartAsync()
         {

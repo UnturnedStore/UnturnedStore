@@ -111,6 +111,14 @@
                         if (IsCustomer)
                         {
                             <div class="d-grid gap-2 mt-3">
+
+                                @if (IsSeller)
+                                {
+                                    <a class="btn btn-success" href="/seller/products/@ProductId">
+                                        <i class="bi bi-pencil-square"></i> Edit Product
+                                    </a>
+                                }
+
                                 @if (ShowVersions)
                                 {
                                     <button class="btn btn-secondary" @onclick="ToggleShowVersions">
@@ -123,7 +131,6 @@
                                         <i class="bi bi-gear-fill"></i> Show All Versions
                                     </button>
                                 }
-
 
                                 <form class="d-grid gap-2" method="get" action="api/plugins/@LatestPlugin.Id/zip">
                                     <button class="btn btn-primary" type="submit">
@@ -146,7 +153,7 @@
                                     <button class="btn btn-primary" @onclick="AddToCartAsync">
                                         <i class="bi bi-cart-fill"></i> Add To Cart
                                     </button>
-                                }
+                                }                                
                             </div>
                         }
 
