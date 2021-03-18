@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
+using Website.Server.Services;
 using Website.Shared.Models;
 
 namespace Website.Server.Controllers
@@ -15,10 +16,12 @@ namespace Website.Server.Controllers
     public class MessagesController : ControllerBase
     {
         private readonly MessagesRepository messagesRepository;
+        private readonly DiscordService discordService;
 
-        public MessagesController(MessagesRepository messagesRepository)
+        public MessagesController(MessagesRepository messagesRepository, DiscordService discordService)
         {
             this.messagesRepository = messagesRepository;
+            this.discordService = discordService;
         }
 
         [HttpGet]
@@ -46,7 +49,11 @@ namespace Website.Server.Controllers
                 reply.UserId = userId;
             }
 
-            return Ok(await messagesRepository.AddMessageAsync(message));
+            message = await messagesRepository.AddMessageAsync(message);
+
+            await discordService.SendMessageAsync(message.Id, Request.Headers["Origin"]);
+
+            return Ok(message);
         }
         
         [HttpPost("replies")]
@@ -57,8 +64,11 @@ namespace Website.Server.Controllers
                 return BadRequest();
 
             reply.UserId = userId;
+            reply = await messagesRepository.AddMessageReplyAsync(reply);
 
-            return Ok(await messagesRepository.AddMessageReplyAsync(reply));
+            await discordService.SendMessageReplyAsync(reply, Request.Headers["Origin"]);
+
+            return Ok(reply);
         }
 
         [HttpPut("replies")]

@@ -31,6 +31,12 @@
                 </Authorized>
             </AuthorizeView>
 
+            <div class="mb-3">
+                <label class="form-label">Discord Webhook URL</label>
+                <InputText class="form-control" @bind-Value="User.DiscordWebhookUrl" />
+                <div class="form-text">This is used to send you message and purchase notifications to Discord</div>
+            </div>
+
             <ValidationSummary />
             <DataAnnotationsValidator />
 

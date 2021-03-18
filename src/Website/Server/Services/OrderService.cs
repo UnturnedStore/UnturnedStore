@@ -31,7 +31,7 @@ namespace Website.Server.Services
             {
                 var order = OrderModel.FromParams(orderParams);
 
-                order.Seller = await usersRepository.GetUserAsync(order.SellerId);
+                order.Seller = await usersRepository.GetUserPrivateAsync(order.SellerId);
 
                 order.PaymentReceiver = order.Seller.PayPalEmail;
                 order.Currency = order.Seller.PayPalCurrency;

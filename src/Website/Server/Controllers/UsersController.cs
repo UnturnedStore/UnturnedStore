@@ -20,9 +20,9 @@ namespace Website.Server.Controllers
         }
 
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserAsync(int userId)
+        public async Task<IActionResult> GetUserProfileAsync(int userId)
         {
-            return Ok(await usersRepository.GetUserFullAsync(userId));
+            return Ok(await usersRepository.GetUserPublicAsync(userId));
         }
 
         [HttpPut]
@@ -37,7 +37,7 @@ namespace Website.Server.Controllers
         {
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                return Ok(await usersRepository.GetUserAsync(int.Parse(User.Identity.Name)));
+                return Ok(await usersRepository.GetUserPrivateAsync(int.Parse(User.Identity.Name)));
             }
             else
             {

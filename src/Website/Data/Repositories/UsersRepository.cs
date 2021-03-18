@@ -17,9 +17,9 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
-        public async Task<UserModel> GetUserFullAsync(int userId)
+        public async Task<UserModel> GetUserPublicAsync(int userId)
         {
-            const string sql = "SELECT u.*, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
+            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
                 "LEFT JOIN dbo.Products p ON c.ProductId = p.Id WHERE u.Id = @userId;";
 
             UserModel user = null;
@@ -44,9 +44,9 @@ namespace Website.Data.Repositories
             return user;
         }
 
-        public async Task<UserModel> GetUserAsync(int userId)
+        public async Task<UserModel> GetUserPrivateAsync(int userId)
         {
-            const string sql = "SELECT Id, Name, Role, SteamId, PayPalEmail, PayPalCurrency, CreateDate FROM dbo.Users WHERE Id = @userId;";
+            const string sql = "SELECT * FROM dbo.Users WHERE Id = @userId;";
             return await connection.QuerySingleOrDefaultAsync<UserModel>(sql, new { userId });
         }
         
@@ -81,10 +81,16 @@ namespace Website.Data.Repositories
 
         public async Task UpdateUserAsync(UserModel user)
         {
-            const string sql = "UPDATE dbo.Users SET Name = @Name, PayPalEmail = @PayPalEmail, PayPalCurrency = @PayPalCurrency " +
+            const string sql = "UPDATE dbo.Users SET Name = @Name, PayPalEmail = @PayPalEmail, PayPalCurrency = @PayPalCurrency, DiscordWebhookUrl = @DiscordWebhookUrl " +
                 "WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, user);
+        }
+
+        public async Task<string> GetUserDiscordWebhookUrl(int userId)
+        {
+            const string sql = "SELECT DiscordWebhookUrl FROM dbo.Users WHERE Id = @userId;";
+            return await connection.ExecuteScalarAsync<string>(sql, new { userId });
         }
     }
 }

@@ -21,6 +21,8 @@ namespace Website.Shared.Models
         [MinLength(3)]
         [MaxLength(3)]
         public string PayPalCurrency { get; set; }
+        [MaxLength(255)]
+        public string DiscordWebhookUrl { get; set; }
         public DateTime CreateDate { get; set; }
 
         public List<ProductCustomerModel> Products { get; set; }
