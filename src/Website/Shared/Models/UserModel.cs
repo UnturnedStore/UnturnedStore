@@ -17,7 +17,6 @@ namespace Website.Shared.Models
         public byte[] Avatar { get; set; }
         [MaxLength(255)]
         public string PayPalEmail { get; set; }
-        [Required]
         [MinLength(3)]
         [MaxLength(3)]
         public string PayPalCurrency { get; set; }

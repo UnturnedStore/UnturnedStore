@@ -19,6 +19,12 @@ namespace Website.Server.Controllers
             this.usersRepository = usersRepository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            return Ok(await usersRepository.GetUsersAsync());
+        }
+
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserProfileAsync(int userId)
         {

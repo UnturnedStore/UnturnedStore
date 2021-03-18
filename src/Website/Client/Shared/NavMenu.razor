@@ -27,6 +27,12 @@
                                 @context.User.Identity.Name
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
+                                    <Authorized>
+                                        <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    </Authorized>
+                                </AuthorizeView>
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminAndSeller">
                                     <Authorized>
                                         <li><a class="dropdown-item" href="/seller/products">Your Products</a></li>

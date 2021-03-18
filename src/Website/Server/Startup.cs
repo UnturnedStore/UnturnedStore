@@ -34,6 +34,7 @@ namespace Website.Server
             services.AddTransient<SellersRepository>();
             services.AddTransient<OrdersRepository>();
             services.AddTransient<MessagesRepository>();
+            services.AddTransient<AdminRepository>();
 
             services.AddTransient<OrderService>();
             services.AddTransient<PluginService>();

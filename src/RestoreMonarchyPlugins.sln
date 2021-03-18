@@ -13,7 +13,7 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database", "Database\Databa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Website.Data", "Website\Data\Website.Data.csproj", "{A16E5967-F927-4C12-86FC-0424107D687D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Build", "Database\Database.Build\Database.Build.csproj", "{E7962A74-BEC4-4437-9279-DBE84526C915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.Build", "Database\Database.Build\Database.Build.csproj", "{E7962A74-BEC4-4437-9279-DBE84526C915}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,63 @@
+﻿@page "/admin/users"
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Users</li>
+    </ol>
+</nav>
+
+<div class="mb-3 d-flex align-items-center">
+    <div>
+        <h5>All users</h5>
+    </div>
+    <div class="ms-auto">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Search</span>
+            <input type="text" class="form-control" @bind="searchString" @bind:event="oninput" placeholder="Name or SteamId">
+        </div>
+
+    </div>
+</div>
+
+@if (Users != null)
+{
+    <div class="mb-3">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>SteamId</th>
+                    <th>Role</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <Virtualize Items="orderedUsers" Context="user">
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>@user.SteamId</td>
+                        <td>
+                            <select class="form-select" @bind="user.Role">
+                                <option value="@RoleConstants.DefaultRoleId">@RoleConstants.DefaultRoleId</option>
+                                <option value="@RoleConstants.SellerRoleId">@RoleConstants.SellerRoleId</option>
+                                <option value="@RoleConstants.AdminRoleId">@RoleConstants.AdminRoleId</option>
+                            </select>
+                        </td>
+                        <td>
+                            @if (loadingUsers.Contains(user))
+                            {
+                                <LoadingButton />
+                            } else
+                            {
+                                <button class="btn btn-primary" @onclick="() => UpdateUserRoleAsync(user)">
+                                    Update
+                                </button>
+                            }
+                            
+                        </td>
+                    </tr>
+                </Virtualize>
+            </tbody>
+        </table>
+    </div>
+}

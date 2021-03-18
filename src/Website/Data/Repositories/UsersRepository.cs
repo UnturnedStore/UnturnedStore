@@ -92,5 +92,11 @@ namespace Website.Data.Repositories
             const string sql = "SELECT DiscordWebhookUrl FROM dbo.Users WHERE Id = @userId;";
             return await connection.ExecuteScalarAsync<string>(sql, new { userId });
         }
+
+        public async Task<IEnumerable<UserModel>> GetUsersAsync()
+        {
+            const string sql = "SELECT Id, Name, SteamId, Role, CreateDate FROM dbo.Users;";
+            return await connection.QueryAsync<UserModel>(sql);
+        }
     }
 }
