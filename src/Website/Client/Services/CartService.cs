@@ -30,7 +30,7 @@ namespace Website.Client.Services
                 Carts = new List<OrderParams>();
             }
 
-            foreach (var orderParams in Carts)
+            foreach (var orderParams in Carts.ToList())
             {
                 orderParams.Seller = await httpClient.GetFromJsonAsync<UserModel>("api/users/" + orderParams.SellerId);
 
@@ -39,7 +39,9 @@ namespace Website.Client.Services
                     item.Product = await httpClient.GetFromJsonAsync<ProductModel>("api/products/" + item.ProductId);
 
                     if (item.Product.Customer != null)
-                        orderParams.Items.Remove(item);
+                    {
+                        await RemoveFromCartAsync(orderParams, item);
+                    }                        
                 }
             }
         }
