@@ -51,7 +51,7 @@ namespace Website.Server.Controllers
 
             message = await messagesRepository.AddMessageAsync(message);
 
-            await discordService.SendMessageAsync(message.Id, Request.Headers["Origin"]);
+            _ = Task.Run(() => discordService.SendMessageAsync(message.Id, Request.Headers["Origin"]));
 
             return Ok(message);
         }
@@ -66,7 +66,7 @@ namespace Website.Server.Controllers
             reply.UserId = userId;
             reply = await messagesRepository.AddMessageReplyAsync(reply);
 
-            await discordService.SendMessageReplyAsync(reply, Request.Headers["Origin"]);
+            _ = Task.Run(() => discordService.SendMessageReplyAsync(reply, Request.Headers["Origin"]));
 
             return Ok(reply);
         }

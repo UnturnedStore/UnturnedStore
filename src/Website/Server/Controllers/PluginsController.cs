@@ -37,7 +37,7 @@ namespace Website.Server.Controllers
 
             plugin = await pluginsRepository.AddPluginAsync(plugin);
 
-            await discordService.SendPluginUpdateAsync(plugin, Request.Headers["Origin"]);
+            _ = Task.Run(() => discordService.SendPluginUpdateAsync(plugin, Request.Headers["Origin"]));
 
             return Ok(plugin);
         }
