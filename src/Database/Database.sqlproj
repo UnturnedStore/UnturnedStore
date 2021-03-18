@@ -64,8 +64,7 @@
     <Build Include="tables\ProductTabs.sql" />
     <Build Include="tables\Images.sql" />
     <Build Include="tables\ProductMedias.sql" />
-    <Build Include="tables\Plugins.sql" />
-    <Build Include="tables\PluginLibraries.sql" />
+    <Build Include="tables\Versions.sql" />
     <Build Include="tables\Branches.sql" />
     <Build Include="tables\OrderItems.sql" />
     <Build Include="tables\Orders.sql" />

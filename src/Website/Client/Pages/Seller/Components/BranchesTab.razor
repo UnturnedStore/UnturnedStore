@@ -90,7 +90,7 @@
                 <tbody>
                     <Virtualize Items="Plugins" Context="plugin">
                         <tr>
-                            <td>@plugin.Version</td>
+                            <td>@plugin.Name</td>
                             <td>@plugin.FileName</td>
                             <td>@plugin.DownloadsCount</td>
                             <td>@plugin.CreateDate</td>
@@ -143,16 +143,16 @@
         }
     }
 
-    private List<PluginModel> Plugins => Branch.Plugins;
+    private List<VersionModel> Plugins => Branch.Plugins;
 
     protected override void OnParametersSet()
     {
         SelectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
     }
 
-    public PluginModel Plugin { get; set; }
+    public VersionModel Plugin { get; set; }
 
-    private async Task TogglePluginAsync(PluginModel plugin)
+    private async Task TogglePluginAsync(VersionModel plugin)
     {
         await HttpClient.PatchAsync($"api/plugins/{plugin.Id}", null);
         plugin.IsEnabled = !plugin.IsEnabled;

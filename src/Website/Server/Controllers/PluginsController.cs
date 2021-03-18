@@ -12,12 +12,12 @@ namespace Website.Server.Controllers
     [ApiController]
     public class PluginsController : ControllerBase
     {
-        private readonly PluginsRepository pluginsRepository;
+        private readonly VersionsRepository pluginsRepository;
         private readonly BranchesRepository branchesRepository;
         private readonly PluginService pluginService;
         private readonly DiscordService discordService;
 
-        public PluginsController(PluginsRepository pluginsRepository, BranchesRepository branchesRepository, PluginService pluginService, 
+        public PluginsController(VersionsRepository pluginsRepository, BranchesRepository branchesRepository, PluginService pluginService, 
             DiscordService discordService)
         {
             this.pluginsRepository = pluginsRepository;
@@ -28,7 +28,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost]
-        public async Task<IActionResult> PostPluginAsync([FromBody] PluginModel plugin)
+        public async Task<IActionResult> PostPluginAsync([FromBody] VersionModel plugin)
         {
             if (!await branchesRepository.IsBranchSellerAsync(plugin.BranchId, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -44,7 +44,7 @@ namespace Website.Server.Controllers
         [HttpPatch("{pluginId}")]
         public async Task<IActionResult> PatchPluginAsync(int pluginId)
         {
-            if (!await pluginsRepository.IsPluginOwnerAsync(pluginId, int.Parse(User.Identity.Name)))
+            if (!await pluginsRepository.IsVersionOwnerAsync(pluginId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await pluginsRepository.TogglePluginAsync(pluginId);
@@ -58,17 +58,17 @@ namespace Website.Server.Controllers
             if (User.Identity?.IsAuthenticated ?? false)
                 userId = int.Parse(User.Identity.Name);
 
-            var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsPluginOwnerAsync(pluginId, userId));
+            var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsVersionOwnerAsync(pluginId, userId));
             if (plugin.Branch.Product.Price > 0)
             {
-                if (!await pluginsRepository.IsPluginCustomerAsync(pluginId, userId))
+                if (!await pluginsRepository.IsVersionCustomerAsync(pluginId, userId))
                     return Unauthorized();
             }
 
             await pluginsRepository.IncrementDownloadsCount(pluginId);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" + 
-                string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Version, ".zip"));
+                string.Concat(plugin.Branch.Product.Name, "-", plugin.Branch.Name, "-", plugin.Name, ".zip"));
             return File(pluginService.ZipPlugin(plugin), "application/zip");
         }
     }

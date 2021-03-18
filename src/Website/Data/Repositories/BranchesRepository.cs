@@ -37,7 +37,7 @@ namespace Website.Data.Repositories
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.IsEnabled, INSERTED.CreateDate " +
                 "VALUES (@Name, @Description, @ProductId, @IsEnabled);";
             branch = await connection.QuerySingleAsync<BranchModel>(sql, branch);
-            branch.Plugins = new List<PluginModel>();
+            branch.Plugins = new List<VersionModel>();
             return branch;
         }
 
@@ -54,7 +54,7 @@ namespace Website.Data.Repositories
                 "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.Id = @branchId;";
 
             BranchModel branch = null;
-            await connection.QueryAsync<BranchModel, PluginModel, BranchModel>(sql, (b, p) => 
+            await connection.QueryAsync<BranchModel, VersionModel, BranchModel>(sql, (b, p) => 
             {
                 branch = b;
                 if (p != null)

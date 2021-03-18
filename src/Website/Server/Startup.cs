@@ -30,7 +30,7 @@ namespace Website.Server
             services.AddTransient<ImagesRepository>();
             services.AddTransient<ProductsRepository>();
             services.AddTransient<BranchesRepository>();
-            services.AddTransient<PluginsRepository>();
+            services.AddTransient<VersionsRepository>();
             services.AddTransient<SellersRepository>();
             services.AddTransient<OrdersRepository>();
             services.AddTransient<MessagesRepository>();

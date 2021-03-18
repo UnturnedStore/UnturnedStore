@@ -109,14 +109,14 @@ namespace Website.Data.Repositories
             const string sql2 = "SELECT b.*, p.Id, p.BranchId, p.FileName, p.Version, p.Changelog, p.DownloadsCount, p.IsEnabled, p.CreateDate " +
                 "FROM dbo.Branches b LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.ProductId = @Id;";
             product.Branches = new List<BranchModel>();
-            await connection.QueryAsync<BranchModel, PluginModel, BranchModel>(sql2, (b, p) =>
+            await connection.QueryAsync<BranchModel, VersionModel, BranchModel>(sql2, (b, p) =>
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
 
                 if (branch == null)
                 {
                     branch = b;
-                    branch.Plugins = new List<PluginModel>();
+                    branch.Plugins = new List<VersionModel>();
                     product.Branches.Add(branch);
                 }
 

@@ -90,13 +90,13 @@ namespace Website.Data.Repositories
 
             product.Branches = new List<BranchModel>();
 
-            await connection.QueryAsync<BranchModel, PluginModel, BranchModel>(sql2, (b, p) => 
+            await connection.QueryAsync<BranchModel, VersionModel, BranchModel>(sql2, (b, p) => 
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
                 if (branch == null)
                 {
                     branch = b;
-                    branch.Plugins = new List<PluginModel>();
+                    branch.Plugins = new List<VersionModel>();
                     product.Branches.Add(branch);
                 }
 

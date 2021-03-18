@@ -5,7 +5,7 @@
     <EditForm Model="Model" OnValidSubmit="SubmitAsync">
         <div class="mb-3">
             <label class="form-label">Version</label>
-            <InputText class="form-control" @bind-Value="Model.Version" placeholder="1.0.0" />
+            <InputText class="form-control" @bind-Value="Model.Name" placeholder="1.0.0" />
             <div class="form-text">You should use SemVer format</div>
         </div>
 
@@ -83,14 +83,14 @@
     [Inject]
     public HttpClient HttpClient { get; set; }
 
-    private PluginModel defaultModel => new PluginModel()
+    private VersionModel defaultModel => new VersionModel()
     {
         Libraries = new List<PluginLibraryModel>(),
         IsEnabled = true,
         BranchId = Product.Branches.FirstOrDefault()?.Id ?? 0
     };
 
-    public PluginModel Model { get; set; }
+    public VersionModel Model { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -103,7 +103,7 @@
         isLoading = true;
         var response = await HttpClient.PostAsJsonAsync("api/plugins", Model);
 
-        var plugin = await response.Content.ReadFromJsonAsync<PluginModel>();
+        var plugin = await response.Content.ReadFromJsonAsync<VersionModel>();
         Product.Branches.First(x => x.Id == plugin.BranchId).Plugins.Add(plugin);
         Model = defaultModel;
         isLoading = false;
@@ -115,10 +115,10 @@
         var pluginFile = e.File;
 
         Model.FileName = pluginFile.Name;
-        Model.Data = new byte[pluginFile.Size];
-        await pluginFile.OpenReadStream().ReadAsync(Model.Data);
+        Model.Content = new byte[pluginFile.Size];
+        await pluginFile.OpenReadStream().ReadAsync(Model.Content);
 
-        var assembly = Assembly.Load(Model.Data);
+        var assembly = Assembly.Load(Model.Content);
         Model.Version = assembly.GetName().Version.ToString();
 
     }

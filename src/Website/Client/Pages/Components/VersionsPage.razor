@@ -23,7 +23,7 @@
             <div class="card mb-3">
                 <div class="card-header d-flex">
                     <div class="fw-bold">
-                        @Branch.Name @plugin.Version
+                        @Branch.Name @plugin.Name
                     </div>
                     <div class="ms-auto">
                         <small class="text-muted"><i class="bi bi-download"></i> @plugin.DownloadsCount</small>
@@ -58,7 +58,7 @@
 
     private BranchModel Branch => Product.Branches.FirstOrDefault(x => x.Id == selectedBranchId);
 
-    private List<PluginModel> plugins => Branch.Plugins.OrderByDescending(x => x.CreateDate).ToList();
+    private List<VersionModel> plugins => Branch.Plugins.OrderByDescending(x => x.CreateDate).ToList();
 
     protected override void OnParametersSet()
     {

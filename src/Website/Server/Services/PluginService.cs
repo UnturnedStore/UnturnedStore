@@ -13,7 +13,7 @@ namespace Website.Server.Services
 {
     public class PluginService
     {
-        public byte[] ZipPlugin(PluginModel plugin)
+        public byte[] ZipPlugin(VersionModel plugin)
         {
             using (var output = new MemoryStream())
             {
@@ -25,7 +25,7 @@ namespace Website.Server.Services
                     pluginEntry.DateTime = plugin.CreateDate;
 
                     zip.PutNextEntry(pluginEntry);
-                    using (var ms = new MemoryStream(plugin.Data))
+                    using (var ms = new MemoryStream(plugin.Content))
                     {
                         StreamUtils.Copy(ms, zip, new byte[4096]);
                     }
