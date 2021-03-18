@@ -3,6 +3,7 @@ using Discord.Rest;
 using Discord.Webhook;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,25 +21,36 @@ namespace Website.Server.Services
         private readonly BranchesRepository branchesRepository;
         private readonly MessagesRepository messagesRepository;
         private readonly UsersRepository usersRepository;
+        private readonly ILogger<DiscordService> logger;
 
         private IConfigurationSection config => configuration.GetSection("Discord");
 
         public DiscordService(IConfiguration configuration, ProductsRepository productsRepository, BranchesRepository branchesRepository, MessagesRepository messagesRepository,
-            UsersRepository usersRepository)
+            UsersRepository usersRepository, ILogger<DiscordService> logger)
         {
             this.configuration = configuration;
             this.productsRepository = productsRepository;
             this.branchesRepository = branchesRepository;
             this.messagesRepository = messagesRepository;
             this.usersRepository = usersRepository;
+            this.logger = logger;
         }
 
-        private async Task SendEmbedAsync(string discordWebhookUrl, Embed embed)
+        private void SendEmbed(string discordWebhookUrl, Embed embed)
         {
-            using (var client = new DiscordWebhookClient(discordWebhookUrl))
+            Task.Run(async () =>
             {
-                await client.SendMessageAsync(embeds: new Embed[] { embed });
-            }
+                try
+                {
+                    using (var client = new DiscordWebhookClient(discordWebhookUrl))
+                    {
+                        await client.SendMessageAsync(embeds: new Embed[] { embed });
+                    }
+                } catch (Exception e)
+                {
+                    logger.LogError(e, "An exception occurated when sending discord webhook");
+                }                
+            });
         }
 
         public async Task SendMessageReplyAsync(MessageReplyModel reply, string baseUrl)
@@ -61,7 +73,7 @@ namespace Website.Server.Services
             eb.WithFooter(sender.Name);
             eb.WithCurrentTimestamp();
 
-            await SendEmbedAsync(discordWebhookUrl, eb.Build());
+            SendEmbed(discordWebhookUrl, eb.Build());
         }
 
         public async Task SendMessageAsync(int messageId, string baseUrl)
@@ -81,7 +93,7 @@ namespace Website.Server.Services
             eb.WithFooter(msg.FromUser.Name);
             eb.WithCurrentTimestamp();
 
-            await SendEmbedAsync(discordWebhookUrl, eb.Build());
+            SendEmbed(discordWebhookUrl, eb.Build());
         }
 
         public async Task SendPluginUpdateAsync(PluginModel plugin, string baseUrl)
@@ -98,7 +110,7 @@ namespace Website.Server.Services
             eb.WithFooter(product.Seller.Name);
             eb.WithCurrentTimestamp();
 
-            await SendEmbedAsync(config["SendPluginUpdateWebhookUrl"], eb.Build());
+            SendEmbed(config["SendPluginUpdateWebhookUrl"], eb.Build());
         }
     }
 }

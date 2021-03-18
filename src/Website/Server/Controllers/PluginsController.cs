@@ -16,16 +16,14 @@ namespace Website.Server.Controllers
         private readonly BranchesRepository branchesRepository;
         private readonly PluginService pluginService;
         private readonly DiscordService discordService;
-        private readonly ProductsRepository productsRepository;
 
         public PluginsController(PluginsRepository pluginsRepository, BranchesRepository branchesRepository, PluginService pluginService, 
-            DiscordService discordService, ProductsRepository productsRepository)
+            DiscordService discordService)
         {
             this.pluginsRepository = pluginsRepository;
             this.branchesRepository = branchesRepository;
             this.pluginService = pluginService;
             this.discordService = discordService;
-            this.productsRepository = productsRepository;
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
@@ -37,7 +35,7 @@ namespace Website.Server.Controllers
 
             plugin = await pluginsRepository.AddPluginAsync(plugin);
 
-            _ = Task.Run(() => discordService.SendPluginUpdateAsync(plugin, Request.Headers["Origin"]));
+            await discordService.SendPluginUpdateAsync(plugin, Request.Headers["Origin"]);
 
             return Ok(plugin);
         }
