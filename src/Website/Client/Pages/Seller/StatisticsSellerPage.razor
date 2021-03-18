@@ -1,0 +1,41 @@
+﻿@page "/seller/statistics"
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Statistics</li>
+    </ol>
+</nav>
+
+@if (Orders != null)
+{
+    <div class="mb-3 row">
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h5 class="card-title">$@Orders.Where(x => x.CreateDate > DateTime.UtcNow.AddDays(-1)).Sum(x => x.TotalPrice)</h5>
+                    <p class="card-text text-muted">Today's Revenue</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h5 class="card-title">$@Orders.Where(x => x.CreateDate > DateTime.UtcNow.AddDays(-31)).Sum(x => x.TotalPrice)</h5>
+                    <p class="card-text text-muted">Last 30 Days Revenue</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow text-center">
+                <div class="card-body">
+                    <h5 class="card-title">$@Orders.Sum(x => x.TotalPrice)</h5>
+                    <p class="card-text text-muted">All Time Revenue</p>
+                </div>
+            </div>
+        </div>
+    </div>
+} else
+{
+    <Progressbar />
+}
+

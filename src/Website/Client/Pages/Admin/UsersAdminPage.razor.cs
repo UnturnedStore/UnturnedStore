@@ -18,7 +18,9 @@ namespace Website.Client.Pages.Admin
         public HttpClient HttpClient { get; set; }
 
         public IEnumerable<UserModel> Users { get; set; }
-        private ICollection<UserModel> orderedUsers => Users.Where(x => string.IsNullOrEmpty(searchString) || x.Name.Contains(searchString) || x.SteamId == searchString)
+        private ICollection<UserModel> orderedUsers => Users.Where(x => string.IsNullOrEmpty(searchString) 
+            || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) 
+            || x.SteamId == searchString)
             .OrderByDescending(x => x.CreateDate).ToList();
 
         private string searchString = string.Empty;

@@ -21,6 +21,12 @@ namespace Website.Server.Controllers
             this.sellersRepository = sellersRepository;
         }
 
+        [HttpGet("orders")]
+        public async Task<IActionResult> GetOrdersAsync()
+        {
+            return Ok(await sellersRepository.GetOrdersAsync(int.Parse(User.Identity.Name)));
+        }
+
         [HttpGet("products")]
         public async Task<IActionResult> GetProductsAsync()
         {

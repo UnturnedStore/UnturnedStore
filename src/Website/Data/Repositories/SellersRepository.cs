@@ -18,6 +18,35 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
+        public async Task<IEnumerable<OrderModel>> GetOrdersAsync(int sellerId)
+        {
+            const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.SellerId = u.Id " +
+                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id  WHERE o.SellerId = @sellerId;";
+
+            List<OrderModel> orders = new List<OrderModel>();
+            await connection.QueryAsync<OrderModel, UserModel, OrderItemModel, ProductModel, OrderModel>(sql, (o, u, i, p) =>
+            {
+                var order = orders.FirstOrDefault(x => x.Id == o.Id);
+                if (order == null)
+                {
+                    order = o;
+                    order.Seller = u;
+                    order.Items = new List<OrderItemModel>();
+                    orders.Add(order);
+                }
+
+                if (i != null)
+                {
+                    i.Product = p;
+                    order.Items.Add(i);
+                }
+
+                return null;
+            }, new { sellerId });
+
+            return orders;
+        }
+
         public async Task<IEnumerable<ProductCustomerModel>> GetCustomersAsync(int userId)
         {
             const string sql = "SELECT c.*, u.*, p.* FROM dbo.ProductCustomers c JOIN dbo.Users u ON u.Id = c.UserId " +

@@ -51,7 +51,7 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<OrderModel>> GetOrdersAsync(int userId)
         {
-            const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.SellerId = u.Id " +
+            const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.BuyerId = u.Id " +
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id  WHERE o.BuyerId = @userId;";
 
             List<OrderModel> orders = new List<OrderModel>();
@@ -61,7 +61,7 @@ namespace Website.Data.Repositories
                 if (order == null)
                 {
                     order = o;
-                    order.Seller = u;
+                    order.Buyer = u;
                     order.Items = new List<OrderItemModel>();
                     orders.Add(order);
                 }
