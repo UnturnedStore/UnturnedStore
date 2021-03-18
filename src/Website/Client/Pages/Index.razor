@@ -13,7 +13,14 @@
 }
 @if (Products != null)
 {
-    <div class="mb-3 mt-5">
+    <div class="mb-3" align="right">
+        <div class="input-group" style="width: 500px;">
+            <span class="input-group-text">Search Plugin</span>
+            <input type="text" class="form-control" placeholder="Name or Author" @bind="searchString" @bind:event="oninput" />
+        </div>
+        
+    </div>
+    <div class="mb-3">
         <div class="row row-cols-1 row-cols-sm-2 justify-content-center">
             @foreach (var product in OrderedProducts)
             {

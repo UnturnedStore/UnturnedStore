@@ -19,7 +19,12 @@ namespace Website.Client.Pages
 
         public IEnumerable<ProductModel> Products { get; set; }
 
-        private IEnumerable<ProductModel> OrderedProducts => Products.OrderByDescending(x => x.TotalDownloadsCount);
+        private IEnumerable<ProductModel> OrderedProducts => Products.Where(x => string.IsNullOrEmpty(searchString) 
+            || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(x => x.TotalDownloadsCount);
+
+        private string searchString = string.Empty;
 
 
         private bool isSuccessPayment;
