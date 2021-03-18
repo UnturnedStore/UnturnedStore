@@ -13,8 +13,8 @@
 }
 @if (Products != null)
 {
-    <div class="mb-3" align="right">
-        <div class="input-group" style="width: 500px;">
+    <div class="mb-3 mt-5" align="center">
+        <div class="input-group" style="max-width: 600px;">
             <span class="input-group-text">Search Plugin</span>
             <input type="text" class="form-control" placeholder="Name or Author" @bind="searchString" @bind:event="oninput" />
         </div>
