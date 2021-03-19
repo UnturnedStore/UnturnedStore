@@ -48,8 +48,8 @@ namespace Website.Client.Pages.Seller
             isLoading = true;
             var response = await HttpClient.PostAsJsonAsync("api/versions", Model);
 
-            var plugin = await response.Content.ReadFromJsonAsync<VersionModel>();
-            Product.Branches.First(x => x.Id == plugin.BranchId).Versions.Add(plugin);
+            var version = await response.Content.ReadFromJsonAsync<VersionModel>();
+            Product.Branches.First(x => x.Id == version.BranchId).Versions.Add(version);
             Model = defaultModel;
             isLoading = false;
             StateHasChanged();
