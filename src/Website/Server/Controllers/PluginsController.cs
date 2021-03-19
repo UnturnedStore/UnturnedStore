@@ -58,8 +58,9 @@ namespace Website.Server.Controllers
             if (User.Identity?.IsAuthenticated ?? false)
                 userId = int.Parse(User.Identity.Name);
 
-            var plugin = await pluginsRepository.GetPluginAsync(pluginId, await pluginsRepository.IsPluginOwnerAsync(pluginId, userId));
-            if (plugin.Branch.Product.Price > 0)
+            bool isOwner = await pluginsRepository.IsPluginOwnerAsync(pluginId, userId);
+            var plugin = await pluginsRepository.GetPluginAsync(pluginId, isOwner);
+            if (!isOwner && plugin.Branch.Product.Price > 0)
             {
                 if (!await pluginsRepository.IsPluginCustomerAsync(pluginId, userId))
                     return Unauthorized();
