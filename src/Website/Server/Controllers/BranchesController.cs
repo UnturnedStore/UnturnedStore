@@ -40,11 +40,5 @@ namespace Website.Server.Controllers
             await branchesRepository.UpdateBranchAsync(branch);
             return Ok();
         }
-
-        [HttpGet("{branchId}")]
-        public async Task<IActionResult> GetBranchAsync(int branchId)
-        {
-            return Ok(await branchesRepository.GetBranchAsync(branchId));
-        }
     }
 }

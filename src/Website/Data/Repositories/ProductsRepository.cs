@@ -54,8 +54,8 @@ namespace Website.Data.Repositories
                 return p;
             });
 
-            const string sql2 = "SELECT COALESCE(SUM(p.DownloadsCount), 0) FROM dbo.Branches b " +
-                "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.ProductId = @Id AND p.IsEnabled = 1;";
+            const string sql2 = "SELECT COALESCE(SUM(v.DownloadsCount), 0) FROM dbo.Branches b " +
+                "LEFT JOIN dbo.Versions v ON v.BranchId = b.Id WHERE b.ProductId = @Id AND v.IsEnabled = 1;";
             foreach (var product in products)
             {
                 product.TotalDownloadsCount = await connection.ExecuteScalarAsync<int>(sql2, product);
@@ -85,24 +85,24 @@ namespace Website.Data.Repositories
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
             product.Medias = (await connection.QueryAsync<ProductMediaModel>(sql1, product)).ToList();
 
-            const string sql2 = "SELECT b.*, p.Id, p.Version, p.Changelog, p.DownloadsCount, p.IsEnabled, p.CreateDate FROM dbo.Branches b " +
-                "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id AND p.IsEnabled = 1 WHERE b.ProductId = @Id AND b.IsEnabled = 1;";
+            const string sql2 = "SELECT b.*, v.Id, v.Name, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate FROM dbo.Branches b " +
+                "LEFT JOIN dbo.Versions v ON v.BranchId = b.Id AND v.IsEnabled = 1 WHERE b.ProductId = @Id AND b.IsEnabled = 1;";
 
             product.Branches = new List<BranchModel>();
 
-            await connection.QueryAsync<BranchModel, PluginModel, BranchModel>(sql2, (b, p) => 
+            await connection.QueryAsync<BranchModel, VersionModel, BranchModel>(sql2, (b, v) => 
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
                 if (branch == null)
                 {
                     branch = b;
-                    branch.Plugins = new List<PluginModel>();
+                    branch.Versions = new List<VersionModel>();
                     product.Branches.Add(branch);
                 }
 
-                if (p != null)
+                if (v != null)
                 {
-                    branch.Plugins.Add(p);
+                    branch.Versions.Add(v);
                 }
 
                 return null;

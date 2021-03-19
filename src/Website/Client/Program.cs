@@ -27,6 +27,7 @@ namespace Website.Client
             builder.Services.AddScoped<AuthenticationStateProvider, SteamAuthProvider>();
             builder.Services.AddScoped<CartService>();
             builder.Services.AddTransient<StorageService>();
+            builder.Services.AddTransient<ZIPService>();
 
             await builder.Build().RunAsync();
         }

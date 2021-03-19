@@ -21,8 +21,7 @@ namespace Website.Shared.Models
         public DateTime CreateDate { get; set; }
 
         public ProductModel Product { get; set; }
-        public PluginModel Plugin { get; set; }
-        public List<PluginModel> Plugins { get; set; }
+        public List<VersionModel> Versions { get; set; }
 
         public static BranchModel FromBranch(BranchModel branch)
         {

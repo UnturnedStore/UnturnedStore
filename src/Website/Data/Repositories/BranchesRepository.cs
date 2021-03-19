@@ -37,7 +37,7 @@ namespace Website.Data.Repositories
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.IsEnabled, INSERTED.CreateDate " +
                 "VALUES (@Name, @Description, @ProductId, @IsEnabled);";
             branch = await connection.QuerySingleAsync<BranchModel>(sql, branch);
-            branch.Plugins = new List<PluginModel>();
+            branch.Versions = new List<VersionModel>();
             return branch;
         }
 
@@ -50,19 +50,9 @@ namespace Website.Data.Repositories
 
         public async Task<BranchModel> GetBranchAsync(int branchId)
         {
-            const string sql = "SELECT b.*, p.Id, p.Version, p.Changelog, p.CreateDate FROM dbo.Branches b " +
-                "LEFT JOIN dbo.Plugins p ON p.BranchId = b.Id WHERE b.Id = @branchId;";
+            const string sql = "SELECT * FROM dbo.Branches WHERE Id = @branchId;";
 
-            BranchModel branch = null;
-            await connection.QueryAsync<BranchModel, PluginModel, BranchModel>(sql, (b, p) => 
-            {
-                branch = b;
-                if (p != null)
-                    branch.Plugin = p;
-
-                return null;
-            }, new { branchId });
-            return branch;
+            return await connection.QuerySingleOrDefaultAsync<BranchModel>(sql, new { branchId });
         }
     }
 }
