@@ -1,5 +1,5 @@
 ﻿@page "/seller/customers"
-
+@using Website.Client.Pages.Seller.Components
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -7,9 +7,17 @@
     </ol>
 </nav>
 
-<div class="mt-2 p-3 bg-light">
-    @if (Customers != null)
-    {
+@if (Customers != null)
+{
+    <div class="mt-2 p-3 bg-light">
+        <div class="mb-2 d-flex">
+            <div>
+                <h6>All Customers</h6>
+            </div>
+            <div class="ms-auto">
+                <button class="btn btn-sm btn-primary" @onclick="ShowModalAsync">Add Customer</button>
+            </div>            
+        </div>
         <table class="table table-striped mb-3">
             <caption>@Customers.Count Total Customers</caption>
             <thead>
@@ -35,7 +43,7 @@
                                     <a href="/seller/products/@customer.ProductId">@customer.Product.Name</a>
                                 </div>
                             </div>
-                            
+
                         </td>
                         <td class="align-middle">@customer.CreateDate</td>
                         <td class="align-middle">
@@ -45,5 +53,10 @@
                 </Virtualize>
             </tbody>
         </table>
-    }
-</div>
+
+    </div>
+
+    <AddCustomerModal Customers="Customers" @ref="Modal" OnCustomerAdded="AddCustomer" />
+}
+
+

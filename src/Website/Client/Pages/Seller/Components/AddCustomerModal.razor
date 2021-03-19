@@ -1,0 +1,198 @@
+﻿<div class="modal fade" id="@nameof(AddCustomerModal)" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            @if (Model != null)
+            {
+                <EditForm Model="Model" OnValidSubmit="SubmitAsync">
+                    <div class="modal-body">
+
+                        <div class="mb-3 row">
+                            <div class="dropdown col-md-6">
+                                <label class="form-label">Product</label>
+                                <input class="form-control" type="text" @bind="searchProduct" @bind:event="oninput" placeholder="Search product by Name" />
+                                <div class="dropdown-menu @(searchProduct.Length > 0 ? "show" : "")">
+                                    @foreach (var product in SearchedProducts)
+                                    {
+                                        <a class="dropdown-item" @onclick="() => ChangeProduct(product)" href="javascript:void(0)">
+                                            <img src="/api/images/@product.ImageId" width="30" height="30" /> @product.Name
+                                        </a>
+                                    }
+
+                                </div>
+                            </div>
+
+                            <div class="dropdown col-md-6">
+                                <label class="form-label">User</label>
+                                <input class="form-control" type="text" @bind="searchUser" @bind:event="oninput" placeholder="Search user by SteamID or Name" />
+                                <div class="dropdown-menu @(searchUser.Length > 0 ? "show" : "")">
+                                    @foreach (var user in SearchedUsers)
+                                    {
+                                        <a class="dropdown-item" @onclick="() => ChangeUser(user)" href="javascript:void(0)">
+                                            @user.Name
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 mt-5 text-center d-flex justify-content-center">
+                            <div class="m-1">
+                                <span>Give </span>
+                            </div>
+                            <div class="m-1">
+                                @if (Model.Product != null)
+                                {
+                                    <span class="fw-bold"><img src="/api/images/@Model.Product.ImageId" width="30" height="30" /> @Model.Product.Name </span>
+                                } else
+                                {
+                                    <span class="fw-bold">product</span>
+                                }
+                            </div>
+                            <div class="m-1">
+                                <span> to </span>
+                            </div>
+                            <div class="m-1">
+                                @if (Model.User != null)
+                                {
+                                    <span class="fw-bold">@Model.User.Name</span>
+                                } else
+                                {
+                                    <span class="fw-bold">user</span>
+                                }
+                            </div>
+                        </div>
+
+                        @if (msg != null)
+                        {
+                            <div class="mb-3">
+                                <div class="text-danger">@msg</div>
+                            </div>                            
+                        } 
+
+                        <div class="mb-3">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        @if (isLoading)
+                        {
+                            <LoadingButton />
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary">Add Customer</button>
+                        }
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Inject]
+    public IJSRuntime JsRuntime { get; set; }
+    [Inject]
+    public HttpClient HttpClient { get; set; }
+
+    [Parameter]
+    public List<ProductCustomerModel> Customers { get; set; }
+    [Parameter]
+    public EventCallback<ProductCustomerModel> OnCustomerAdded { get; set; }
+
+    public IEnumerable<ProductModel> Products { get; set; }
+    public IEnumerable<UserModel> Users { get; set; }
+
+    private IEnumerable<UserModel> SearchedUsers => Users.Where(x => x.Name.Contains(searchUser, StringComparison.OrdinalIgnoreCase) || x.SteamId == searchUser).Take(3);
+    private IEnumerable<ProductModel> SearchedProducts => Products.Where(x => x.Price > 0 &&  x.Name.Contains(searchProduct, StringComparison.OrdinalIgnoreCase)).Take(3);
+
+    private string searchProduct = string.Empty;
+    private string searchUser = string.Empty;
+
+    private void ResetSearchProduct()
+    {
+        searchProduct = string.Empty;
+    }
+
+    private void ResetSearchUser()
+    {
+        searchUser = string.Empty;
+    }
+
+    private void ResetSearches()
+    {
+        ResetSearchProduct();
+        ResetSearchUser();
+    }
+
+    public ProductCustomerModel Model { get; set; }
+
+    private ProductCustomerModel DefaultModel => new ProductCustomerModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await HttpClient.GetFromJsonAsync<ProductModel[]>("api/seller/products");
+        Users = await HttpClient.GetFromJsonAsync<UserModel[]>("api/users");
+
+        Model = DefaultModel;
+    }
+
+    public async Task ShowAsync()
+    {
+        msg = null;
+        await JsRuntime.ShowModalStaticAsync(nameof(AddCustomerModal));
+    }
+
+    private string msg = null;
+
+    private bool isLoading = false;
+    public async Task SubmitAsync()
+    {
+        if (Customers.Exists(x => x.UserId == Model.UserId && x.ProductId == Model.ProductId))
+        {
+            msg = $"{Model.User.Name} already has {Model.Product.Name}";
+            return;
+        } else
+        {
+            msg = null;
+        }
+
+        isLoading = true;
+
+        var response = await HttpClient.PostAsJsonAsync("api/products/customers", Model);
+        var customer = await response.Content.ReadFromJsonAsync<ProductCustomerModel>();
+        customer.Product = Model.Product;
+        customer.User = Model.User;
+
+        await OnCustomerAdded.InvokeAsync(customer);
+
+        isLoading = false;
+
+        ResetSearches();
+        Model = DefaultModel;
+        await JsRuntime.HideModalAsync(nameof(AddCustomerModal));
+    }
+
+    private void ChangeProduct(ProductModel product)
+    {
+        Model.Product = product;
+        Model.ProductId = product.Id;
+        ResetSearchProduct();
+    }
+
+    private void ChangeUser(UserModel user)
+    {
+        Model.User = user;
+        Model.UserId = user.Id;
+        ResetSearchUser();
+    }
+}

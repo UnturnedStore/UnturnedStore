@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Website.Shared.Models
 {
     public class ProductCustomerModel
     {
         public int Id { get; set; }
+        [Required]
+        [Range(1, int.MaxValue)]
         public int ProductId { get; set; }
+        [Required]
+        [Range(1, int.MaxValue)]
         public int UserId { get; set; }
         public DateTime CreateDate { get; set; }
 

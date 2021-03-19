@@ -188,7 +188,7 @@ namespace Website.Data.Repositories
                 "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.UserId, INSERTED.CreateDate " +
                 "VALUES (@ProductId, @UserId);";
 
-            return await connection.QuerySingleAsync(sql, customer);
+            return await connection.QuerySingleAsync<ProductCustomerModel>(sql, customer);
         }
 
         public async Task DeleteProductCustomerAsync(int customerId)
