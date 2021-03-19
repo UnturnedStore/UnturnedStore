@@ -96,17 +96,17 @@ namespace Website.Server.Services
             SendEmbed(discordWebhookUrl, eb.Build());
         }
 
-        public async Task SendPluginUpdateAsync(VersionModel plugin, string baseUrl)
+        public async Task SendVersionUpdateAsync(VersionModel version, string baseUrl)
         {
-            plugin.Branch = await branchesRepository.GetBranchAsync(plugin.BranchId);
-            var product = await productsRepository.GetProductAsync(plugin.Branch.ProductId, 0);
+            version.Branch = await branchesRepository.GetBranchAsync(version.BranchId);
+            var product = await productsRepository.GetProductAsync(version.Branch.ProductId, 0);
 
             var eb = new EmbedBuilder();
 
             eb.WithColor(Color.Blue);
             eb.WithAuthor(product.Name, baseUrl + "/api/images/" + product.ImageId, baseUrl + "/products/" + product.Id);
-            eb.WithDescription($"A new version has been published on **{plugin.Branch.Name}** branch: **{plugin.Name}**");
-            eb.AddField("Changelog", plugin.Changelog);
+            eb.WithDescription($"A new version has been published on **{version.Branch.Name}** branch: **{version.Name}**");
+            eb.AddField("Changelog", version.Changelog);
             eb.WithFooter(product.Seller.Name);
             eb.WithCurrentTimestamp();
 

@@ -37,10 +37,10 @@ namespace Website.Data.Repositories
 
         public async Task<VersionModel> AddVersionAsync(VersionModel version)
         {
-            const string sql = "INSERT INTO dbo.Versions (BranchId, Name, Changelog, FileName, Data, IsEnabled) " +
-                "OUTPUT INSERTED.Id, INSERTED.BranchId, INSERTED.Name, INSERTED.Changelog, INSERTED.FileName, " +
+            const string sql = "INSERT INTO dbo.Versions (BranchId, Name, Changelog, FileName, ContentType, Content, IsEnabled) " +
+                "OUTPUT INSERTED.Id, INSERTED.BranchId, INSERTED.Name, INSERTED.Changelog, INSERTED.ContentType, INSERTED.FileName, " +
                 "INSERTED.DownloadsCount, INSERTED.IsEnabled, INSERTED.CreateDate " +
-                "VALUES (@BranchId, @Name, @Changelog, @FileName, @Data, @IsEnabled);";
+                "VALUES (@BranchId, @Name, @Changelog, @FileName, @ContentType, @Content, @IsEnabled);";
 
             var p = await connection.QuerySingleAsync<VersionModel>(sql, version);
             return p;
@@ -48,22 +48,22 @@ namespace Website.Data.Repositories
 
         public async Task<VersionModel> GetVersionAsync(int versionId, bool isSeller)
         {
-            string sql = "SELECT p.*, b.Id, b.Name, p2.Id, p2.Name, p2.Price, l.* FROM dbo.Versions p JOIN dbo.Branches b ON p.BranchId = b.Id " +
-                "JOIN dbo.Products p2 ON p2.Id = b.ProductId LEFT JOIN dbo.VersionLibraries l ON l.VersionId = p.Id WHERE p.Id = @versionId ";
+            string sql = "SELECT v.*, b.Id, b.Name, p2.Id, p2.Name, p2.Price, l.* FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id " +
+                "JOIN dbo.Products p ON p.Id = b.ProductId WHERE v.Id = @versionId ";
 
             if (!isSeller)
             {
-                sql += " AND p.IsEnabled = 1 AND b.IsEnabled = 1;";
+                sql += " AND v.IsEnabled = 1 AND b.IsEnabled = 1;";
             }
 
             VersionModel version = null;
-            await connection.QueryAsync<VersionModel, BranchModel, ProductModel, VersionModel>(sql, (p, b, p2) => 
+            await connection.QueryAsync<VersionModel, BranchModel, ProductModel, VersionModel>(sql, (v, b, p) => 
             {
                 if (version == null)
                 {
-                    version = p;
+                    version = v;
                     version.Branch = b;
-                    version.Branch.Product = p2;
+                    version.Branch.Product = p;
                 }
 
                 return null;
