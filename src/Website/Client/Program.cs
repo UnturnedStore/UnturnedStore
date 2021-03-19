@@ -1,3 +1,4 @@
+using BlazorTable;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,6 +29,7 @@ namespace Website.Client
             builder.Services.AddScoped<CartService>();
             builder.Services.AddTransient<StorageService>();
             builder.Services.AddTransient<ZIPService>();
+            builder.Services.AddBlazorTable();
 
             await builder.Build().RunAsync();
         }

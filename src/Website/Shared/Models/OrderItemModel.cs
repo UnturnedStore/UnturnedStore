@@ -16,6 +16,7 @@ namespace Website.Shared.Models
         public decimal Price { get; set; }
 
         public ProductModel Product { get; set; }
+        public OrderModel Order { get; set; }
 
         public static OrderItemModel FromParams(OrderItemParams orderItemParams)
         {
