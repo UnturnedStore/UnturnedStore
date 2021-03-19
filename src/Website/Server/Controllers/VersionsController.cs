@@ -62,10 +62,10 @@ namespace Website.Server.Controllers
                     return Unauthorized();
             }
 
-            await versionsRepository.IncrementDownloadsCount(versionId);            
+            await versionsRepository.IncrementDownloadsCount(versionId);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" + 
-                string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name));
+                string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
             return File(version.Content, version.ContentType);
         }
     }

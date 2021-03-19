@@ -99,7 +99,7 @@
                             </Authorized>
                         </AuthorizeView>                         
                         <li>Price: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
-                        <li>Downloads: @(Product.Branches.Sum(x => x.Plugins.Sum(x => x.DownloadsCount)))</li>
+                        <li>Downloads: @(Product.Branches.Sum(x => x.Versions.Sum(x => x.DownloadsCount)))</li>
                         @if (!string.IsNullOrEmpty(Product.GithubUrl))
                         {
                             <li><a href="@Product.GithubUrl" target="_blank" class="text-decoration-none"><i class="bi bi-github"></i> GitHub</a></li>
@@ -132,9 +132,9 @@
                                     </button>
                                 }
 
-                                <form class="d-grid gap-2" method="get" action="api/plugins/@LatestPlugin.Id/zip">
+                                <form class="d-grid gap-2" method="get" action="api/versions/download/@LatestVersion.Id">
                                     <button class="btn btn-primary" type="submit">
-                                        <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestPlugin.Name)
+                                        <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestVersion.Name)
                                     </button>
                                 </form>
                                 

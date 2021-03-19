@@ -37,7 +37,6 @@ namespace Website.Server
             services.AddTransient<AdminRepository>();
 
             services.AddTransient<OrderService>();
-            services.AddTransient<PluginService>();
             services.AddTransient<PayPalService>();
             services.AddTransient<DiscordService>();
 

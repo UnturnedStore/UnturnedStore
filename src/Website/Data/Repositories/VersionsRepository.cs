@@ -48,7 +48,7 @@ namespace Website.Data.Repositories
 
         public async Task<VersionModel> GetVersionAsync(int versionId, bool isSeller)
         {
-            string sql = "SELECT v.*, b.Id, b.Name, p2.Id, p2.Name, p2.Price, l.* FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id " +
+            string sql = "SELECT v.*, b.Id, b.Name, p.Id, p.Name, p.Price FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id " +
                 "JOIN dbo.Products p ON p.Id = b.ProductId WHERE v.Id = @versionId ";
 
             if (!isSeller)

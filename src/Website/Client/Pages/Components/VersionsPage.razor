@@ -14,29 +14,29 @@
 
     @if (Branch != null)
     {
-        @if (Branch.Plugins.Count == 0)
+        @if (Branch.Versions.Count == 0)
         {
             <p>This branch doesn't have any versions</p>
         }
 
-        <Virtualize Items="plugins" Context="plugin">
+        <Virtualize Items="versions" Context="version">
             <div class="card mb-3">
                 <div class="card-header d-flex">
                     <div class="fw-bold">
-                        @Branch.Name @plugin.Name
+                        @Branch.Name @version.Name
                     </div>
                     <div class="ms-auto">
-                        <small class="text-muted"><i class="bi bi-download"></i> @plugin.DownloadsCount</small>
+                        <small class="text-muted"><i class="bi bi-download"></i> @version.DownloadsCount</small>
                     </div>                    
                 </div>
                 <div class="card-body">
-                    <p class="card-text">@plugin.Changelog</p>
+                    <p class="card-text">@version.Changelog</p>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="text-muted">
-                            @plugin.CreateDate
+                            @version.CreateDate
                         </div>
                         <div class="ms-auto">
-                            <form method="get" action="/api/plugins/@plugin.Id/zip">
+                            <form method="get" action="/api/versions/downloads/@version.Id">
                                 <button type="submit" class="btn btn-primary">Download this version</button>
                             </form>                            
                         </div>
@@ -58,7 +58,7 @@
 
     private BranchModel Branch => Product.Branches.FirstOrDefault(x => x.Id == selectedBranchId);
 
-    private List<VersionModel> plugins => Branch.Plugins.OrderByDescending(x => x.CreateDate).ToList();
+    private List<VersionModel> versions => Branch.Versions.OrderByDescending(x => x.CreateDate).ToList();
 
     protected override void OnParametersSet()
     {

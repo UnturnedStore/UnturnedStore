@@ -35,8 +35,8 @@ namespace Website.Client.Pages
 
         public ProductModel Product { get; set; }
 
-        private BranchModel DefaultBranch => Product.Branches.FirstOrDefault(x => x.Plugins.Count > 0);
-        private VersionModel LatestPlugin => DefaultBranch?.Plugins.OrderByDescending(x => x.CreateDate).FirstOrDefault() ?? null;
+        private BranchModel DefaultBranch => Product.Branches.FirstOrDefault(x => x.Versions.Count > 0);
+        private VersionModel LatestVersion => DefaultBranch?.Versions.OrderByDescending(x => x.CreateDate).FirstOrDefault() ?? null;
 
         private bool ShowVersions = false;
         private void ToggleShowVersions()
