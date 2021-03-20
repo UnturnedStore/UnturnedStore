@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Client.Services;
 using Website.Shared.Models;
 
 namespace Website.Client.Pages
@@ -16,6 +17,8 @@ namespace Website.Client.Pages
         public HttpClient HttpClient { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public StorageService StorageService { get; set; }
 
         public IEnumerable<ProductModel> Products { get; set; }
 
@@ -38,21 +41,19 @@ namespace Website.Client.Pages
 
         private string searchString = string.Empty;
 
-
-        private bool isSuccessPayment;
+        private bool hideImperial = true;
 
         protected override async Task OnInitializedAsync()
         {
-            if (QueryHelpers.ParseQuery(NavigationManager.ToAbsoluteUri(NavigationManager.Uri).Query).TryGetValue("isSuccessPayment", out var value))
-            {
-                if (value == "1")
-                {
-                    isSuccessPayment = true;
-                }
-            }
+            hideImperial = await StorageService.GetItemAsync<bool>("HideImperial");
             Products = await HttpClient.GetFromJsonAsync<ProductModel[]>("api/products");
         }
 
+        private async Task CheckImperial()
+        {
+            await StorageService.SetItemAsync("HideImperial", true);            
+        }
+            
         private EOrderBy orderBy = EOrderBy.Newest;
 
         public enum EOrderBy
