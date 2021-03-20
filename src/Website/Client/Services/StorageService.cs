@@ -16,12 +16,12 @@ namespace Website.Client.Services
             this.jsRuntime = jsRuntime;
         }
 
-        public async Task SetItemAsync(string key, object obj)
+        public async Task SetSessionItemAsync(string key, object obj)
         {
             await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", key, JsonSerializer.Serialize(obj));
         }
 
-        public async Task<T> GetItemAsync<T>(string key)
+        public async Task<T> GetSessionItemAsync<T>(string key)
         {
             string json = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", key);
             if (json != null)
@@ -30,17 +30,44 @@ namespace Website.Client.Services
             return default;
         }
 
-        public async Task<T> GetAndRemoveItemAsync<T>(string key)
+        public async Task<T> GetAndRemoveSessionItemAsync<T>(string key)
         {
-            var obj = await GetItemAsync<T>(key);
+            var obj = await GetSessionItemAsync<T>(key);
             if (obj != null)
                 await jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", key);
             return obj;
         }
 
-        public async Task RemoveItemAsync(string key)
+        public async Task RemoveSessionItemAsync(string key)
         {
             await jsRuntime.InvokeVoidAsync("sessionStorage.removeItem", key);
+        }
+
+        public async Task SetLocalItemAsync(string key, object obj)
+        {
+            await jsRuntime.InvokeVoidAsync("localStorage.setItem", key, JsonSerializer.Serialize(obj));
+        }
+
+        public async Task<T> GetLocalItemAsync<T>(string key)
+        {
+            string json = await jsRuntime.InvokeAsync<string>("localStorage.getItem", key);
+            if (json != null)
+                return JsonSerializer.Deserialize<T>(json);
+
+            return default;
+        }
+
+        public async Task<T> GetAndRemoveLocalItemAsync<T>(string key)
+        {
+            var obj = await GetSessionItemAsync<T>(key);
+            if (obj != null)
+                await jsRuntime.InvokeVoidAsync("localStorage.removeItem", key);
+            return obj;
+        }
+
+        public async Task RemoveLocalItemAsync(string key)
+        {
+            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", key);
         }
     }
 }

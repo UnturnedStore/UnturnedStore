@@ -45,13 +45,13 @@ namespace Website.Client.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            hideImperial = await StorageService.GetItemAsync<bool>("HideImperial");
+            hideImperial = await StorageService.GetLocalItemAsync<bool>("HideImperial");
             Products = await HttpClient.GetFromJsonAsync<ProductModel[]>("api/products");
         }
 
         private async Task CheckImperial()
         {
-            await StorageService.SetItemAsync("HideImperial", true);            
+            await StorageService.SetLocalItemAsync("HideImperial", true);            
         }
             
         private EOrderBy orderBy = EOrderBy.Newest;

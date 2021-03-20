@@ -24,7 +24,7 @@ namespace Website.Client.Services
 
         public async Task ReloadCartAsync()
         {
-            Carts = await storageService.GetItemAsync<List<OrderParams>>("carts");
+            Carts = await storageService.GetSessionItemAsync<List<OrderParams>>("carts");
             if (Carts == null)
             {
                 Carts = new List<OrderParams>();
@@ -48,7 +48,7 @@ namespace Website.Client.Services
 
         private async Task SaveCartAsync()
         {
-            await storageService.SetItemAsync("carts", Carts);
+            await storageService.SetSessionItemAsync("carts", Carts);
         }
 
         public async Task AddToCartAsync(OrderItemParams item)
