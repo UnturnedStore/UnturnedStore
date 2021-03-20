@@ -6,7 +6,7 @@
 
 @if (Product != null)
 {
-    <Title Value="@string.Join(" - ", Product.Name, "Restore Monarchy Plugins")"></Title>
+    <Title Value="@string.Join(" - ", Product.Name, "Unturned Store")"></Title>
 
     <Meta name="description" content="@Product.Description" />
     <Meta property="og:title" content="@Product.Name" />
@@ -58,16 +58,20 @@
 
                                     }
                                 </div>
-                                <!-- Inner -->
-                                <!-- Controls -->
-                                <a class="carousel-control-prev" data-bs-target="#gallery" role="button" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Previous</span>
-                                </a>
-                                <a class="carousel-control-next" data-bs-target="#gallery" role="button" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                    <span class="visually-hidden">Next</span>
-                                </a>
+                                @if (Product.Medias.Count > 1)
+                                {
+                                    <!-- Inner -->
+                                    <!-- Controls -->
+                                    <a class="carousel-control-prev" data-bs-target="#gallery" role="button" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" data-bs-target="#gallery" role="button" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </a>
+                                }
+
                             </div>
                             <!-- Carousel wrapper -->
                         </div>
