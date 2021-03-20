@@ -1,4 +1,4 @@
-## RestoreMonarchyPlugins
+## Unturned Store
 Web app store for game plugins
 * Administrative panel
 * Steam authentication
@@ -25,4 +25,4 @@ Web app store for game plugins
 * quill.js
 
 ### Working examples
-* [plugins.restoremonarchy.com](https://plugins.restoremonarchy.com)
+* [unturnedstore.com](https://unturnedstore.com)
