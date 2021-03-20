@@ -19,10 +19,22 @@ namespace Website.Client.Pages
 
         public IEnumerable<ProductModel> Products { get; set; }
 
-        private IEnumerable<ProductModel> OrderedProducts => Products.Where(x => string.IsNullOrEmpty(searchString) 
+        private IEnumerable<ProductModel> SearchedProducts => Products.Where(x => string.IsNullOrEmpty(searchString) 
             || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-            || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(x => x.TotalDownloadsCount);
+            || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+
+        private IEnumerable<ProductModel> OrderedProducts {
+            get
+            {
+                switch (orderBy)
+                {
+                    case EOrderBy.MostDownloads:
+                        return SearchedProducts.OrderByDescending(x => x.TotalDownloadsCount);
+                    default:
+                        return SearchedProducts.OrderByDescending(x => x.CreateDate);
+                }
+            }
+        }
 
         private string searchString = string.Empty;
 
@@ -39,6 +51,14 @@ namespace Website.Client.Pages
                 }
             }
             Products = await HttpClient.GetFromJsonAsync<ProductModel[]>("api/products");
+        }
+
+        private EOrderBy orderBy = EOrderBy.Newest;
+
+        public enum EOrderBy
+        {
+            Newest,
+            MostDownloads
         }
     }
 }

@@ -26,12 +26,17 @@
 }
 @if (Products != null)
 {
-    <div class="mb-3 mt-5" align="center">
+    <div class="mb-3 mt-5 d-flex align-items-center justify-content-center">
         <div class="input-group" style="max-width: 600px;">
             <span class="input-group-text">Search Plugin</span>
             <input type="text" class="form-control" placeholder="Name or Author" @bind="searchString" @bind:event="oninput" />
         </div>
-
+        <div class="ms-1">
+            <select class="form-select" @bind="orderBy">
+                <option value="@EOrderBy.Newest">Newest</option>
+                <option value="@EOrderBy.MostDownloads">Most Downloads</option>
+            </select>
+        </div>
     </div>
     <div class="mb-3">
         <div class="row row-cols-1 row-cols-sm-2 justify-content-center">
