@@ -1,37 +1,49 @@
 ﻿@page "/messages"
 
-@if (Messages != null)
-{
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">Messages</li>
-        </ol>
-    </nav>
+    <Title Value="Messages - Restore Monarchy Plugins"></Title>
 
-    <div class="bg-light p-3 rounded-3">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Replies</th>
-                    <th>Participant</th>
-                    <th>Create Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var msg in Messages)
-                {
-                    <tr style="cursor: pointer;" @onclick="() => GoToMessage(msg)">
-                        <td>@msg.Title</td>
-                        <td>@msg.Replies.Count</td>
-                        <td>@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser.Name : msg.ToUser.Name)</td>
-                        <td>@msg.CreateDate</td>
+    <Meta name="description" content="Simple & Affordable Unturned Plugins" />
+    <Meta property="og:title" content="Messages" />
+    <Meta property="og:type" content="website" />
+    <Meta property="og:url" content="plugins.restoremonarchy.com" />
+    <Meta property="og:image" content="/img/logo.png" />
+    <Meta property="og:image:width" content="128" />
+    <Meta property="og:image:height" content="128" />
+    <Meta property="og:description" content="Simple & Affordable Unturned Plugins" />
+    <Meta name="theme-color" content="#FFCC00" />
+
+    @if (Messages != null)
+    {
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active" aria-current="page">Messages</li>
+            </ol>
+        </nav>
+
+        <div class="bg-light p-3 rounded-3">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Replies</th>
+                        <th>Participant</th>
+                        <th>Create Date</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-        
-    </div>
+                </thead>
+                <tbody>
+                    @foreach (var msg in Messages)
+                    {
+                        <tr style="cursor: pointer;" @onclick="() => GoToMessage(msg)">
+                            <td>@msg.Title</td>
+                            <td>@msg.Replies.Count</td>
+                            <td>@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser.Name : msg.ToUser.Name)</td>
+                            <td>@msg.CreateDate</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
 
 
-}
+    }

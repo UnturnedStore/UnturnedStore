@@ -1,5 +1,7 @@
 ﻿@page "/seller/products/{ProductId:int}/uploadversion"
-@using Website.Client.Pages.Seller.Components 
+@using Website.Client.Pages.Seller.Components
+
+<Title Value="@($"Upload Version Seller - Restore Monarchy Plugins")"></Title>
 
 @if (Product != null)
 {
@@ -15,63 +17,64 @@
     {
         <div class="mb-3 bg-light p-3">
             <EditForm Model="Model" OnValidSubmit="SubmitAsync">
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <InputText class="form-control" @bind-Value="Model.Name" placeholder="1.0.0" />
-                <div class="form-text">You should use SemVer format</div>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="Model.Name" placeholder="1.0.0" />
+                    <div class="form-text">You should use SemVer format</div>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Branch</label>
-                <InputSelect class="form-select" @bind-Value="Model.BranchId">
-                    @foreach (var branch in Product.Branches)
+                <div class="mb-3">
+                    <label class="form-label">Branch</label>
+                    <InputSelect class="form-select" @bind-Value="Model.BranchId">
+                        @foreach (var branch in Product.Branches)
+                        {
+                            <option value="@branch.Id">@branch.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Changelog</label>
+                    <InputTextArea class="form-control" @bind-Value="Model.Changelog" />
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Upload Template</label>
+                    <select class="form-select" @bind="selectedTemplate">
+                        <option value="default">ZIP File</option>
+                        <option value="rocketplugin">Rocket Plugin</option>
+                    </select>
+                </div>
+
+                <div class="p-3 mb-4 border-2 border">
+                    @if (selectedTemplate == "rocketplugin")
                     {
-                        <option value="@branch.Id">@branch.Name</option>
+                        <PluginUploadTemplate Model="Model" />
                     }
-                </InputSelect>
-            </div>
+                    else
+                    {
+                        <ZipUploadTemplate Model="Model" />
+                    }
 
-            <div class="mb-4">
-                <label class="form-label">Changelog</label>
-                <InputTextArea class="form-control" @bind-Value="Model.Changelog" />
-            </div>
+                </div>
 
-            <div class="mb-2">
-                <label class="form-label">Upload Template</label>
-                <select class="form-select" @bind="selectedTemplate">
-                    <option value="default">ZIP File</option>
-                    <option value="rocketplugin">Rocket Plugin</option>
-                </select>
-            </div>
 
-            <div class="p-3 mb-4 border-2 border">
-                @if (selectedTemplate == "rocketplugin")
-                {
-                    <PluginUploadTemplate Model="Model" />
-                } else
-                {
-                    <ZipUploadTemplate Model="Model" />
-                }
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-            </div>
-            
+                <div class="mb-3">
+                    @if (isLoading)
+                    {
+                        <LoadingButton />
+                    }
+                    else
+                    {
+                        <button class="btn btn-primary" type="submit">Upload</button>
+                    }
+                </div>
 
-            <DataAnnotationsValidator />
-            <ValidationSummary />
-
-            <div class="mb-3">
-                @if (isLoading)
-                {
-                    <LoadingButton />
-                }
-                else
-                {
-                    <button class="btn btn-primary" type="submit">Upload</button>
-                }
-            </div>
-
-        </EditForm>
+            </EditForm>
         </div>
-        
+
     }
 }

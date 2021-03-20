@@ -1,6 +1,8 @@
 ﻿@page "/seller/statistics"
 @using BlazorTable;
 
+<Title Value="@($"Statistics Seller - Restore Monarchy Plugins")"></Title>
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item active" aria-current="page">Statistics</li>
@@ -37,7 +39,7 @@
     </div>
     <div class="mb-3">
         <Table TableItem="OrderItemModel" Items="OrderItems" PageSize="10" ColumnReorder="true" ShowSearchBar="true" >
-            <Column TableItem="OrderItemModel" Title="Id" Field="@(x => x.OrderId)" Sortable="true" Width="5%" DefaultSortColumn="true" DefaultSortDescending="true" />
+            <Column TableItem="OrderItemModel" Title="Id" Field="@(x => x.OrderId)" Sortable="true" Width="5%" DefaultSortColumn="true" />
             <Column TableItem="OrderItemModel" Title="Product" Field="@(x => x.ProductId)" Sortable="true" Width="20%">
                 <Template>
                     <a href="/products/@context.ProductId">

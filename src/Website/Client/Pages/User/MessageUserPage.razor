@@ -1,106 +1,118 @@
 ﻿@page "/messages/{MessageId:int}"
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/messages">Messages</a></li>
-        <li class="breadcrumb-item active" aria-current="page">@MessageId</li>
-    </ol>
-</nav>
+    <Title Value="@string.Join(" - ", $"Message #{MessageId}", "Restore Monarchy Plugins")"></Title>
 
-@if (Message != null)
-{
-    <div class="mb-3">
+    <Meta name="description" content="Simple & Affordable Unturned Plugins" />
+    <Meta property="og:title" content="@($"Message #{MessageId}")" />
+    <Meta property="og:type" content="website" />
+    <Meta property="og:url" content="plugins.restoremonarchy.com" />
+    <Meta property="og:image" content="/img/logo.png" />
+    <Meta property="og:image:width" content="128" />
+    <Meta property="og:image:height" content="128" />
+    <Meta property="og:description" content="Simple & Affordable Unturned Plugins" />
+    <Meta name="theme-color" content="#FFCC00" />
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/messages">Messages</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@MessageId</li>
+        </ol>
+    </nav>
+
+    @if (Message != null)
+    {
         <div class="mb-3">
-            <h2><span class="fw-bold">Topic:</span> @Message.Title</h2>
-        </div>
-        
-        @foreach (var reply in Message.Replies.OrderBy(x => x.CreateDate))
-        {
             <div class="mb-3">
+                <h2><span class="fw-bold">Topic:</span> @Message.Title</h2>
+            </div>
+
+            @foreach (var reply in Message.Replies.OrderBy(x => x.CreateDate))
+            {
+                <div class="mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bold">
+                                    @GetUsername(reply.UserId)
+                                </div>
+                                <div class="ms-auto">
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteReplyAsync(reply)">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                @(new MarkupString(reply.Content))
+                            </div>
+                            <div class="text-muted">
+                                @reply.CreateDate
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div>
                 <div class="card">
                     <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <div class="fw-bold">
-                                @GetUsername(reply.UserId)
-                            </div>
-                            <div class="ms-auto">
-                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteReplyAsync(reply)">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                            </div>
+                        <div class="fw-bold">
+                            Write a new reply
                         </div>
                     </div>
                     <div class="card-body">
-                        <div>
-                            @(new MarkupString(reply.Content))
-                        </div>                        
-                        <div class="text-muted">
-                            @reply.CreateDate
+                        <div class="mb-3">
+                            <BlazoredTextEditor @ref="editor" DebugLevel="error">
+                                <ToolbarContent>
+                                    <select class="ql-header">
+                                        <option selected=""></option>
+                                        <option value="1"></option>
+                                        <option value="2"></option>
+                                        <option value="3"></option>
+                                        <option value="4"></option>
+                                        <option value="5"></option>
+                                    </select>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-code-block"></button>
+                                    </span>
+                                </ToolbarContent>
+                            </BlazoredTextEditor>
                         </div>
-                    </div>
-                </div>
-            </div>            
-        }
-        <div>
-            <div class="card">
-                <div class="card-header">
-                    <div class="fw-bold">
-                        Write a new reply
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <BlazoredTextEditor @ref="editor" DebugLevel="error">
-                            <ToolbarContent>
-                                <select class="ql-header">
-                                    <option selected=""></option>
-                                    <option value="1"></option>
-                                    <option value="2"></option>
-                                    <option value="3"></option>
-                                    <option value="4"></option>
-                                    <option value="5"></option>
-                                </select>
-                                <span class="ql-formats">
-                                    <button class="ql-bold"></button>
-                                    <button class="ql-italic"></button>
-                                    <button class="ql-underline"></button>
-                                    <button class="ql-strike"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <select class="ql-color"></select>
-                                    <select class="ql-background"></select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-list" value="ordered"></button>
-                                    <button class="ql-list" value="bullet"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-code-block"></button>
-                                </span>
-                            </ToolbarContent>
-                        </BlazoredTextEditor>
-                    </div>
-                    
-                    <div class="mb-3 d-flex">
-                        <div>
+
+                        <div class="mb-3 d-flex">
+                            <div>
+
+                            </div>
+                            <div class="ms-auto">
+                                @if (isLoading)
+                                {
+                                    <LoadingButton />
+                                }
+                                else
+                                {
+                                    <button class="btn btn-primary ms-auto" @onclick="AddReplyAsync">Send Reply</button>
+                                }
+                            </div>
 
                         </div>
-                        <div class="ms-auto">
-                            @if (isLoading)
-                            {
-                                <LoadingButton />
-                            }
-                            else
-                            {
-                                <button class="btn btn-primary ms-auto" @onclick="AddReplyAsync">Send Reply</button>
-                            }
-                        </div>
-                        
                     </div>
                 </div>
             </div>
-        </div>
-            
 
-    </div>
-}
+
+        </div>
+    }

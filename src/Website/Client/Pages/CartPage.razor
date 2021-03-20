@@ -1,17 +1,29 @@
 ﻿@page "/cart"
 
+
+<Title Value="Cart - Restore Monarchy Plugins"></Title>
+
+<Meta name="description" content="Simple & Affordable Unturned Plugins" />
+<Meta property="og:title" content="Cart" />
+<Meta property="og:type" content="website" />
+<Meta property="og:url" content="plugins.restoremonarchy.com" />
+<Meta property="og:image" content="/img/logo.png" />
+<Meta property="og:image:width" content="128" />
+<Meta property="og:image:height" content="128" />
+<Meta property="og:description" content="Simple & Affordable Unturned Plugins" />
+<Meta name="theme-color" content="#FFCC00" />
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item active" aria-current="page">Cart</li>
     </ol>
 </nav>
 
-
 <div class="bg-light p-3">
     <div class="mb-3">
         <a href="/">Continue Shopping</a>
     </div>
-    
+
     @if (Carts != null)
     {
         if (Carts.Count == 0)
@@ -73,7 +85,7 @@
                         </Authorized>
                         <NotAuthorized>
                             <div class="mb-3 fw-bold">
-                                <a href="/signin" class="text-decoration-none">You have to sign in to be able to buy</a>                                
+                                <a href="/signin" class="text-decoration-none">You have to sign in to be able to buy</a>
                             </div>
                         </NotAuthorized>
                     </AuthorizeView>
