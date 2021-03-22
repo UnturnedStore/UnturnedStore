@@ -21,13 +21,7 @@ Discord: Discord
 Author: Author
 Price: Price
 Free: Free
-
-ProductPage:
-  SendMessage: Send message
-  NoDownloads: This product does not have any downloads
-  Media:
-    Previous: Previous
-    Next: Next
+Downloads: Downloads
 
 Search:
   SearchProduct: Search Product
@@ -40,6 +34,36 @@ Cart:
   Empty: You don't have anything in your cart
   ContinueShopping: Continue shopping
   NotLoggedIn: You have to sign in to be able to buy
-  
+
+Admin:
+  UsersPage:
+    Users: Users
+    AllUsers: All users
+    Search: Search
+    NameOrSteamID: Name or SteamID
+    Table:
+      Name: Name
+      SteamID: SteamID
+      Role: Role
+      Update: Update
+      
+Users:
+  VersionsPage:
+    SelectBranch: Select Branch
+    VersionsNotFound: This branch doesn't have any versions
+    DownloadThisVersion: Download this version
+  ProductPage:
+    SendMessage: Send message
+    NoDownloads: This product does not have any downloads
+    EditProduct: Edit Product
+    ShowAllVersions: Show all versions
+    ShowProductPage: Show product page
+    DownloadLatest: Download latest version
+    GoToCart: Go to cart
+    AddToCart: Add to cart
+    Media:
+      Previous: Previous
+      Next: Next
+
 Footer:
   OpenSource: This store is open-source! Available on 

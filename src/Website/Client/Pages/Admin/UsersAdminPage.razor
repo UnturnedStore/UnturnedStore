@@ -1,21 +1,22 @@
 ﻿@page "/admin/users"
+@inject ILanguageContainerService langContainer;
 
 <Title Value="@($"Users Admin - Unturned Store")"></Title>
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Users</li>
+        <li class="breadcrumb-item active" aria-current="page">@langContainer.Keys["Admin:UsersPage:Users"]</li>
     </ol>
 </nav>
 
 <div class="mb-3 d-flex align-items-center">
     <div>
-        <h5>All users</h5>
+        <h5>@langContainer.Keys["Admin:UsersPage:AllUsers"]</h5>
     </div>
     <div class="ms-auto">
         <div class="input-group mb-3">
-            <span class="input-group-text" id="inputGroup-sizing-default">Search</span>
-            <input type="text" class="form-control" @bind="searchString" @bind:event="oninput" placeholder="Name or SteamId">
+            <span class="input-group-text" id="inputGroup-sizing-default">@langContainer.Keys["Admin:UsersPage:Search"]</span>
+            <input type="text" class="form-control" @bind="searchString" @bind:event="oninput" placeholder="@langContainer.Keys["Admin:UsersPage:NameOrSteamID"]">
         </div>
 
     </div>
@@ -27,9 +28,9 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>SteamId</th>
-                    <th>Role</th>
+                    <th>@langContainer.Keys["Admin:UsersPage:Table:Name"]</th>
+                    <th>@langContainer.Keys["Admin:UsersPage:Table:SteamID"]</th>
+                    <th>@langContainer.Keys["Admin:UsersPage:Table:Role"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -52,7 +53,7 @@
                             } else
                             {
                                 <button class="btn btn-primary" @onclick="() => UpdateUserRoleAsync(user)">
-                                    Update
+                                    @langContainer.Keys["Admin:UsersPage:Table:Update"]
                                 </button>
                             }
                             
@@ -62,4 +63,12 @@
             </tbody>
         </table>
     </div>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        langContainer.InitLocalizedComponent(this);
+        base.OnInitialized();
+    }
 }

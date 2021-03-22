@@ -1,8 +1,9 @@
-﻿
+﻿@inject ILanguageContainerService langContainer;
+
 @if (Product != null)
 {
     <div class="mb-3">
-        <label class="form-label">Select Branch</label>
+        <label class="form-label">@langContainer.Keys["Users:VersionsPage:SelectBranch"]</label>
         <select class="form-select" @bind="selectedBranchId">
             @foreach (var branch in Product.Branches)
             {
@@ -16,7 +17,7 @@
     {
         @if (Branch.Versions.Count == 0)
         {
-            <p>This branch doesn't have any versions</p>
+            <p>@langContainer.Keys["Users:VersionsPage:VersionsNotFound"]</p>
         }
 
         <Virtualize Items="versions" Context="version">
@@ -37,7 +38,7 @@
                         </div>
                         <div class="ms-auto">
                             <form method="get" action="api/versions/download/@version.Id">
-                                <button type="submit" class="btn btn-primary">Download this version</button>
+                                <button type="submit" class="btn btn-primary">@langContainer.Keys["Users:VersionsPage:DownloadThisVersion"]</button>
                             </form>                            
                         </div>
                     </div>
@@ -64,4 +65,11 @@
     {
         selectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
     }
+
+    protected override void OnInitialized()
+    {
+        langContainer.InitLocalizedComponent(this);
+        base.OnInitialized();
+    }
+
 }

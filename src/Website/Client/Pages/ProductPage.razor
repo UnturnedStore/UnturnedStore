@@ -65,11 +65,11 @@
                                     <!-- Controls -->
                                     <a class="carousel-control-prev" data-bs-target="#gallery" role="button" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">@langContainer.Keys["ProductPage:Media:Previous"]</span>
+                                        <span class="visually-hidden">@langContainer.Keys["Users:ProductPage:Media:Previous"]</span>
                                     </a>
                                     <a class="carousel-control-next" data-bs-target="#gallery" role="button" data-bs-slide="next">
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">@langContainer.Keys["ProductPage:Media:Next"]</span>
+                                        <span class="visually-hidden">@langContainer.Keys["Users:ProductPage:Media:Next"]</span>
                                     </a>
                                 }
 
@@ -113,14 +113,14 @@
                     <img src="/api/images/@Product.ImageId" width="150" height="150" />
                     <h4 class="mt-2">@Product.Name</h4>
                     <ul class="list-unstyled">
-                        <li>Author: @Product.Seller.Name</li>
+                        <li>@langContainer.Keys["Author"]: @Product.Seller.Name</li>
                         <AuthorizeView>
                             <Authorized>
-                                <li><a class="text-decoration-none" href="/messages/create/@Product.SellerId">@langContainer.Keys["ProductPage:SendMessage"]</a></li>
+                                <li><a class="text-decoration-none" href="/messages/create/@Product.SellerId">@langContainer.Keys["Users:ProductPage:SendMessage"]</a></li>
                             </Authorized>
                         </AuthorizeView>
-                        <li>Price: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
-                        <li>Downloads: @(Product.Branches.Sum(x => x.Versions.Sum(x => x.DownloadsCount)))</li>
+                        <li>@langContainer.Keys["Price"]: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
+                        <li>@langContainer.Keys["Downloads"]: @(Product.Branches.Sum(x => x.Versions.Sum(x => x.DownloadsCount)))</li>
                         @if (!string.IsNullOrEmpty(Product.GithubUrl))
                         {
                             <li><a href="@Product.GithubUrl" target="_blank" class="text-decoration-none"><i class="bi bi-github"></i> GitHub</a></li>
@@ -136,26 +136,26 @@
                                 @if (IsSeller)
                                 {
                                     <a class="btn btn-success" href="/seller/products/@ProductId">
-                                        <i class="bi bi-pencil-square"></i> Edit Product
+                                        <i class="bi bi-pencil-square"></i> @langContainer.Keys["Users:ProductPage:EditProduct"]
                                     </a>
                                 }
 
                                 @if (ShowVersions)
                                 {
                                     <button class="btn btn-secondary" @onclick="ToggleShowVersions">
-                                        <i class="bi bi-info-circle-fill"></i> Show Information
+                                        <i class="bi bi-info-circle-fill"></i> @langContainer.Keys["Users:ProductPage:ShowProductPage"]
                                     </button>
                                 }
                                 else
                                 {
                                     <button class="btn btn-secondary" @onclick="ToggleShowVersions">
-                                        <i class="bi bi-gear-fill"></i> Show All Versions
+                                        <i class="bi bi-gear-fill"></i> @langContainer.Keys["Users:ProductPage:ShowAllVersions"]
                                     </button>
                                 }
 
                                 <form class="d-grid gap-2" method="get" action="api/versions/download/@LatestVersion.Id">
                                     <button class="btn btn-primary" type="submit">
-                                        <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestVersion.Name)
+                                        <i class="bi bi-download"></i> @langContainer.Keys["Users:ProductPage:DownloadLatest"] (@DefaultBranch.Name, @LatestVersion.Name)
                                     </button>
                                 </form>
 
@@ -167,13 +167,13 @@
                                 @if (IsInCart)
                                 {
                                     <a class="btn btn-primary" href="/cart">
-                                        <i class="bi bi-cart-fill"></i> Go To Cart
+                                        <i class="bi bi-cart-fill"></i> @langContainer.Keys["Users:ProductPage:GoToCart"]
                                     </a>
                                 }
                                 else
                                 {
                                     <button class="btn btn-primary" @onclick="AddToCartAsync">
-                                        <i class="bi bi-cart-fill"></i> Add To Cart
+                                        <i class="bi bi-cart-fill"></i> @langContainer.Keys["Users:ProductPage:AddToCart"]
                                     </button>
                                 }
                             </div>
@@ -182,7 +182,7 @@
                     }
                     else
                     {
-                        <strong>@langContainer.Keys["ProductPage:NoDownloads"]</strong>
+                        <strong>@langContainer.Keys["Users:ProductPage:NoDownloads"]</strong>
                     }
                 </div>
 
