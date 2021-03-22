@@ -6,9 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AKSoftware.Localization.MultiLanguages;
 using Website.Client.Providers;
 using Website.Client.Services;
 
@@ -30,6 +33,7 @@ namespace Website.Client
             builder.Services.AddTransient<StorageService>();
             builder.Services.AddTransient<ZIPService>();
             builder.Services.AddBlazorTable();
+            builder.Services.AddLanguageContainer(Assembly.GetExecutingAssembly(), CultureInfo.GetCultureInfo("en_US"));
 
             await builder.Build().RunAsync();
         }

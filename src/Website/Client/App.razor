@@ -1,9 +1,11 @@
+@inject ILanguageContainerService langContainer
+
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    <h4 class="mt-5 text-center">You have to sign in to access this page</h4>
+                    <h4 class="mt-5 text-center">@langContainer.Keys["SignInToAccess"]</h4>
                 </NotAuthorized>
                 <Authorizing>
                     <div class="progress">

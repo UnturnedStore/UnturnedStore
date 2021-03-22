@@ -1,4 +1,6 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
+﻿@inject ILanguageContainerService langContainer;
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="/img/logo.png" alt="" width="30" height="30" class="d-inline-block align-top">
@@ -29,23 +31,23 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
                                     <Authorized>
-                                        <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>
+                                        <li><a class="dropdown-item" href="/admin/users">@langContainer.Keys["ManageUsers"]</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     </Authorized>
                                 </AuthorizeView>
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminAndSeller">
                                     <Authorized>
-                                        <li><a class="dropdown-item" href="/seller/statistics">Your Statistics</a></li>
-                                        <li><a class="dropdown-item" href="/seller/products">Your Products</a></li>
-                                        <li><a class="dropdown-item" href="/seller/customers">Your Customers</a></li>
+                                        <li><a class="dropdown-item" href="/seller/statistics">@langContainer.Keys["YourStatistics"]</a></li>
+                                        <li><a class="dropdown-item" href="/seller/products">@langContainer.Keys["YourProducts"]</a></li>
+                                        <li><a class="dropdown-item" href="/seller/customers">@langContainer.Keys["YourCustomers"]</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     </Authorized>
                                 </AuthorizeView>
-                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
-                                <li><a class="dropdown-item" href="/messages">Messages</a></li>
-                                <li><a class="dropdown-item" href="/orders">Orders</a></li>
+                                <li><a class="dropdown-item" href="/settings">@langContainer.Keys["Settings"]</a></li>
+                                <li><a class="dropdown-item" href="/messages">@langContainer.Keys["Messages"]</a></li>
+                                <li><a class="dropdown-item" href="/orders">@langContainer.Keys["Orders"]</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
+                                <li><a class="dropdown-item" href="/signout">@langContainer.Keys["SignOut"]</a></li>
                             </ul>
                         </li>
                     </ul>
