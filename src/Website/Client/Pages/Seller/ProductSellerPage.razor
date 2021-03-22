@@ -73,6 +73,12 @@
     }
     else
     {
-        <Progressbar />
+        if (statusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            <h4>You don't have access to this product</h4>
+        } else
+        {
+            <Progressbar />
+        }        
     }
 </div>

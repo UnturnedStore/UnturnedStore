@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -22,9 +20,16 @@ namespace Website.Client.Pages.Seller
 
         public ProductModel Product { get; set; }
 
+        private HttpStatusCode statusCode { get; set; }
+
         protected override async Task OnParametersSetAsync()
         {
-            Product = await HttpClient.GetFromJsonAsync<ProductModel>("api/seller/products/" + ProductId);
+            var response = await HttpClient.GetAsync("api/seller/products/" + ProductId);
+            statusCode = response.StatusCode;
+            if (response.IsSuccessStatusCode)
+            {
+                Product = await response.Content.ReadFromJsonAsync<ProductModel>();
+            }            
         }
     }
 }
