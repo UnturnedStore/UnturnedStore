@@ -49,8 +49,8 @@ Admin:
       
 Users:
   VersionsPage:
-    SelectBranch: Wybierz gałąź
-    VersionsNotFound: Ta gałąź nie ma żadnych wersji
+    SelectBranch: Wybierz branch
+    VersionsNotFound: Ten branch nie ma żadnych wersji
     DownloadThisVersion: Pobierz tą wersje
   ProductPage:
     SendMessage: Wyślij wiadomość
