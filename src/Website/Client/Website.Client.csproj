@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AKSoftware.Localization.MultiLanguages" Version="5.0.0" />
+    <PackageReference Include="AKSoftware.Localization.MultiLanguages.Blazor" Version="1.0.0" />
     <PackageReference Include="Blazored.TextEditor" Version="1.0.3" />
     <PackageReference Include="BlazorTable" Version="1.15.0" />
     <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />

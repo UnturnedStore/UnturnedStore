@@ -1,7 +1,9 @@
-﻿<footer class="footer mt-auto py-3">
+﻿@inject ILanguageContainerService langContainer;
+
+<footer class="footer mt-auto py-3">
     <div class="container">
         <span class="text-muted">
-            © Unturned Store @DateTime.Now.Year - Website by <a href="https://github.com/RestoreMonarchy" target="_blank">MCrow</a>
+            © @langContainer.Keys["StoreName"] @DateTime.Now.Year - Website by <a href="https://github.com/RestoreMonarchy" target="_blank">MCrow</a>
         </span>
     </div>
 </footer>

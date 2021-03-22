@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject ILanguageContainerService langContainer;
 
 
 <Title Value="Home - Unturned Store"></Title>
@@ -15,8 +16,8 @@
 
 <div class="text-center mb-3">
     <img src="/img/header.png" style="max-height: 150px;" />
-    <h4 class="fw-bold unturned-font mt-2">Unturned Store</h4>
-    <h6 class="text-muted">Marketplace of products for Unturned</h6>
+    <h4 class="fw-bold unturned-font mt-2">@langContainer.Keys["StoreName"]</h4>
+    <h6 class="text-muted">@langContainer.Keys["StoreTagline"]</h6>
 </div>
 
 @if (!hideImperial)
@@ -40,13 +41,13 @@
 {
     <div class="mb-3 mt-5 d-flex align-items-center justify-content-center">
         <div class="input-group" style="max-width: 600px;">
-            <span class="input-group-text">Search Product</span>
-            <input type="text" class="form-control" placeholder="Name or Author" @bind="searchString" @bind:event="oninput" />
+            <span class="input-group-text">@langContainer.Keys["Search:SearchProduct"]</span>
+            <input type="text" class="form-control" placeholder="@langContainer.Keys["Search:NameOrAuthor"]" @bind="searchString" @bind:event="oninput"/>
         </div>
         <div class="ms-1">
             <select class="form-select" @bind="orderBy">
-                <option value="@EOrderBy.Newest">Newest</option>
-                <option value="@EOrderBy.MostDownloads">Most Downloads</option>
+                    <option value="@EOrderBy.Newest">@langContainer.Keys["Search:Newest"]</option>
+                    <option value="@EOrderBy.MostDownloads">@langContainer.Keys["Search:MostDownloads"]</option>
             </select>
         </div>
     </div>
@@ -61,7 +62,7 @@
                         </a>
                         <div class="ms-1 text-center w-100">
                             <a class="ms-2 text-center w-100" href="/products/@product.Id">@product.Name</a> <br />
-                            <small class="text-muted">Author: @product.Seller.Name</small>
+                            <small class="text-muted">@langContainer.Keys["Author"]: @product.Seller.Name</small>
                         </div>
 
                     </div>
@@ -76,11 +77,11 @@
                             </div>
                             @if (product.Price > 0)
                             {
-                                <p class="ms-auto text-muted">Price: $@product.Price</p>
+                                <p class="ms-auto text-muted">@langContainer.Keys["Price"]: $@product.Price</p>
                             }
                             else
                             {
-                                <p class="ms-auto text-muted">Price: Free</p>
+                                <p class="ms-auto text-muted">@langContainer.Keys["Price"]: @langContainer.Keys["Free"]</p>
                             }
                         </div>
                     </div>
@@ -93,6 +94,14 @@
 else
 {
     <Progressbar />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        langContainer.InitLocalizedComponent(this);
+        base.OnInitialized();
+    }
 }
 
 

@@ -4,7 +4,7 @@
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="/img/logo.png" alt="" width="30" height="30" class="d-inline-block align-top">
-            <div class="ms-2 unturned-font">Unturned Store</div>
+            <div class="ms-2 unturned-font">@langContainer.Keys["StoreName"]</div>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-expanded="false">
             <span class="navbar-toggler-icon"></span>
@@ -12,15 +12,19 @@
         <div class="collapse navbar-collapse" id="navbarToggler">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Products</a>
+                    <a class="nav-link" href="/">@langContainer.Keys["Products"]</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/discord">Discord</a>
+                    <a class="nav-link" href="/discord">@langContainer.Keys["Discord"]</a>
                 </li>
             </ul>
             <AuthorizeView>
                 <Authorized>
                     <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <img src="https://www.countryflags.io/us/shiny/24.png" @onclick='() => SetLanguage("en-US")' alt="US flag"/>
+                            <img src="https://www.countryflags.io/pl/shiny/24.png" @onclick='() => SetLanguage("pl-PL")' alt="PL flag"/>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/cart"><i class="bi bi-cart-fill"></i></a>
                         </li>
@@ -31,23 +35,23 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
                                     <Authorized>
-                                        <li><a class="dropdown-item" href="/admin/users">@langContainer.Keys["ManageUsers"]</a></li>
+                                        <li><a class="dropdown-item" href="/admin/users">@langContainer.Keys["Dropdown:ManageUsers"]</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     </Authorized>
                                 </AuthorizeView>
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminAndSeller">
                                     <Authorized>
-                                        <li><a class="dropdown-item" href="/seller/statistics">@langContainer.Keys["YourStatistics"]</a></li>
-                                        <li><a class="dropdown-item" href="/seller/products">@langContainer.Keys["YourProducts"]</a></li>
-                                        <li><a class="dropdown-item" href="/seller/customers">@langContainer.Keys["YourCustomers"]</a></li>
+                                        <li><a class="dropdown-item" href="/seller/statistics">@langContainer.Keys["Dropdown:YourStatistics"]</a></li>
+                                        <li><a class="dropdown-item" href="/seller/products">@langContainer.Keys["Dropdown:YourProducts"]</a></li>
+                                        <li><a class="dropdown-item" href="/seller/customers">@langContainer.Keys["Dropdown:YourCustomers"]</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     </Authorized>
                                 </AuthorizeView>
-                                <li><a class="dropdown-item" href="/settings">@langContainer.Keys["Settings"]</a></li>
-                                <li><a class="dropdown-item" href="/messages">@langContainer.Keys["Messages"]</a></li>
-                                <li><a class="dropdown-item" href="/orders">@langContainer.Keys["Orders"]</a></li>
+                                <li><a class="dropdown-item" href="/settings">@langContainer.Keys["Dropdown:Settings"]</a></li>
+                                <li><a class="dropdown-item" href="/messages">@langContainer.Keys["Dropdown:Messages"]</a></li>
+                                <li><a class="dropdown-item" href="/orders">@langContainer.Keys["Dropdown:Orders"]</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/signout">@langContainer.Keys["SignOut"]</a></li>
+                                <li><a class="dropdown-item" href="/signout">@langContainer.Keys["Dropdown:SignOut"]</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -62,5 +66,16 @@
     </div>
 </nav>
 
-@code {
-} 
+@code 
+{
+    void SetLanguage(string language)
+    {
+        langContainer.SetLanguage(System.Globalization.CultureInfo.GetCultureInfo(language));
+    }
+    
+    protected override void OnInitialized()
+    {
+        langContainer.InitLocalizedComponent(this);
+        base.OnInitialized();
+    }
+}

@@ -1,11 +1,34 @@
 SignInToAccess: You have to sign in to access this page
 
-ManageUsers: Manage Users
-YourStatistics: Your Statistics
-YourProducts: Your Products
-YourCustomers: Your Customers
+StoreName: Unturned Store
+StoreTagline: Marketplace of products for Unturned
+Loading: Loading
 
-Settings: Settings
-Messages: Messages
-Orders: Orders
-SignOut: Sign Out
+Dropdown:
+  ManageUsers: Manage Users
+  YourStatistics: Your Statistics
+  YourProducts: Your Products
+  YourCustomers: Your Customers
+  Settings: Settings
+  Messages: Messages
+  Orders: Orders
+  SignOut: Sign Out
+
+Products: Products
+Product: Product
+Discord: Discord
+
+Author: Author
+Price: Price
+Free: Free
+
+Search:
+  SearchProduct: Search Product
+  NameOrAuthor: Name or Author
+  Newest: Newest
+  MostDownloads: Most Downloads
+
+Cart:
+  Cart: Cart
+  Empty: You don't have anything in your cart
+  ContinueShopping: Continue shopping

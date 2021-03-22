@@ -1,0 +1,34 @@
+SignInToAccess: Musisz się zalogować by uzyskać dostep do tej strony
+
+StoreName: Unturned Store
+StoreTagline: Rynek pluginów Unturned
+Loading: Ładowanie
+
+Dropdown:
+  ManageUsers: Zarządzaj użytkownikami
+  YourStatistics: Twoje statystyki
+  YourProducts: Twoje produkty
+  YourCustomers: Twoi klienci
+  Settings: Ustawienia
+  Messages: Wiadomości
+  Orders: Zamówienia
+  SignOut: Wyloguj się
+
+Products: Produkty
+Product: Produkt
+Discord: Discord
+
+Author: Autor
+Price: Cena
+Free: Darmowe
+
+Search:
+  SearchProduct: Wyszukaj produkt
+  NameOrAuthor: Nazwa lub autor
+  Newest: Najnowsze
+  MostDownloads: Najwięcej pobrań
+
+Cart:
+  Cart: Karta
+  Empty: Twoja karta jest pusta
+  ContinueShopping: Kontynuuj zakupy
