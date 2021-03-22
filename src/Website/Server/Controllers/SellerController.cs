@@ -15,10 +15,12 @@ namespace Website.Server.Controllers
     public class SellerController : ControllerBase
     {
         private readonly SellersRepository sellersRepository;
+        private readonly ProductsRepository productsRepository;
 
-        public SellerController(SellersRepository sellersRepository)
+        public SellerController(SellersRepository sellersRepository, ProductsRepository productsRepository)
         {
             this.sellersRepository = sellersRepository;
+            this.productsRepository = productsRepository;
         }
 
         [HttpGet("orders")]
@@ -36,6 +38,9 @@ namespace Website.Server.Controllers
         [HttpGet("products/{productId}")]
         public async Task<IActionResult> GetProductAsync(int productId)
         {
+            if (!await productsRepository.IsProductSellerAsync(productId, int.Parse(User.Identity.Name)))
+                return BadRequest();
+
             return Ok(await sellersRepository.GetProductAsync(productId));
         }
 
