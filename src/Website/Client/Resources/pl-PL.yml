@@ -22,6 +22,13 @@ Author: Autor
 Price: Cena
 Free: Darmowe
 
+ProductPage:
+  SendMessage: Wyślij wiadomość
+  NoDownloads: Ten produkt nie posiada plików do pobrania
+  Media:
+    Previous: Poprzednie
+    Next: Następne
+
 Search:
   SearchProduct: Wyszukaj produkt
   NameOrAuthor: Nazwa lub autor
@@ -32,3 +39,7 @@ Cart:
   Cart: Karta
   Empty: Twoja karta jest pusta
   ContinueShopping: Kontynuuj zakupy
+  NotLoggedIn: By zacząć kupywać produkty musisz się zalogować
+
+Footer:
+  OpenSource: Ten sklep jest open-source! Dostępne na 

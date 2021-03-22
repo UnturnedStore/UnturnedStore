@@ -22,6 +22,13 @@ Author: Author
 Price: Price
 Free: Free
 
+ProductPage:
+  SendMessage: Send message
+  NoDownloads: This product does not have any downloads
+  Media:
+    Previous: Previous
+    Next: Next
+
 Search:
   SearchProduct: Search Product
   NameOrAuthor: Name or Author
@@ -32,3 +39,7 @@ Cart:
   Cart: Cart
   Empty: You don't have anything in your cart
   ContinueShopping: Continue shopping
+  NotLoggedIn: You have to sign in to be able to buy
+  
+Footer:
+  OpenSource: This store is open-source! Available on 

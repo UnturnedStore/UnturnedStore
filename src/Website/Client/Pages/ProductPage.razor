@@ -1,5 +1,6 @@
 ﻿@page "/products/{ProductId:int}"
 @using Website.Client.Pages.Components
+@inject ILanguageContainerService langContainer;
 
 
 
@@ -20,7 +21,7 @@
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Products</a></li>
+            <li class="breadcrumb-item"><a href="/">@langContainer.Keys["Products"]</a></li>
             <li class="breadcrumb-item active" aria-current="page">@Product.Name</li>
         </ol>
     </nav>
@@ -64,11 +65,11 @@
                                     <!-- Controls -->
                                     <a class="carousel-control-prev" data-bs-target="#gallery" role="button" data-bs-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Previous</span>
+                                        <span class="visually-hidden">@langContainer.Keys["ProductPage:Media:Previous"]</span>
                                     </a>
                                     <a class="carousel-control-next" data-bs-target="#gallery" role="button" data-bs-slide="next">
                                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="visually-hidden">Next</span>
+                                        <span class="visually-hidden">@langContainer.Keys["ProductPage:Media:Next"]</span>
                                     </a>
                                 }
 
@@ -115,7 +116,7 @@
                         <li>Author: @Product.Seller.Name</li>
                         <AuthorizeView>
                             <Authorized>
-                                <li><a class="text-decoration-none" href="/messages/create/@Product.SellerId">Send Message</a></li>
+                                <li><a class="text-decoration-none" href="/messages/create/@Product.SellerId">@langContainer.Keys["ProductPage:SendMessage"]</a></li>
                             </Authorized>
                         </AuthorizeView>
                         <li>Price: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
@@ -181,7 +182,7 @@
                     }
                     else
                     {
-                        <strong>This plugin doesn't have any downloads</strong>
+                        <strong>@langContainer.Keys["ProductPage:NoDownloads"]</strong>
                     }
                 </div>
 
@@ -191,4 +192,12 @@
 } else
 {
     <Progressbar />
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        langContainer.InitLocalizedComponent(this);
+        base.OnInitialized();
+    }
 }

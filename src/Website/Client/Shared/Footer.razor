@@ -3,7 +3,15 @@
 <footer class="footer mt-auto py-3">
     <div class="container">
         <span class="text-muted">
-            © @langContainer.Keys["StoreName"] @DateTime.Now.Year - Website by <a href="https://github.com/RestoreMonarchy" target="_blank">MCrow</a>
+            © @langContainer.Keys["StoreName"] @DateTime.Now.Year - @langContainer.Keys["Footer:OpenSource"] <a href="https://github.com/RestoreMonarchy/UnturnedStore">GitHub</a>
         </span>
     </div>
 </footer>
+
+@code {
+    protected override void OnInitialized()
+    {
+        langContainer.InitLocalizedComponent(this);
+        base.OnInitialized();
+    }
+}
