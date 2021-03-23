@@ -64,6 +64,34 @@ Users:
     Media:
       Previous: Previous
       Next: Next
+  MessagesPage:
+    Messages: Messages
+    SendMessagePage:
+      CreateMessage: Create message
+      SendMessageTo: Send message to
+      Submit: Submit
+    Title: Title
+    Content: Content
+    Table:
+      Replies: Replies
+      Participant: Participant
+      CreationDate: Creation Date
+  OrdersPage:
+    
+  SettingsPage:
+
+Sellers:
+  StatisticsPage:
+    Statistics: Statistics
+    TodaysRevenue: Today's Revenue
+    Last30DaysRevenue: Last 30 Days Revenue
+    AllTimeRevenue: All Time Revenue
+    Search:
+      Id: ID
+      Product: Product
+      User: User
+      PaymentMethod: Payment Method
+      Email: Email
 
 Footer:
   OpenSource: This store is open-source! Available on 

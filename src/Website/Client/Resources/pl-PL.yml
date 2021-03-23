@@ -64,6 +64,33 @@ Users:
     Media:
       Previous: Poprzednie
       Next: Następne
+  MessagesPage:
+    Messages: Wiadomości
+    SendMessagePage:
+      CreateMessage: Wyślij wiadomość
+      SendMessageTo: Wyślij wiadomość do
+      Submit: Prześlij
+    Title: Tytuł
+    Content: Treść
+    Table:
+      Replies: Odpowiedzi
+      Participant: Uczestnicy
+      CreationDate: Data stworzenia
+  OrdersPage:
+    
+  SettingsPage:
+    
+Sellers:
+  StatisticsPage:
+    Statistics: Statystyki
+    TodaysRevenue: Dzisiejszy dochód
+    Last30DaysRevenue: Dochód z ostatnich 30 dni
+    AllTimeRevenue: Dochód od powstania konta
+    Search:
+      Id: ID
+      User: Użytkownik
+      PaymentMethod: Metoda płatności
+      Email: Email
     
 Footer:
   OpenSource: Ten sklep jest open-source! Dostępne na 

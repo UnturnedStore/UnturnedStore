@@ -18,13 +18,11 @@
                     <a class="nav-link" href="/discord">@langContainer.Keys["Discord"]</a>
                 </li>
             </ul>
+            <img class="language-change" src="https://www.countryflags.io/us/shiny/24.png" @onclick='() => SetLanguage("en-US")' alt="US flag"/>
+            <img class="language-change" src="https://www.countryflags.io/pl/shiny/24.png" @onclick='() => SetLanguage("pl-PL")' alt="PL flag"/>
             <AuthorizeView>
                 <Authorized>
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <img src="https://www.countryflags.io/us/shiny/24.png" @onclick='() => SetLanguage("en-US")' alt="US flag"/>
-                            <img src="https://www.countryflags.io/pl/shiny/24.png" @onclick='() => SetLanguage("pl-PL")' alt="PL flag"/>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/cart"><i class="bi bi-cart-fill"></i></a>
                         </li>
@@ -58,7 +56,7 @@
                 </Authorized>
                 <NotAuthorized>
                     <a href="/signin">
-                        <img src="/img/steam/buttons/sits_small.png" />
+                        <img src="/img/steam/buttons/sits_small.png" alt="Steam login"/>
                     </a>
                 </NotAuthorized>
             </AuthorizeView>

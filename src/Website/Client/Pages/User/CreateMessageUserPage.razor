@@ -1,29 +1,30 @@
 ﻿@page "/messages/create/{UserId:int}"
+@inject ILanguageContainerService langContainer;
 
 
 @if (User != null)
 {
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/messages">Messages</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Send message to @User.Name</li>
+            <li class="breadcrumb-item"><a href="/messages">@langContainer.Keys["Users:MessagesPage:Messages"]</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@langContainer.Keys["Users:MessagesPage:SendMessagePage:SendMessageTo"] @User.Name</li>
         </ol>
     </nav>
 
     <div class="mb-3">
         <div class="card">
             <div class="card-header">
-                Create message
+                @langContainer.Keys["Users:MessagesPage:SendMessagePage:CreateMessage"]
             </div>
             <div class="card-body">
                 <EditForm Model="Message" OnValidSubmit="SubmitAsync">
                     <div class="mb-3">
-                        <label class="form-label">Title</label>
+                        <label class="form-label">@langContainer.Keys["Users:MessagesPage:Title"]</label>
                         <InputText class="form-control" @bind-Value="Message.Title" />
                         <div class="form-text"></div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Content</label>
+                        <label class="form-label">@langContainer.Keys["Users:MessagesPage:Content"]</label>
                         <BlazoredTextEditor @ref="editor" DebugLevel="error">
                             <ToolbarContent>
                                 <select class="ql-header">
@@ -62,10 +63,20 @@
                     <DataAnnotationsValidator />
                     <ValidationSummary />
 
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">@langContainer.Keys["Users:MessagesPage:SendMessagePage:Submit"]</button>
                 </EditForm>
                 
             </div>
         </div>
     </div>
+}
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        langContainer.InitLocalizedComponent(this);
+        base.OnInitialized();
+    }
+
 }
