@@ -111,7 +111,7 @@ namespace Website.Data.Repositories
                 return null;
             }, product);
 
-            const string sql3 = "SELECT * FROM dbo.Users WHERE Id = @SellerId;";
+            const string sql3 = "SELECT Id, Name, Role, SteamId, CreateDate FROM dbo.Users WHERE Id = @SellerId;";
             product.Seller = await connection.QuerySingleAsync<UserModel>(sql3, product);
 
             if (userId != 0)
@@ -202,7 +202,7 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<ProductCustomerModel>> GetUserProductsAsync(int userId)
         {
-            const string sql = "SELECT c.*, p.*, u.* FROM dbo.ProductCustomers c JOIN dbo.Products p on c.ProductId = p.Id " +
+            const string sql = "SELECT c.*, p.*, u.Id, u.Name, u.Role, u.SteamId, u.CreateDate FROM dbo.ProductCustomers c JOIN dbo.Products p on c.ProductId = p.Id " +
                 "JOIN dbo.Users u ON p.SellerId = u.Id WHERE c.UserId = @userId;";
 
             return await connection.QueryAsync<ProductCustomerModel, ProductModel, UserModel, ProductCustomerModel>(sql, (c, p, u) => 
