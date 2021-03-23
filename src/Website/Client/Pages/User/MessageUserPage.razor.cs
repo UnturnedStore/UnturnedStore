@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -22,9 +23,14 @@ namespace Website.Client.Pages.User
 
         private BlazoredTextEditor editor;
 
+        private HttpStatusCode statusCode;
+
         protected override async Task OnParametersSetAsync()
         {
-            Message = await HttpClient.GetFromJsonAsync<MessageModel>("api/messages/" + MessageId);
+            var response = await HttpClient.GetAsync("api/messages/" + MessageId);
+            statusCode = response.StatusCode;
+            if (statusCode == HttpStatusCode.OK)
+                Message = await response.Content.ReadFromJsonAsync<MessageModel>();
         }
 
         private bool isLoading = false;
@@ -33,7 +39,7 @@ namespace Website.Client.Pages.User
             isLoading = true;
             var reply = new MessageReplyModel()
             {
-                MessageId = Message.Id,
+                MessageId = Message.Id
             };
 
             reply.Content = await editor.GetHTML();

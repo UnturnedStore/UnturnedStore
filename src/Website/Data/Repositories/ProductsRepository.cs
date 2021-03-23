@@ -82,6 +82,9 @@ namespace Website.Data.Repositories
                 return null;
             }, new { productId });
 
+            if (product == null)
+                return null;
+
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
             product.Medias = (await connection.QueryAsync<ProductMediaModel>(sql1, product)).ToList();
 

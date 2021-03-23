@@ -38,6 +38,13 @@ namespace Website.Shared.Models
 
         public List<BranchModel> Branches { get; set; }
 
+        public string GetDescription()
+        {
+            if (Description.Length > 100)
+                return Description.Substring(0, 100).TrimEnd(' ') + "...";
+            return Description;
+        }
+
         public static ProductModel FromProduct(ProductModel product)
         {
             return new ProductModel()

@@ -68,4 +68,13 @@
             </div>
         </div>
     </div>
+} else
+{
+    if (statusCode == System.Net.HttpStatusCode.NoContent)
+    {
+        <h4>User not found</h4>
+    } else
+    {
+        <Progressbar />
+    }
 }

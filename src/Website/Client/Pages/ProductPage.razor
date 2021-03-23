@@ -177,7 +177,6 @@
                                 }
                             </div>
                         }
-
                     }
                     else
                     {
@@ -188,7 +187,15 @@
             </div>
         </div>
     </div>
-} else
+}
+else
 {
-    <Progressbar />
+    if (statusCode == System.Net.HttpStatusCode.NoContent)
+    {
+        <h4>Product not found</h4>
+    }
+    else
+    {
+        <Progressbar />
+    }
 }

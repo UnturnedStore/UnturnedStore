@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -24,10 +25,15 @@ namespace Website.Client.Pages.User
 
         public UserModel User { get; set; }
 
+        private HttpStatusCode statusCode;
+
         protected override async Task OnParametersSetAsync()
         {
             Message = defaultMessage;
-            User = await HttpClient.GetFromJsonAsync<UserModel>("api/users/" + UserId);
+            var response = await HttpClient.GetAsync("api/users/" + UserId);
+            statusCode = response.StatusCode;
+            if (statusCode == HttpStatusCode.OK)
+                User = await response.Content.ReadFromJsonAsync<UserModel>();
         }
 
         private BlazoredTextEditor editor;

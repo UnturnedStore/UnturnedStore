@@ -76,7 +76,7 @@
         image.ContentType = imageFile.ContentType;
         image.Name = imageFile.Name;
         image.Content = new byte[imageFile.Size];
-        await imageFile.OpenReadStream().ReadAsync(image.Content);
+        await imageFile.OpenReadStream(50 * 1024 * 1024).ReadAsync(image.Content);
 
         var response = await HttpClient.PostAsJsonAsync("api/images", image);
         Product.ImageId = int.Parse(await response.Content.ReadAsStringAsync());

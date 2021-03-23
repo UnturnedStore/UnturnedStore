@@ -34,7 +34,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Image</label>
-                        <InputFile class="form-control" OnChange="@OnInputFileChange" />
+                        <InputFile class="form-control" OnChange="@OnInputFileChange" required />
                         <div class="form-text">Image for your product, has to be .png</div>
                     </div>
 
@@ -80,7 +80,7 @@
 
     public ProductModel Model { get; set; } = new ProductModel()
     {
-
+        
     };
 
     public async Task ShowAsync()
@@ -110,7 +110,7 @@
         image.ContentType = imageFile.ContentType;
         image.Name = imageFile.Name;
         image.Content = new byte[imageFile.Size];
-        await imageFile.OpenReadStream().ReadAsync(image.Content);
+        await imageFile.OpenReadStream(50 * 1024 * 1024).ReadAsync(image.Content);
 
         var response = await HttpClient.PostAsJsonAsync("api/images", image);
         Model.ImageId = int.Parse(await response.Content.ReadAsStringAsync());

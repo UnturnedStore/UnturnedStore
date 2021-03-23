@@ -26,10 +26,8 @@ namespace Website.Client.Pages.Seller
         {
             var response = await HttpClient.GetAsync("api/seller/products/" + ProductId);
             statusCode = response.StatusCode;
-            if (response.IsSuccessStatusCode)
-            {
+            if (statusCode == HttpStatusCode.OK)
                 Product = await response.Content.ReadFromJsonAsync<ProductModel>();
-            }            
         }
     }
 }

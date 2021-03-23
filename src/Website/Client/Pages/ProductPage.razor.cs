@@ -4,6 +4,7 @@ using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -42,11 +43,16 @@ namespace Website.Client.Pages
         private void ToggleShowVersions()
         {
             ShowVersions = !ShowVersions;
-        }        
+        }
+
+        private HttpStatusCode statusCode;
 
         protected override async Task OnInitializedAsync()
         {
-            Product = await HttpClient.GetFromJsonAsync<ProductModel>("api/products/" + ProductId);
+            var response = await HttpClient.GetAsync("api/products/" + ProductId);
+            statusCode = response.StatusCode;
+            if (statusCode == HttpStatusCode.OK)
+                Product = await response.Content.ReadFromJsonAsync<ProductModel>();
             await CartService.ReloadCartAsync();
         }
 
