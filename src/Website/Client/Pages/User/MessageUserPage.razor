@@ -36,9 +36,12 @@
                                 @GetUsername(reply.UserId)
                             </div>
                             <div class="ms-auto">
-                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteReplyAsync(reply)">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
+                                @if (steamAuth.User.Id == reply.UserId)
+                                {
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteReplyAsync(reply)">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -93,9 +96,12 @@
                         </BlazoredTextEditor>
                     </div>
 
-                    <div class="mb-3 d-flex">
+                    <div class="mb-3 d-flex align-content-center">
                         <div>
-
+                            @if (msg != null)
+                            {
+                                <span class="text-danger">@msg</span>
+                            }
                         </div>
                         <div class="ms-auto">
                             @if (isLoading)

@@ -45,8 +45,19 @@ namespace Website.Client.Pages.User
             ToUserId = UserId
         };
 
+        private bool isLoading = false;
+        private string message = null;
         public async Task SubmitAsync()
         {
+            string content = await editor.GetHTML();
+            if (content == "<p><br></p>")
+            {
+                message = "You cannot send empty message";
+                return;
+            }
+            message = null;
+
+            isLoading = true;
             Message.Replies.Add(new MessageReplyModel()
             {
                 Content = await editor.GetHTML()
@@ -56,6 +67,7 @@ namespace Website.Client.Pages.User
             var msg = await response.Content.ReadFromJsonAsync<MessageModel>();
             Message = defaultMessage;
             NavigationManager.NavigateTo($"/messages/{msg.Id}");
+            isLoading = false;
         }
     }
 }

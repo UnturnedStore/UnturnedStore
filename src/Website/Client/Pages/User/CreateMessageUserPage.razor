@@ -62,9 +62,25 @@
                     <DataAnnotationsValidator />
                     <ValidationSummary />
 
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </EditForm>
-                
+                    <div class="mb-3 d-flex align-content-center">
+                        <div>
+                            @if (message != null)
+                            {
+                                <span class="text-danger">@message</span>
+                            }
+                        </div>
+                        <div class="ms-auto">
+                            @if (isLoading)
+                            {
+                                <LoadingButton />
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            }
+                        </div>
+                    </div>                    
+                </EditForm>                
             </div>
         </div>
     </div>

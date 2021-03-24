@@ -1,5 +1,6 @@
 ﻿using Blazored.TextEditor;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Client.Providers;
 using Website.Shared.Models;
 
 namespace Website.Client.Pages.User
@@ -18,11 +20,15 @@ namespace Website.Client.Pages.User
 
         [Inject]
         public HttpClient HttpClient { get; set; }
+        [Inject]
+        public AuthenticationStateProvider AuthState { get; set; }
+
+        public SteamAuthProvider steamAuth => AuthState as SteamAuthProvider;
 
         public MessageModel Message { get; set; }
 
         private BlazoredTextEditor editor;
-
+    
         private HttpStatusCode statusCode;
 
         protected override async Task OnParametersSetAsync()
@@ -33,17 +39,25 @@ namespace Website.Client.Pages.User
                 Message = await response.Content.ReadFromJsonAsync<MessageModel>();
         }
 
+        private string msg = null;
         private bool isLoading = false;
         public async Task AddReplyAsync()
         {
+            string content = await editor.GetHTML();
+            if (content == "<p><br></p>")
+            {
+                msg = "You cannot send empty message";
+                return;
+            }
+            msg = null;
+
             isLoading = true;
             var reply = new MessageReplyModel()
             {
                 MessageId = Message.Id
             };
 
-            reply.Content = await editor.GetHTML();
-
+            reply.Content = content;
             var response = await HttpClient.PostAsJsonAsync("api/messages/replies", reply);
             Message.Replies.Add(await response.Content.ReadFromJsonAsync<MessageReplyModel>());
             await editor.LoadHTMLContent(string.Empty);
