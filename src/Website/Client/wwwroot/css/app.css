@@ -1,12 +1,12 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 @font-face {
-    font-family: 'NotoSans';
-    src: URL('../fonts/NotoSans-Regular.ttf') format('truetype');
+    font-family: 'ApexMk3';
+    src: URL('../fonts/ApexMk3.ttf') format('truetype');
 }
 
 .unturned-font {
-    font-family: NotoSans
+    font-family: ApexMk3
 }
 
 i {
