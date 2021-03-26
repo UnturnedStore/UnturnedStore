@@ -84,10 +84,13 @@
                                 @for (int i = 0; i < Product.Tabs.Count; i++)
                                 {
                                     var tab = Product.Tabs[i];
-                                    <button class="nav-link @(i == 0 ? "active" : "")" id="nav-@tab.Id-tab" data-bs-toggle="tab" data-bs-target="#nav-@tab.Id" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
+                                    <button class="nav-link @(i == 0 ? "active" : "")" id="nav-@tab.Id-tab" data-bs-toggle="tab" data-bs-target="#nav-@tab.Id" type="button" role="tab">
                                         @tab.Title
                                     </button>
                                 }
+                                <button class="nav-link @(Product.Tabs.Count == 0 ? "active" : "")" id="nav-reviews-tab" data-bs-toggle="tab" data-bs-target="#nav-reviews" type="button" role="tab">
+                                    Reviews
+                                </button>
                             </div>
                         </nav>
                         <div class="tab-content p-3 bg-light rounded-2">
@@ -98,6 +101,9 @@
                                     @(new MarkupString(tab.Content))
                                 </div>
                             }
+                            <div class="tab-pane fade @(Product.Tabs.Count == 0 ? "show active" : "")" id="nav-reviews" role="tabpanel" aria-labelledby="nav-reviews-tab">
+                                <ReviewsTab Product="Product" UserReview="Review" />
+                            </div>
                         </div>
                     </div>
                 }
@@ -137,6 +143,18 @@
                                     <a class="btn btn-success" href="/seller/products/@ProductId">
                                         <i class="bi bi-pencil-square"></i> Edit Product
                                     </a>
+                                }
+
+                                @if (Review == null)
+                                {
+                                    <button class="btn btn-info" @onclick="ShowReviewModalAsync">
+                                        <i class="bi bi-star-half"></i> Create Review
+                                    </button>
+                                } else
+                                {
+                                    <button class="btn btn-info" @onclick="ShowReviewModalAsync">
+                                        <i class="bi bi-star-half"></i> Edit Review
+                                    </button>
                                 }
 
                                 @if (ShowVersions)
@@ -188,11 +206,7 @@
         </div>
     </div>
 
-    @if (Review != null)
-    {
-        <ProductReviewModal @ref="ReviewModal" Product="Product" Review="Review" />
-    }
-
+    <ProductReviewModal @ref="ReviewModal" Product="Product" @bind-Review="Review" />
 }
 else
 {

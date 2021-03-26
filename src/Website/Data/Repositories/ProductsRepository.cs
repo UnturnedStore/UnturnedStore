@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace Website.Data.Repositories
 
         public async Task<bool> CanReviewProductAsync(int productId, int userId)
         {
-            const string sql = "SELECT COUNT(*) FROM dbo.Products p JOIN dbo.ProductCustomers c ON p.Id = c.ProductId WHERE p.Id = @productId " +
+            const string sql = "SELECT COUNT(*) FROM dbo.Products p LEFT JOIN dbo.ProductCustomers c ON p.Id = c.ProductId WHERE p.Id = @productId " +
                 "AND (p.Price <= 0 OR c.UserId = @userId);";
             return await connection.ExecuteScalarAsync<bool>(sql, new { productId, userId });
         }
@@ -60,20 +61,11 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<ProductModel>> GetProductsAsync()
         {
-            const string sql = "SELECT p.*, u.Id, u.Name, u.Role, u.SteamId, u.CreateDate FROM dbo.Products p JOIN dbo.Users u ON p.SellerId = u.Id WHERE IsEnabled = 1;";
-            var products = await connection.QueryAsync<ProductModel, UserModel, ProductModel>(sql, (p, u) => 
+            return await connection.QueryAsync<ProductModel, UserModel, ProductModel>("dbo.GetProducts", (p, u) => 
             {
                 p.Seller = u;
                 return p;
-            });
-
-            const string sql2 = "SELECT COALESCE(SUM(v.DownloadsCount), 0) FROM dbo.Branches b " +
-                "LEFT JOIN dbo.Versions v ON v.BranchId = b.Id WHERE b.ProductId = @Id AND v.IsEnabled = 1;";
-            foreach (var product in products)
-            {
-                product.TotalDownloadsCount = await connection.ExecuteScalarAsync<int>(sql2, product);
-            }
-            return products;
+            }, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<ProductModel> GetProductAsync(int productId, int userId)
@@ -232,7 +224,7 @@ namespace Website.Data.Repositories
 
         public async Task<ProductReviewModel> GetProductReviewAsync(int reviewId)
         {
-            const string sql = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews JOIN dbo.Users u ON u.Id = r.UserId " +
+            const string sql = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId " +
                 "WHERE r.Id = @reviewId;";
 
             return (await connection.QueryAsync<ProductReviewModel, UserModel, ProductReviewModel>(sql, (r, u) => 

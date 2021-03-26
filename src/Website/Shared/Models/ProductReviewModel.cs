@@ -25,5 +25,21 @@ namespace Website.Shared.Models
         public DateTime CreateDate { get; set; }
 
         public UserModel User { get; set; }
+
+        public static ProductReviewModel FromReview(ProductReviewModel review)
+        {
+            return new ProductReviewModel()
+            {
+                Id = review.Id,
+                Title = review.Title,
+                Body = review.Body,
+                Rating = review.Rating,
+                ProductId = review.ProductId,
+                UserId = review.UserId,
+                LastUpdate = review.LastUpdate,
+                CreateDate = review.CreateDate,
+                User = review.User
+            };
+        }
     }
 }

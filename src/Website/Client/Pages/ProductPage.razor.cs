@@ -61,8 +61,7 @@ namespace Website.Client.Pages
                 if (SteamAuth.IsAuthenticated)
                 {
                     Review = Product.Reviews.FirstOrDefault(x => x.UserId == SteamAuth.User.Id);
-                    if (Review == null)
-                        Review = new ProductReviewModel() { ProductId = Product.Id };
+                    Product.Reviews.Remove(Review);
                 }
             }                
             await CartService.ReloadCartAsync();
@@ -91,6 +90,11 @@ namespace Website.Client.Pages
             await CartService.AddToCartAsync(orderItem);
             StateHasChanged();
             NavigationManager.NavigateTo("/cart");
+        }
+
+        private async Task ShowReviewModalAsync()
+        {
+            await ReviewModal.ShowModalAsync();
         }
     }
 }

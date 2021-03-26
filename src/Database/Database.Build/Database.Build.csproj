@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Content Include="..\tables\*.sql" />
+    <Content Include="..\procedures\*.sql" />
   </ItemGroup>
 
 
