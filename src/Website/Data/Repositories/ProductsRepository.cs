@@ -18,30 +18,43 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
+        public async Task<bool> CanReviewProductAsync(int productId, int userId)
+        {
+            const string sql = "SELECT COUNT(*) FROM dbo.Products p JOIN dbo.ProductCustomers c ON p.Id = c.ProductId WHERE p.Id = @productId " +
+                "AND (p.Price <= 0 OR c.UserId = @userId);";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { productId, userId });
+        }
+
+        public async Task<bool> IsProductReviewOwnerAsync(int reviewId, int userId)
+        {
+            const string sql = "SELECT COUNT(*) FROM dbo.ProductReviews WHERE Id = @reviewId AND UserId = @userId;";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { reviewId, userId });
+        }
+
         public async Task<bool> IsProductMediaSellerAsync(int mediaId, int userId)
         {
-            const string sql = "SELECT COUNT(1) FROM dbo.ProductMedias m JOIN dbo.Products p ON p.Id = m.ProductId " +
+            const string sql = "SELECT COUNT(*) FROM dbo.ProductMedias m JOIN dbo.Products p ON p.Id = m.ProductId " +
                 "WHERE m.Id = @mediaId AND p.SellerId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { mediaId, userId });
         }
 
         public async Task<bool> IsProductTabSellerAsync(int tabId, int userId)
         {
-            const string sql = "SELECT COUNT(1) FROM dbo.ProductTabs t JOIN dbo.Products p ON p.Id = t.ProductId " +
+            const string sql = "SELECT COUNT(*) FROM dbo.ProductTabs t JOIN dbo.Products p ON p.Id = t.ProductId " +
                 "WHERE t.Id = @tabId AND p.SellerId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { tabId, userId });
         }
 
         public async Task<bool> IsProductCustomerSellerAsync(int productId, int userId)
         {
-            const string sql = "SELECT COUNT(1) FROM dbo.ProductCustomers c JOIN dbo.Products p ON p.Id = c.ProductId " +
+            const string sql = "SELECT COUNT(*) FROM dbo.ProductCustomers c JOIN dbo.Products p ON p.Id = c.ProductId " +
                 "WHERE c.Id = @productId aND p.SellerId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { productId, userId });
         }
 
         public async Task<bool> IsProductSellerAsync(int productId, int userId)
         {
-            const string sql = "SELECT COUNT(1) FROM dbo.Products WHERE Id = @productId AND SellerId = @userId;";
+            const string sql = "SELECT COUNT(*) FROM dbo.Products WHERE Id = @productId AND SellerId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { productId, userId });
         }
 
@@ -119,6 +132,14 @@ namespace Website.Data.Repositories
                 const string sql4 = "SELECT * FROM dbo.ProductCustomers WHERE ProductId = @productId AND UserId = @userId;";
                 product.Customer = await connection.QuerySingleOrDefaultAsync<UserModel>(sql4, new { productId, userId });
             }
+
+            const string sql5 = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
+            product.Reviews = (await connection.QueryAsync<ProductReviewModel, UserModel, ProductReviewModel>(sql5, (r, u) =>
+            {
+                r.User = u;
+                return r;
+            }, new { productId })).ToList();
+
 
             return product;
         }
@@ -198,6 +219,39 @@ namespace Website.Data.Repositories
         {
             const string sql = "DELETE FROM dbo.ProductCustomers WHERE Id = @customerId;";
             await connection.ExecuteAsync(sql, new { customerId });
+        }
+
+        public async Task<ProductReviewModel> AddProductReviewAsync(ProductReviewModel review)
+        {
+            const string sql = "INSERT INTO dbo.ProductReviews (Title, Body, Rating, ProductId, UserId) " +
+                "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.Body, INSERTED.Rating, INSERTED.ProductId, INSERTED.UserId, " +
+                "INSERTED.LastUpdate, INSERTED.CreateDate " +
+                "VALUES (@Title, @Body, @Rating, @ProductId, @UserId);";
+            return await GetProductReviewAsync(await connection.ExecuteScalarAsync<int>(sql, review));
+        }
+
+        public async Task<ProductReviewModel> GetProductReviewAsync(int reviewId)
+        {
+            const string sql = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews JOIN dbo.Users u ON u.Id = r.UserId " +
+                "WHERE r.Id = @reviewId;";
+
+            return (await connection.QueryAsync<ProductReviewModel, UserModel, ProductReviewModel>(sql, (r, u) => 
+            {
+                r.User = u;
+                return r;
+            }, new { reviewId })).FirstOrDefault();
+        }
+
+        public async Task UpdateProductReviewAsync(ProductReviewModel review)
+        {
+            const string sql = "UPDATE dbo.ProductReviews SET Title = @Title, Body = @Body, Rating = @Rating WHERE Id = @Id;";
+            await connection.ExecuteAsync(sql, review);
+        }
+
+        public async Task DeleteProductReviewAsync(int reviewId)
+        {
+            const string sql = "DELETE FROM dbo.ProductReviews WHERE Id = @reviewId;";
+            await connection.ExecuteAsync(sql, new { reviewId });
         }
 
         public async Task<IEnumerable<ProductCustomerModel>> GetUserProductsAsync(int userId)

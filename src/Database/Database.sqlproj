@@ -9,8 +9,7 @@
     <ProjectGuid>{cc717e67-d6f6-48ca-8f53-96b192a832d5}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>Database</RootNamespace>
     <AssemblyName>Database</AssemblyName>
     <ModelCollation>1033, CI</ModelCollation>
@@ -48,7 +47,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -71,6 +69,7 @@
     <Build Include="tables\ProductCustomers.sql" />
     <Build Include="tables\MessageReplies.sql" />
     <Build Include="tables\Messages.sql" />
+    <Build Include="tables\ProductReviews.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

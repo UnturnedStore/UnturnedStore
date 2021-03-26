@@ -35,8 +35,9 @@ namespace Website.Shared.Models
 
         public List<ProductTabModel> Tabs { get; set; }
         public List<ProductMediaModel> Medias { get; set; }
-
+        public List<ProductReviewModel> Reviews { get; set; }
         public List<BranchModel> Branches { get; set; }
+        
 
         public string GetDescription()
         {

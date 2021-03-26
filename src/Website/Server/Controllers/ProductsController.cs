@@ -123,6 +123,39 @@ namespace Website.Server.Controllers
             await productsRepository.DeleteProductCustomerAsync(customerId);
             return Ok();
         }
+        
+        [Authorize]
+        [HttpPost("reviews")]
+        public async Task<IActionResult> PostProductReviewAsync([FromBody] ProductReviewModel review)
+        {
+            review.UserId = int.Parse(User.Identity.Name);
+            if (!await productsRepository.CanReviewProductAsync(review.ProductId, review.UserId))
+                return BadRequest();
+
+            return Ok(await productsRepository.AddProductReviewAsync(review));
+        }
+
+        [Authorize]
+        [HttpPut("reviews")]
+        public async Task<IActionResult> PutProductReviewAsync([FromBody] ProductReviewModel review)
+        {
+            if (!await productsRepository.IsProductReviewOwnerAsync(review.Id, int.Parse(User.Identity.Name)))
+                return BadRequest();
+
+            await productsRepository.UpdateProductReviewAsync(review);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("reviews/{reviewId}")]
+        public async Task<IActionResult> DeleteProductReviewAsync(int reviewId)
+        {
+            if (!await productsRepository.IsProductReviewOwnerAsync(reviewId, int.Parse(User.Identity.Name)))
+                return BadRequest();
+
+            await productsRepository.DeleteProductReviewAsync(reviewId);
+            return Ok();
+        }
 
         [Authorize]
         [HttpGet("my")]
