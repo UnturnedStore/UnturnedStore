@@ -2,7 +2,7 @@
 AS
 BEGIN
 	WITH CTE_ProductDownloads AS (
-		SELECT ProductId, DownloadsCount = SUM(v.DownloadsCount) FROM dbo.Branches b LEFT JOIN dbo.Versions v ON v.BranchId = b.Id GROUP BY ProductId
+		SELECT ProductId, TotalDownloadsCount = SUM(v.DownloadsCount) FROM dbo.Branches b LEFT JOIN dbo.Versions v ON v.BranchId = b.Id GROUP BY ProductId
 	), 
 	CTE_ProductRating AS (
 		SELECT ProductId, AverageRating = AVG(r.Rating), RatingsCount = COUNT(*) FROM dbo.Products p LEFT JOIN dbo.ProductReviews r ON p.Id = r.ProductId GROUP BY ProductId
@@ -18,7 +18,7 @@ BEGIN
 		p.IsEnabled,
 		p.LastUpdate,
 		p.CreateDate,
-		DownloadsCount = ISNULL(d.DownloadsCount, 0), 
+		TotalDownloadsCount = ISNULL(d.TotalDownloadsCount, 0), 
 		AverageRating = ISNULL(r.AverageRating, 0), 
 		RatingsCount = ISNULL(RatingsCount, 0),
 		u.Id, 
