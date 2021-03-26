@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Extensions;
+using Website.Client.Pages.Components;
 using Website.Client.Providers;
 using Website.Client.Services;
 using Website.Shared.Models;
@@ -47,12 +48,23 @@ namespace Website.Client.Pages
 
         private HttpStatusCode statusCode;
 
+        public ProductReviewModal ReviewModal { get; set; }
+        public ProductReviewModel Review { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             var response = await HttpClient.GetAsync("api/products/" + ProductId);
             statusCode = response.StatusCode;
             if (statusCode == HttpStatusCode.OK)
+            {
                 Product = await response.Content.ReadFromJsonAsync<ProductModel>();
+                if (SteamAuth.IsAuthenticated)
+                {
+                    Review = Product.Reviews.FirstOrDefault(x => x.UserId == SteamAuth.User.Id);
+                    if (Review == null)
+                        Review = new ProductReviewModel() { ProductId = Product.Id };
+                }
+            }                
             await CartService.ReloadCartAsync();
         }
 

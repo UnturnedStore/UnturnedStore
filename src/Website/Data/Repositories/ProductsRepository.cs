@@ -133,7 +133,7 @@ namespace Website.Data.Repositories
                 product.Customer = await connection.QuerySingleOrDefaultAsync<UserModel>(sql4, new { productId, userId });
             }
 
-            const string sql5 = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
+            const string sql5 = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
             product.Reviews = (await connection.QueryAsync<ProductReviewModel, UserModel, ProductReviewModel>(sql5, (r, u) =>
             {
                 r.User = u;
@@ -244,7 +244,8 @@ namespace Website.Data.Repositories
 
         public async Task UpdateProductReviewAsync(ProductReviewModel review)
         {
-            const string sql = "UPDATE dbo.ProductReviews SET Title = @Title, Body = @Body, Rating = @Rating WHERE Id = @Id;";
+            const string sql = "UPDATE dbo.ProductReviews SET Title = @Title, Body = @Body, Rating = @Rating, " +
+                "LastUpdate = SYSDATETIME() WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, review);
         }
 

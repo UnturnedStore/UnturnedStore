@@ -1,0 +1,50 @@
+﻿
+@if (Product != null)
+{
+    if (UserReview != null && UserReview.Id != 0)
+    {
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <div class="fw-bold">
+                        @UserReview.Title
+                    </div>
+                    <div class="ms-auto">
+                        You
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @UserReview.Body
+            </div>
+        </div>
+    }
+
+    @foreach (var review in Product.Reviews.OrderByDescending(x => x.CreateDate))
+    {
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <div class="fw-bold">
+                        @review.Title
+                    </div>
+                    <div class="ms-auto">
+                        @review.User.Name
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @review.Body
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public ProductModel Product { get; set; }
+    [Parameter]
+    public ProductReviewModel UserReview { get; set; }
+
+}
