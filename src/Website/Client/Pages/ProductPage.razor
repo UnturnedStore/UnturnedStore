@@ -143,22 +143,25 @@
                                     <a class="btn btn-success" href="/seller/products/@ProductId">
                                         <i class="bi bi-pencil-square"></i> Edit Product
                                     </a>
+                                } else
+                                {
+                                    @if (SteamAuth.IsAuthenticated)
+                                    {
+                                        @if (Review == null)
+                                        {
+                                            <button class="btn btn-info" @onclick="ShowReviewModalAsync">
+                                                <i class="bi bi-star-half"></i> Create Review
+                                            </button>
+                                        } else
+                                        {
+                                            <button class="btn btn-info" @onclick="ShowReviewModalAsync">
+                                                <i class="bi bi-star-half"></i> Edit Review
+                                            </button>
+                                        }
+                                    }
                                 }
 
-                                @if (SteamAuth.IsAuthenticated)
-                                {
-                                    @if (Review == null)
-                                    {
-                                        <button class="btn btn-info" @onclick="ShowReviewModalAsync">
-                                            <i class="bi bi-star-half"></i> Create Review
-                                        </button>
-                                    } else
-                                    {
-                                        <button class="btn btn-info" @onclick="ShowReviewModalAsync">
-                                            <i class="bi bi-star-half"></i> Edit Review
-                                        </button>
-                                    }
-                                }                                
+                                                                
 
                                 @if (ShowVersions)
                                 {
