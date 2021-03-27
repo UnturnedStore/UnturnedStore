@@ -1,4 +1,5 @@
 ﻿using Blazored.TextEditor;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
@@ -13,6 +14,7 @@ using Website.Shared.Models;
 
 namespace Website.Client.Pages.User
 {
+    [Authorize]
     public partial class MessageUserPage
     {
         [Parameter]

@@ -1,16 +1,16 @@
-﻿using ChartJs.Blazor.ChartJS.Common.Properties;
-using ChartJs.Blazor.ChartJS.PieChart;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Shared.Constants;
 using Website.Shared.Models;
 
 namespace Website.Client.Pages.Seller
 {
+    [Authorize(Roles = RoleConstants.AdminAndSeller)]
     public partial class StatisticsSellerPage
     {
         [Inject]
