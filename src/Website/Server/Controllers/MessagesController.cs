@@ -55,6 +55,17 @@ namespace Website.Server.Controllers
 
             return Ok(message);
         }
+
+        [HttpPatch("{messageId}")]
+        public async Task<IActionResult> PatchMessageAsync(int messageId)
+        {
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(messageId, userId))
+                return BadRequest();
+
+            await messagesRepository.CloseMessageAsync(messageId, userId);
+            return Ok();
+        }
         
         [HttpPost("replies")]
         public async Task<IActionResult> PostMessageReplyAsync([FromBody] MessageReplyModel reply)

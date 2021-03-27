@@ -72,6 +72,13 @@ namespace Website.Client.Pages.User
             Message.Replies.Remove(reply);
         }
 
+        public async Task CloseAsync()
+        {
+            Message.IsClosed = true;
+            Message.ClosingUserId = steamAuth.User.Id;
+            await HttpClient.PatchAsync("api/messages/" + MessageId, null);            
+        }
+
         private string GetUsername(int userId)
         {
             if (Message.FromUserId == userId)

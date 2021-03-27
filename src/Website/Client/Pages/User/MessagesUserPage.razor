@@ -1,47 +1,72 @@
 ﻿@page "/messages"
 
-    <Title Value="Messages - Unturned Store"></Title>
+<Title Value="Messages - Unturned Store"></Title>
 
-    <Meta name="description" content="Marketplace of products for Unturned" />
-    <Meta property="og:title" content="Messages" />
-    <Meta property="og:type" content="website" />
-    <Meta property="og:url" content="plugins.restoremonarchy.com" />
-    <Meta property="og:image" content="/img/logo.png" />
-    <Meta property="og:image:width" content="128" />
-    <Meta property="og:image:height" content="128" />
-    <Meta property="og:description" content="Marketplace of products for Unturned" />
-    <Meta name="theme-color" content="#FFCC00" />
+<Meta name="description" content="Marketplace of products for Unturned" />
+<Meta property="og:title" content="Messages" />
+<Meta property="og:type" content="website" />
+<Meta property="og:url" content="plugins.restoremonarchy.com" />
+<Meta property="og:image" content="/img/logo.png" />
+<Meta property="og:image:width" content="128" />
+<Meta property="og:image:height" content="128" />
+<Meta property="og:description" content="Marketplace of products for Unturned" />
+<Meta name="theme-color" content="#FFCC00" />
 
-    @if (Messages != null)
-    {
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Messages</li>
-            </ol>
-        </nav>
+@if (Messages != null)
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Messages</li>
+        </ol>
+    </nav>
 
-        <div class="bg-light p-3 rounded-3">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Replies</th>
-                        <th>Participant</th>
+    <div class="bg-light p-3 rounded-3 mb-3">
+        <h5>Active Messages</h5>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Replies</th>
+                    <th>Participant</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var msg in ActiveMessages.OrderByDescending(x => x.CreateDate))
+                {
+                    <tr style="cursor: pointer;" @onclick="() => GoToMessage(msg)">
+                        <td>@msg.Id</td>
+                        <td>@msg.Title</td>
+                        <td>@msg.Replies.Count</td>
+                        <td>@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser.Name : msg.ToUser.Name)</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (var msg in Messages.OrderByDescending(x => x.CreateDate))
-                    {
-                        <tr style="cursor: pointer;" @onclick="() => GoToMessage(msg)">
-                            <td>@msg.Id</td>
-                            <td>@msg.Title</td>
-                            <td>@msg.Replies.Count</td>
-                            <td>@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser.Name : msg.ToUser.Name)</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                }
+            </tbody>
+        </table>
+    </div>
 
-        </div>
-    }
+    <div class="bg-light p-3 rounded-3 mb-3">
+        <h5>Closed Messages</h5>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Replies</th>
+                    <th>Participant</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var msg in ClosedMessages.OrderByDescending(x => x.CreateDate))
+                {
+                    <tr style="cursor: pointer;" @onclick="() => GoToMessage(msg)">
+                        <td>@msg.Id</td>
+                        <td>@msg.Title</td>
+                        <td>@msg.Replies.Count</td>
+                        <td>@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser.Name : msg.ToUser.Name)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

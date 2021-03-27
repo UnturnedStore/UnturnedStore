@@ -26,6 +26,9 @@ namespace Website.Client.Pages.User
 
         public List<MessageModel> Messages { get; set; }
 
+        public IEnumerable<MessageModel> ActiveMessages => Messages.Where(x => !x.IsClosed);
+        public IEnumerable<MessageModel> ClosedMessages => Messages.Where(x => x.IsClosed);
+
         protected override async Task OnInitializedAsync()
         {
             Messages = await HttpClient.GetFromJsonAsync<List<MessageModel>>("api/messages");

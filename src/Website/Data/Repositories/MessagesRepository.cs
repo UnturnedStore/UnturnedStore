@@ -70,6 +70,12 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { replyId });
         }
 
+        public async Task CloseMessageAsync(int messageId, int userId)
+        {
+            const string sql = "UPDATE dbo.Messages SET IsClosed = 1, ClosingUserId = @userId WHERE Id = @messageId;";
+            await connection.ExecuteAsync(sql, new { messageId, userId });
+        }
+
         public async Task<MessageModel> GetMessageAsync(int messageId)
         {
             const string sql = "SELECT m.*, fu.*, tu.* FROM dbo.Messages m " +

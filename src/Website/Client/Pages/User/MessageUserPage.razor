@@ -21,42 +21,44 @@
 
 @if (Message != null)
 {
+<div class="mb-3">
     <div class="mb-3">
-        <div class="mb-3">
-            <h2><span class="fw-bold">Topic:</span> @Message.Title</h2>
-        </div>
+        <h2><span class="fw-bold">Topic:</span> @Message.Title</h2>
+    </div>
 
-        @foreach (var reply in Message.Replies.OrderBy(x => x.CreateDate))
-        {
-            <div class="mb-3">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <div class="fw-bold">
-                                @GetUsername(reply.UserId)
-                            </div>
-                            <div class="ms-auto">
-                                @if (steamAuth.User.Id == reply.UserId)
-                                {
-                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteReplyAsync(reply)">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </button>
-                                }
-                            </div>
+    @foreach (var reply in Message.Replies.OrderBy(x => x.CreateDate))
+    {
+        <div class="mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <div class="fw-bold">
+                            @GetUsername(reply.UserId)
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div>
-                            @(new MarkupString(reply.Content))
-                        </div>
-                        <div class="text-muted">
-                            @reply.CreateDate
+                        <div class="ms-auto">
+                            @if (steamAuth.User.Id == reply.UserId)
+                            {
+                                <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteReplyAsync(reply)">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            }
                         </div>
                     </div>
                 </div>
+                <div class="card-body">
+                    <div>
+                        @(new MarkupString(reply.Content))
+                    </div>
+                    <div class="text-muted">
+                        @reply.CreateDate
+                    </div>
+                </div>
             </div>
-        }
-        <div>
+        </div>
+    }
+    @if (!Message.IsClosed)
+    {
+        <div class="mb-3">
             <div class="card">
                 <div class="card-header">
                     <div class="fw-bold">
@@ -104,22 +106,33 @@
                             }
                         </div>
                         <div class="ms-auto">
+                            <button class="btn btn-secondary me-2" @onclick="CloseAsync"><i class="bi bi-exclamation-circle"></i> Close</button>
+
                             @if (isLoading)
                             {
                                 <LoadingButton />
                             }
                             else
                             {
-                                <button class="btn btn-primary ms-auto" @onclick="AddReplyAsync">Send Reply</button>
+                                <button class="btn btn-primary" @onclick="AddReplyAsync">Send Reply</button>
                             }
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    } else
+    {
+        <div class="mb-3">
+            <div class="alert alert-secondary" role="alert">
+                This message was closed by @GetUsername(Message.ClosingUserId)
+            </div>
+        </div>
+    }
 
 
-    </div>
+
+</div>
 }
 else
 {
