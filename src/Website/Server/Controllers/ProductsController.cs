@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
+using Website.Server.Services;
 using Website.Shared.Constants;
 using Website.Shared.Models;
 
@@ -12,10 +13,12 @@ namespace Website.Server.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductsRepository productsRepository;
+        private readonly DiscordService discordService;
 
-        public ProductsController(ProductsRepository productsRepository)
+        public ProductsController(ProductsRepository productsRepository, DiscordService discordService)
         {
             this.productsRepository = productsRepository;
+            this.discordService = discordService;
         }
 
         [HttpGet]
@@ -132,7 +135,9 @@ namespace Website.Server.Controllers
             if (!await productsRepository.CanReviewProductAsync(review.ProductId, review.UserId))
                 return BadRequest();
 
-            return Ok(await productsRepository.AddProductReviewAsync(review));
+            review = await productsRepository.AddProductReviewAsync(review);
+            await discordService.SendReviewAsync(review, Request.Headers["Origin"]);
+            return Ok(review);
         }
 
         [Authorize]

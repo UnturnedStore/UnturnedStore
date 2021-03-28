@@ -53,6 +53,26 @@ namespace Website.Server.Services
             });
         }
 
+        public async Task SendReviewAsync(ProductReviewModel review, string baseUrl)
+        {
+            var product = await productsRepository.GetProductAsync(review.ProductId, 0);
+
+            var eb = new EmbedBuilder();
+
+            eb.WithColor(Color.Blue);
+            eb.WithAuthor(product.Name, baseUrl + "/api/images/" + product.ImageId, baseUrl + "/products/" + product.Id);
+            eb.WithFooter(review.User.Name);
+            eb.WithCurrentTimestamp();
+
+            string stars = "";
+            for (int i = 1; i <= review.Rating; i++)
+                stars += ":star:";
+            eb.WithTitle(stars);
+            eb.AddField(review.Title, review.Body);
+
+            SendEmbed(config["SendNewReviewWebhookUrl"], eb.Build());
+        }
+
         public async Task SendMessageReplyAsync(MessageReplyModel reply, string baseUrl)
         {
             var msg = await messagesRepository.GetMessageAsync(reply.MessageId);
