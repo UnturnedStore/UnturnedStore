@@ -77,8 +77,7 @@
 
     [Parameter]
     public ProductModel Product { get; set; }
-    [Parameter]
-    public ProductReviewModel Review { get; set; }
+
     [Parameter]
     public EventCallback<ProductReviewModel> ReviewChanged { get; set; }
 
@@ -100,14 +99,14 @@
         return "bi-star";
     }
 
-    public async Task ShowModalAsync()
+    public async Task ShowModalAsync(ProductReviewModel review)
     {
         if (Model == null)
         {
-            if (Review == null)
+            if (review == null)
                 Model = new ProductReviewModel() { ProductId = Product.Id };
             else
-                Model = ProductReviewModel.FromReview(Review);
+                Model = ProductReviewModel.FromReview(review);
         }
         await JSRuntime.ShowModalStaticAsync(nameof(ProductReviewModal));
     }
@@ -119,13 +118,12 @@
         if (Model.Id == 0)
         {
             var response = await HttpClient.PostAsJsonAsync("api/products/reviews", Model);
-            Review = await response.Content.ReadFromJsonAsync<ProductReviewModel>();
+            Model = await response.Content.ReadFromJsonAsync<ProductReviewModel>();
         } else
         {
             await HttpClient.PutAsJsonAsync("api/products/reviews", Model);
-            Review = Model;
         }
-        await ReviewChanged.InvokeAsync(Review);
+        await ReviewChanged.InvokeAsync(Model);
         isLoading = false;
         await JSRuntime.HideModalAsync(nameof(ProductReviewModal));
     }
@@ -137,8 +135,7 @@
         await HttpClient.DeleteAsync("api/products/reviews/" + Model.Id);
         isLoading2 = false;
         await JSRuntime.HideModalAsync(nameof(ProductReviewModal));
-        Review = null;
         Model = null;
-        await ReviewChanged.InvokeAsync(Review);
+        await ReviewChanged.InvokeAsync(null);
     }
 }

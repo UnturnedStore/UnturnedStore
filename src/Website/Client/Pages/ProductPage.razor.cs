@@ -94,7 +94,12 @@ namespace Website.Client.Pages
 
         private async Task ShowReviewModalAsync()
         {
-            await ReviewModal.ShowModalAsync();
+            await ReviewModal.ShowModalAsync(Review);
+        }
+
+        private void OnReviewChanged(ProductReviewModel review)
+        {
+            Review = review;
         }
     }
 }
