@@ -34,6 +34,7 @@ namespace Website.Client.Pages
             await CartService.RemoveFromCartAsync(orderParams, item);
         }
 
+        private bool isWaitingForProvider = false;
         private async Task CheckoutPayPalAsync(OrderParams orderParams)
         {
             if (!orderParams.IsAgree)
@@ -43,6 +44,7 @@ namespace Website.Client.Pages
             var response = await HttpClient.PostAsJsonAsync("api/orders", orderParams);
 
             var order = await response.Content.ReadFromJsonAsync<OrderModel>();
+            isWaitingForProvider = true;
             NavigationManager.NavigateTo(order.PaymentUrl, true);
             await CartService.RemoveCartAsync(orderParams);
         }
