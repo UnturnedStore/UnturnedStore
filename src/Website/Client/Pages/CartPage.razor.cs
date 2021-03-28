@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Client.Pages.Components;
 using Website.Client.Services;
 using Website.Shared.Constants;
 using Website.Shared.Models;
@@ -19,6 +20,8 @@ namespace Website.Client.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        public TermsModal TermsModal { get; set; }
+
         private List<OrderParams> Carts => CartService.Carts;
 
         protected override async Task OnInitializedAsync()
@@ -33,12 +36,20 @@ namespace Website.Client.Pages
 
         private async Task CheckoutPayPalAsync(OrderParams orderParams)
         {
+            if (!orderParams.IsAgree)
+                return;
+
             orderParams.PaymentMethod = PaymentContants.PayPal;
             var response = await HttpClient.PostAsJsonAsync("api/orders", orderParams);
 
             var order = await response.Content.ReadFromJsonAsync<OrderModel>();
             NavigationManager.NavigateTo(order.PaymentUrl, true);
             await CartService.RemoveCartAsync(orderParams);
+        }
+
+        public async Task ShowTermsModalAsync(UserModel seller)
+        {
+            await TermsModal.ShowAsync(seller);
         }
     }
 }

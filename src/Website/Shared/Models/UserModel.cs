@@ -22,8 +22,26 @@ namespace Website.Shared.Models
         public string PayPalCurrency { get; set; }
         [MaxLength(255)]
         public string DiscordWebhookUrl { get; set; }
+        [MaxLength(4000)]
+        public string TermsAndConditions { get; set; }
         public DateTime CreateDate { get; set; }
 
         public List<ProductCustomerModel> Products { get; set; }
+
+        public static UserModel FromUser(UserModel user)
+        {
+            return new UserModel()
+            {
+                Id = user.Id,
+                SteamId = user.SteamId,
+                Name = user.Name,
+                PayPalCurrency = user.PayPalCurrency,
+                PayPalEmail = user.PayPalEmail,
+                Role = user.Role,
+                TermsAndConditions = user.TermsAndConditions,
+                DiscordWebhookUrl = user.DiscordWebhookUrl,
+                CreateDate = user.CreateDate
+            };
+        }
     }
 }

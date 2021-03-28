@@ -1,5 +1,5 @@
 ﻿@page "/cart"
-
+@using Website.Client.Pages.Components
 
 <Title Value="Cart - Unturned Store"></Title>
 
@@ -77,6 +77,16 @@
 
                     <AuthorizeView>
                         <Authorized>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" @bind="cart.IsAgree" id="@("check" + cart.SellerId)">
+                                <label class="form-check-label" for="@("check" + cart.SellerId)">
+                                    I agree to the <a href="javascript:void(0)" @onclick="() => ShowTermsModalAsync(cart.Seller)">terms & conditions</a> of @cart.Seller.Name
+                                    @if (!cart.IsAgree)
+                                    {
+                                        <span class="text-danger"> *required</span>
+                                    }
+                                </label>
+                            </div>
                             <div class="mb-3">
                                 <a href="javascript:void(0)" @onclick="() => CheckoutPayPalAsync(cart)">
                                     <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-medium.png" alt="Check out with PayPal" /> <br />
@@ -95,3 +105,5 @@
         }
     }
 </div>
+
+<TermsModal @ref="TermsModal" />

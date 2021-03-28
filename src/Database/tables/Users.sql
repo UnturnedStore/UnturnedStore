@@ -8,6 +8,7 @@
 	PayPalEmail NVARCHAR(255) NULL,
 	PayPalCurrency CHAR(3) NOT NULL CONSTRAINT DF_Users_PayPalCurrency DEFAULT 'USD',
 	DiscordWebhookUrl NVARCHAR(255) NULL,
+	TermsAndConditions NVARCHAR(4000) NULL,
 	CreateDate DATETIME2(0) NOT NULL CONSTRAINT DF_Users_CreateDate DEFAULT SYSDATETIME(),
 	CONSTRAINT UK_Users_SteamId UNIQUE (SteamId)
 )

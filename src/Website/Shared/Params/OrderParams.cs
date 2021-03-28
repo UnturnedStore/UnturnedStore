@@ -20,5 +20,7 @@ namespace Website.Shared.Params
 
         [JsonIgnore]
         public UserModel Seller { get; set; }
+        [JsonIgnore]
+        public bool IsAgree { get; set; }
     }
 }

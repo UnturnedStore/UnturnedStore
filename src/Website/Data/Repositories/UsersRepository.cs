@@ -19,7 +19,7 @@ namespace Website.Data.Repositories
 
         public async Task<UserModel> GetUserPublicAsync(int userId)
         {
-            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
+            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.TermsAndConditions, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
                 "LEFT JOIN dbo.Products p ON c.ProductId = p.Id WHERE u.Id = @userId;";
 
             UserModel user = null;
@@ -81,7 +81,8 @@ namespace Website.Data.Repositories
 
         public async Task UpdateUserAsync(UserModel user)
         {
-            const string sql = "UPDATE dbo.Users SET Name = @Name, PayPalEmail = @PayPalEmail, PayPalCurrency = @PayPalCurrency, DiscordWebhookUrl = @DiscordWebhookUrl " +
+            const string sql = "UPDATE dbo.Users SET Name = @Name, PayPalEmail = @PayPalEmail, PayPalCurrency = @PayPalCurrency, " +
+                "TermsAndConditions = @TermsAndConditions, DiscordWebhookUrl = @DiscordWebhookUrl " +
                 "WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, user);

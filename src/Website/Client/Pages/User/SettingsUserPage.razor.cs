@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Blazored.TextEditor;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
@@ -22,6 +23,8 @@ namespace Website.Client.Pages.User
 
         public UserModel User { get; set; }
 
+        private BlazoredTextEditor editor;
+
         protected override async Task OnInitializedAsync()
         {
             User = await HttpClient.GetFromJsonAsync<UserModel>("api/users/me");
@@ -31,7 +34,12 @@ namespace Website.Client.Pages.User
         private async Task SubmitAsync()
         {
             isLoading = true;
-            await HttpClient.PutAsJsonAsync("api/users", User);
+            var user = UserModel.FromUser(User);
+            user.TermsAndConditions = await editor.GetHTML();
+            if (user.TermsAndConditions == "<p><br></p>")
+                user.TermsAndConditions = null;
+            
+            await HttpClient.PutAsJsonAsync("api/users", user);
             NavigationManager.NavigateTo(NavigationManager.Uri, true);
             isLoading = false;
         }
