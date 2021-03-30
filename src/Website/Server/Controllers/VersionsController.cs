@@ -27,7 +27,7 @@ namespace Website.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> PostVersionAsync([FromBody] VersionModel version)
         {
-            if (!await branchesRepository.IsBranchSellerAsync(version.BranchId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await branchesRepository.IsBranchSellerAsync(version.BranchId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             version = await versionsRepository.AddVersionAsync(version);
@@ -41,7 +41,7 @@ namespace Website.Server.Controllers
         [HttpPatch("{versionId}")]
         public async Task<IActionResult> PatchVersionAsync(int versionId)
         {
-            if (!await versionsRepository.IsVersionOwnerAsync(versionId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await versionsRepository.IsVersionOwnerAsync(versionId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await versionsRepository.ToggleVersionAsync(versionId);
@@ -57,7 +57,7 @@ namespace Website.Server.Controllers
 
             bool isOwner = await versionsRepository.IsVersionOwnerAsync(versionId, userId);
             var version = await versionsRepository.GetVersionAsync(versionId, isOwner);
-            if (!isOwner && version.Branch.Product.Price > 0)
+            if (!isOwner && version.Branch.Product.Price > 0 && !User.IsInRole(RoleConstants.AdminRoleId))
             {
                 if (!await versionsRepository.IsVersionCustomerAsync(versionId, userId))
                     return Unauthorized();

@@ -28,5 +28,11 @@ namespace Website.Server.Controllers
             await adminRepository.UpdateUserAsync(user);
             return Ok();
         }
+
+        [HttpGet("products")]
+        public async Task<IActionResult> GetProductsAsync()
+        {
+            return Ok(await adminRepository.GetProductsAsync());
+        }
     }
 }

@@ -46,7 +46,7 @@ namespace Website.Server.Controllers
         [HttpPut]
         public async Task<IActionResult> PutProductAsync([FromBody] ProductModel product)
         {            
-            if (!await productsRepository.IsProductSellerAsync(product.Id, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(product.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await productsRepository.UpdateProductAsync(product);
@@ -57,7 +57,7 @@ namespace Website.Server.Controllers
         [HttpPost("tabs")]
         public async Task<IActionResult> PostProductTabAsync([FromBody] ProductTabModel tab)
         {
-            if (!await productsRepository.IsProductSellerAsync(tab.ProductId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(tab.ProductId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             return Ok(await productsRepository.AddProductTabAsync(tab));
@@ -67,7 +67,7 @@ namespace Website.Server.Controllers
         [HttpPut("tabs")]
         public async Task<IActionResult> PutProductTabAsync([FromBody] ProductTabModel tab)
         {
-            if (!await productsRepository.IsProductTabSellerAsync(tab.Id, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductTabSellerAsync(tab.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await productsRepository.UpdateProductTabAsync(tab);
@@ -78,7 +78,7 @@ namespace Website.Server.Controllers
         [HttpDelete("tabs/{tabId}")]
         public async Task<IActionResult> DeleteProductTabAsync(int tabId)
         {
-            if (!await productsRepository.IsProductTabSellerAsync(tabId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductTabSellerAsync(tabId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await productsRepository.DeleteProductTabAsync(tabId);
@@ -89,7 +89,7 @@ namespace Website.Server.Controllers
         [HttpPost("medias")]
         public async Task<IActionResult> PostProductMediaAsync([FromBody] ProductMediaModel media)
         {
-            if (!await productsRepository.IsProductSellerAsync(media.ProductId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(media.ProductId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             return Ok(await productsRepository.AddProductMediaAsync(media));
@@ -99,7 +99,7 @@ namespace Website.Server.Controllers
         [HttpDelete("medias/{mediaId}")]
         public async Task<IActionResult> DeleteProductMediaAsync(int mediaId)
         {
-            if (!await productsRepository.IsProductMediaSellerAsync(mediaId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductMediaSellerAsync(mediaId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await productsRepository.DeleteProductMediaAsync(mediaId);
@@ -110,7 +110,7 @@ namespace Website.Server.Controllers
         [HttpPost("customers")]
         public async Task<IActionResult> PostProductCustomerAsync([FromBody] ProductCustomerModel customer)
         {
-            if (!await productsRepository.IsProductSellerAsync(customer.ProductId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(customer.ProductId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             return Ok(await productsRepository.AddProductCustomerAsync(customer));
@@ -120,7 +120,7 @@ namespace Website.Server.Controllers
         [HttpDelete("customers/{customerId}")]
         public async Task<IActionResult> DeleteProductCustomerAsync(int customerId)
         {
-            if (!await productsRepository.IsProductCustomerSellerAsync(customerId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductCustomerSellerAsync(customerId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await productsRepository.DeleteProductCustomerAsync(customerId);
@@ -144,7 +144,7 @@ namespace Website.Server.Controllers
         [HttpPut("reviews")]
         public async Task<IActionResult> PutProductReviewAsync([FromBody] ProductReviewModel review)
         {
-            if (!await productsRepository.IsProductReviewOwnerAsync(review.Id, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductReviewOwnerAsync(review.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await productsRepository.UpdateProductReviewAsync(review);
@@ -155,7 +155,7 @@ namespace Website.Server.Controllers
         [HttpDelete("reviews/{reviewId}")]
         public async Task<IActionResult> DeleteProductReviewAsync(int reviewId)
         {
-            if (!await productsRepository.IsProductReviewOwnerAsync(reviewId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductReviewOwnerAsync(reviewId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await productsRepository.DeleteProductReviewAsync(reviewId);

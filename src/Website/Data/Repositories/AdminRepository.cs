@@ -23,5 +23,15 @@ namespace Website.Data.Repositories
             const string sql = "UPDATE dbo.Users SET Role = @Role WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, user);
         }
+
+        public async Task<IEnumerable<ProductModel>> GetProductsAsync()
+        {
+            const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON p.SellerId = u.Id;";
+            return await connection.QueryAsync<ProductModel, UserModel, ProductModel>(sql, (p, u) => 
+            {
+                p.Seller = u;
+                return p;
+            });
+        }
     }
 }

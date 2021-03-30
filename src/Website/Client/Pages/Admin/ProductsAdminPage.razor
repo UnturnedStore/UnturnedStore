@@ -1,0 +1,50 @@
+﻿@page "/admin/products"
+
+<Title Value="@($"Manage Products - Unturned Store")"></Title>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Users</li>
+    </ol>
+</nav>
+
+<div class="mb-3 d-flex align-items-center">
+    <div>
+        <h5>All products</h5>
+    </div>
+    <div class="ms-auto">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-default">Search</span>
+            <input type="text" class="form-control" @bind="searchString" @bind:event="oninput" placeholder="Name or Author">
+        </div>
+    </div>
+</div>
+
+@if (Products != null)
+{
+    <div class="mb-3">
+        <table class="table table-striped table-hover">
+            <caption>@Products.Count() Total Products</caption>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Seller</th>
+                    <th>Price</th>
+                    <th>IsEnabled</th>
+                </tr>
+            </thead>
+            <tbody>
+                <Virtualize Items="orderedProducts" Context="product">
+                    <tr style="cursor: pointer;" @onclick="() => GoToProduct(product)">
+                        <td class="align-middle"><img src="/api/images/@product.ImageId" width="40" height="40" /></td>
+                        <td class="align-middle">@product.Name</td>
+                        <td class="align-middle">@product.Seller.Name</td>
+                        <td class="align-middle">$@product.Price</td>
+                        <td class="align-middle">@product.IsEnabled</td>
+                    </tr>
+                </Virtualize>
+            </tbody>
+        </table>
+    </div>
+}

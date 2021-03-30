@@ -38,7 +38,7 @@ namespace Website.Server.Controllers
         [HttpGet("products/{productId}")]
         public async Task<IActionResult> GetProductAsync(int productId)
         {
-            if (!await productsRepository.IsProductSellerAsync(productId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(productId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             return Ok(await sellersRepository.GetProductAsync(productId));
