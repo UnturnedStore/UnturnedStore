@@ -38,6 +38,19 @@ namespace Website.Server.Controllers
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
+        [HttpPut]
+        public async Task<IActionResult> PutVersionAsync([FromBody] VersionModel version)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await branchesRepository.IsBranchSellerAsync(version.BranchId, int.Parse(User.Identity.Name)))
+                return BadRequest();
+
+            await versionsRepository.UpdateVersionAsync(version);
+
+            return Ok();
+        }
+
+
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPatch("{versionId}")]
         public async Task<IActionResult> PatchVersionAsync(int versionId)
         {

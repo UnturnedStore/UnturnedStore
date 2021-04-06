@@ -42,9 +42,27 @@ namespace Website.Client.Pages.Seller
             Model = defaultModel;
         }
 
+        private void DefaultSelectedTemplate()
+        {
+            selectedTemplate = "default";
+        }
+
+        private string msg = null;
+
         private bool isLoading;
         private async Task SubmitAsync()
         {
+            if (Model.Content == null)
+            {
+                msg = "The file field is required";
+                return;
+            }
+            if (Model.ContentType != "application/zip")
+            {
+                msg = "The file must be a file of type: zip";
+                return;
+            }
+
             isLoading = true;
             var response = await HttpClient.PostAsJsonAsync("api/versions", Model);
 

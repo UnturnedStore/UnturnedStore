@@ -63,6 +63,9 @@
     [Parameter]
     public VersionModel Model { get; set; }
 
+    [Parameter]
+    public EventCallback OnZipArchive { get; set; }
+
     [Inject]
     public ZIPService ZIPService { get; set; }
 
@@ -104,5 +107,6 @@
         Libraries = new List<IBrowserFile>();
 
         isZipping = false;
+        await OnZipArchive.InvokeAsync();
     }
 } 

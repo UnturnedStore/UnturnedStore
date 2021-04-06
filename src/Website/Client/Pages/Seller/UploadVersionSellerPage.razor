@@ -20,7 +20,7 @@
                 <div class="mb-3">
                     <label class="form-label">Name</label>
                     <InputText class="form-control" @bind-Value="Model.Name" placeholder="1.0.0" />
-                    <div class="form-text">You should use SemVer format</div>
+                    <div class="form-text">Keep this short and in a certain style, preferred: Major.Minor.Patch</div>
                 </div>
 
                 <div class="mb-3">
@@ -49,13 +49,16 @@
                 <div class="p-3 mb-4 border-2 border">
                     @if (selectedTemplate == "rocketplugin")
                     {
-                        <PluginUploadTemplate Model="Model" />
+                        <PluginUploadTemplate Model="Model" OnZipArchive="DefaultSelectedTemplate" />
                     }
                     else
                     {
                         <ZipUploadTemplate Model="Model" />
                     }
-
+                    @if (msg != null)
+                    {
+                        <span class="text-danger">@msg</span>
+                    }
                 </div>
 
 

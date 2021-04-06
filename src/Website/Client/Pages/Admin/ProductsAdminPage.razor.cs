@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Shared.Constants;
 using Website.Shared.Models;
 
 namespace Website.Client.Pages.Admin
 {
+    [Authorize(Roles = RoleConstants.AdminRoleId)]
     public partial class ProductsAdminPage
     {
         [Inject]

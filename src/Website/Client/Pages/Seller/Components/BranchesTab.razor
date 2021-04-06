@@ -96,6 +96,9 @@
                             <td>@version.CreateDate</td>
                             <td>
                                 <a class="btn btn-sm btn-outline-primary" href="api/versions/download/@version.Id"><i class="bi bi-download"></i></a>
+                                <button class="btn btn-sm btn-outline-success" @onclick="() => EditVersionAsync(version)">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
                                 <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePluginAsync(version)">
                                     @if (version.IsEnabled)
                                     {
@@ -115,6 +118,7 @@
     }
 }
 
+<EditVersionModal @ref="EditVersionModal" />
 
 
 
@@ -124,6 +128,8 @@
 
     [Inject]
     public HttpClient HttpClient { get; set; }
+
+    public EditVersionModal EditVersionModal { get; set; }
 
     public int SelectedBranchId { get; set; }
 
@@ -143,7 +149,7 @@
         }
     }
 
-    private List<VersionModel> Versions => Branch.Versions;
+    private List<VersionModel> Versions => Branch.Versions.OrderByDescending(x => x.CreateDate).ToList();
 
     protected override void OnParametersSet()
     {
@@ -186,5 +192,10 @@
         }
 
         isLoading = false;
+    }
+
+    public async Task EditVersionAsync(VersionModel version)
+    {
+        await EditVersionModal.ShowAsync(version, Branch.Name);
     }
 }

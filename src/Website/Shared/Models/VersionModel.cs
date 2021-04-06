@@ -18,11 +18,8 @@ namespace Website.Shared.Models
         [Required]
         [MaxLength(2000)]
         public string Changelog { get; set; }
-        [Required]
         public string FileName { get; set; }
-        [Required]
         public string ContentType { get; set; }
-        [Required]
         public byte[] Content { get; set; }
         public int DownloadsCount { get; set; }
         public bool IsEnabled { get; set; }

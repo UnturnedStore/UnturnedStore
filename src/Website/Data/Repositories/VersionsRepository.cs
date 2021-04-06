@@ -46,6 +46,12 @@ namespace Website.Data.Repositories
             return p;
         }
 
+        public async Task UpdateVersionAsync(VersionModel version)
+        {
+            const string sql = "UPDATE dbo.Versions SET Name = @Name, Changelog = @Changelog WHERE Id = @Id;";
+            await connection.ExecuteAsync(sql, version);
+        }
+
         public async Task<VersionModel> GetVersionAsync(int versionId, bool isSeller)
         {
             string sql = "SELECT v.*, b.Id, b.Name, p.Id, p.Name, p.Price FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id " +
