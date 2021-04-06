@@ -34,6 +34,13 @@ namespace Website.Server.Controllers
             return Ok(await productsRepository.GetProductAsync(productId, userId));
         }
 
+        [HttpGet("{productId}/image")]
+        public async Task<IActionResult> GetProductImageAsync(int productId)
+        {
+            int imageId = await productsRepository.GetProductImageIdAsync(productId);
+            return Redirect($"/api/images/{imageId}");
+        }
+
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost]
         public async Task<IActionResult> PostProductAsync([FromBody] ProductModel product)

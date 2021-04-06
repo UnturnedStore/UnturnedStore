@@ -59,6 +59,12 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { productId, userId });
         }
 
+        public async Task<int> GetProductImageIdAsync(int productId)
+        {
+            const string sql = "SELECT ImageId FROM dbo.Products WHERE Id = @productId;";
+            return await connection.ExecuteScalarAsync<int>(sql, new { productId });
+        }
+
         public async Task<IEnumerable<ProductModel>> GetProductsAsync()
         {
             return await connection.QueryAsync<ProductModel, UserModel, ProductModel>("dbo.GetProducts", (p, u) => 

@@ -1,8 +1,9 @@
 ﻿@page "/products/{ProductId:int}"
 @using Website.Client.Pages.Components
 
-
-
+<Meta property="og:image" content="@string.Concat("/api/products/", ProductId, "/image")" />
+<Meta property="og:image:width" content="128" />
+<Meta property="og:image:height" content="128" />
 
 @if (Product != null)
 {
@@ -10,13 +11,9 @@
 
     <Meta name="description" content="@Product.Description" />
     <Meta property="og:title" content="@Product.Name" />
-    <Meta property="og:type" content="website" />
-    <Meta property="og:url" content="plugins.restoremonarchy.com" />
-    <Meta property="og:image" content="@string.Concat("/api/images/", Product.ImageId)" />
-    <Meta property="og:image:width" content="128" />
-    <Meta property="og:image:height" content="128" />
+
     <Meta property="og:description" content="@Product.Description" />
-    <Meta name="theme-color" content="#FFCC00" />
+    
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -143,7 +140,8 @@
                                     <a class="btn btn-success" href="/seller/products/@ProductId">
                                         <i class="bi bi-pencil-square"></i> Edit Product
                                     </a>
-                                } else
+                                }
+                                else
                                 {
                                     @if (SteamAuth.IsAuthenticated)
                                     {
@@ -152,7 +150,8 @@
                                             <button class="btn btn-info" @onclick="ShowReviewModalAsync">
                                                 <i class="bi bi-star-half"></i> Create Review
                                             </button>
-                                        } else
+                                        }
+                                        else
                                         {
                                             <button class="btn btn-info" @onclick="ShowReviewModalAsync">
                                                 <i class="bi bi-star-half"></i> Edit Review
@@ -161,7 +160,7 @@
                                     }
                                 }
 
-                                                                
+
 
                                 @if (ShowVersions)
                                 {
