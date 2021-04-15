@@ -57,7 +57,7 @@ namespace Website.Client.Pages.Seller
                 msg = "The file field is required";
                 return;
             }
-            if (Model.ContentType != "application/zip")
+            if (!Model.FileName.EndsWith(".zip"))
             {
                 msg = "The file must be a file of type: zip";
                 return;
