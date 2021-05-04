@@ -58,10 +58,10 @@
         <div class="row row-cols-1 row-cols-sm-2 justify-content-center">
             @foreach (var product in OrderedProducts)
             {
-                <div class="m-2 col bg-light rounded border-2 border" style="width: 350px; height: 150px;">
+                <div class="col bg-light rounded border-2 border" style="width: 350px; height: 150px; margin: 10px 10px 10px 10px;">
                     <div class="d-flex align-items-center text-center" style="margin-top: -20px;">
                         <a href="/products/@product.Id">
-                            <img src="api/images/@product.ImageId" width="85" height="85" />
+                            <img src="api/images/@product.ImageId" width="85" height="85" class="rounded" />
                         </a>
                         <div class="ms-1 text-center w-100" style="margin-bottom: -20px;">
                             <div>
