@@ -22,23 +22,6 @@
     
 </div>
 
-@if (!hideImperial)
-{
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <h5>ImperialPlugins.com customers!</h5>
-        <p>If you ever purchased any plugins from Restore Monarchy on ImperialPlugins.com before March 19th 2021, you can have them on this website too.</p>
-        <ol>
-            <li><a href="/signin">Sign in with Steam</a></li>
-            <li>Send a message to  <a href="/messages/create/1">MCrow</a></li>
-            <li>In title write <strong>ImperialPlugins</strong></li>
-            <li>In content write your <strong>PayPal address</strong> (the one you paid me with on ImperialPlugins.com)</li>
-            <li>Wait for me to give you access to your plugins</li>
-        </ol>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @onclick="CheckImperial"></button>
-    </div>
-}
-
-
 @if (Products != null)
 {
     <div class="mb-3 mt-5 d-flex align-items-center justify-content-center">

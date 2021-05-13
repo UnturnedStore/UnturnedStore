@@ -43,17 +43,9 @@ namespace Website.Client.Pages
 
         private string searchString = string.Empty;
 
-        private bool hideImperial = true;
-
         protected override async Task OnInitializedAsync()
         {
-            hideImperial = await StorageService.GetLocalItemAsync<bool>("HideImperial");
             Products = await HttpClient.GetFromJsonAsync<ProductModel[]>("api/products");
-        }
-
-        private async Task CheckImperial()
-        {
-            await StorageService.SetLocalItemAsync("HideImperial", true);            
         }
             
         private EOrderBy orderBy = EOrderBy.Newest;
