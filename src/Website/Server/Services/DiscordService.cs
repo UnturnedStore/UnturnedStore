@@ -132,5 +132,23 @@ namespace Website.Server.Services
 
             SendEmbed(config["SendPluginUpdateWebhookUrl"], eb.Build());
         }
+
+        public Task SendPurchaseNotificationAsync(OrderItemModel item)
+        {
+            if (string.IsNullOrEmpty(item.Product.Seller.DiscordWebhookUrl))
+                return Task.CompletedTask;
+
+            var eb = new EmbedBuilder();
+
+            eb.WithColor(Color.Blue);
+            eb.WithAuthor(item.Product.Name);
+            eb.WithDescription($"A new purchase from **{item.Order.Buyer.Name}**");
+            eb.AddField("Product Name", item.Product.Name);
+            eb.AddField("Product Price", item.Product.Price);
+            eb.WithCurrentTimestamp();
+
+            SendEmbed(item.Product.Seller.DiscordWebhookUrl, eb.Build());
+            return Task.CompletedTask;
+        }
     }
 }

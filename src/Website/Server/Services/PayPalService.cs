@@ -23,15 +23,17 @@ namespace Website.Server.Services
         private readonly IHttpClientFactory httpClientFactory;
         private readonly ILogger<PayPalService> logger;
         private readonly ProductsRepository productsRepository;
+        private readonly DiscordService discordService;
 
         public PayPalService(IConfiguration configuration, OrdersRepository ordersRepository, IHttpClientFactory httpClientFactory, 
-            ILogger<PayPalService> logger, ProductsRepository productsRepository)
+            ILogger<PayPalService> logger, ProductsRepository productsRepository, DiscordService discordService)
         {
             this.configuration = configuration;
             this.ordersRepository = ordersRepository;
             this.httpClientFactory = httpClientFactory;
             this.logger = logger;
             this.productsRepository = productsRepository;
+            this.discordService = discordService;
         }
 
         private string PayPalUrl => PaymentContants.GetPayPalUrl(configuration.GetValue<bool>("UseSandbox"));
@@ -117,6 +119,8 @@ namespace Website.Server.Services
                         UserId = order.BuyerId,
                         ProductId = item.ProductId
                     });
+
+                    await discordService.SendPurchaseNotificationAsync(item);
                 }
             }
         }
