@@ -83,6 +83,11 @@ namespace Website.Client.Pages
                     }
                 }
             }
+            else
+            {
+                statusCode = response.StatusCode;
+            }
+
             await CartService.ReloadCartAsync();
         }
 
