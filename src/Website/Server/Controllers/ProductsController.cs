@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
@@ -24,7 +25,24 @@ namespace Website.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductsAsync()
         {
-            return Ok(await productsRepository.GetProductsAsync());
+            var products = (await productsRepository.GetProductsAsync()).ToList();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                foreach (var product in products.ToList())
+                {
+                    if (!product.IsEnabled && product.SellerId != int.Parse(User.Identity.Name))
+                    {
+                        products.Remove(product);
+                    }
+                }
+            }
+            else
+            {
+                products.RemoveAll(x => !x.IsEnabled);
+            }
+
+            return Ok(products);
         }
 
         [HttpGet("{productId}")]

@@ -29,6 +29,5 @@ BEGIN
 	FROM dbo.Products p 
 	JOIN dbo.Users u ON p.SellerId = u.Id 
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
-	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
-	WHERE p.IsEnabled = 1;
+	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id;
 END;

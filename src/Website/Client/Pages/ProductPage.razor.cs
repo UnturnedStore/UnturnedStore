@@ -54,16 +54,35 @@ namespace Website.Client.Pages
         protected override async Task OnInitializedAsync()
         {
             var response = await HttpClient.GetAsync("api/products/" + ProductId);
-            statusCode = response.StatusCode;
-            if (statusCode == HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                Product = await response.Content.ReadFromJsonAsync<ProductModel>();
-                if (SteamAuth.IsAuthenticated)
+                var product = await response.Content.ReadFromJsonAsync<ProductModel>();
+
+                if (product.IsEnabled)
                 {
-                    Review = Product.Reviews.FirstOrDefault(x => x.UserId == SteamAuth.User.Id);
-                    Product.Reviews.Remove(Review);
+                    statusCode = response.StatusCode;
+                    Product = product;
+                    if (SteamAuth.IsAuthenticated)
+                    {
+                        Review = Product.Reviews.FirstOrDefault(x => x.UserId == SteamAuth.User.Id);
+                        Product.Reviews.Remove(Review);
+                    }
                 }
-            }                
+                else
+                {
+                    if (SteamAuth.IsAuthenticated && product.SellerId == SteamAuth.User.Id)
+                    {
+                        statusCode = response.StatusCode;
+                        Product = product;
+                        Review = Product.Reviews.FirstOrDefault(x => x.UserId == SteamAuth.User.Id);
+                        Product.Reviews.Remove(Review);
+                    }
+                    else
+                    {
+                        statusCode = HttpStatusCode.Forbidden;
+                    }
+                }
+            }
             await CartService.ReloadCartAsync();
         }
 
