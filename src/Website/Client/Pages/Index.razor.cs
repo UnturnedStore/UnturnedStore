@@ -35,6 +35,8 @@ namespace Website.Client.Pages
                         return SearchedProducts.OrderByDescending(x => x.TotalDownloadsCount);
                     case EOrderBy.BestRated:
                         return SearchedProducts.OrderByDescending(x => x.AverageRating).ThenByDescending(x => x.RatingsCount);
+                    case EOrderBy.Price:
+                        return SearchedProducts.OrderByDescending(x => x.Price);
                     default:
                         return SearchedProducts.OrderByDescending(x => x.CreateDate);
                 }
@@ -54,7 +56,8 @@ namespace Website.Client.Pages
         {
             Newest,
             MostDownloads,
-            BestRated
+            BestRated,
+            Price
         }
     }
 }
