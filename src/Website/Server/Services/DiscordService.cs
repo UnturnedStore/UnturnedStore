@@ -132,5 +132,24 @@ namespace Website.Server.Services
 
             SendEmbed(config["SendPluginUpdateWebhookUrl"], eb.Build());
         }
+
+        public void SendPurchaseNotification(OrderModel order)
+        {
+            if (string.IsNullOrEmpty(order.Seller.DiscordWebhookUrl))
+                return;
+
+            var eb = new EmbedBuilder();
+            eb.WithColor(Color.Blue);
+            eb.WithTitle($"New purchase from {order.PaymentPayer}");
+            eb.WithCurrentTimestamp();
+            eb.WithFooter(order.Buyer.Name);
+
+            foreach (var item in order.Items)
+            {
+                eb.AddField(item.ProductName, $"${item.Price:N}");
+            }
+
+            SendEmbed(order.Seller.DiscordWebhookUrl, eb.Build());
+        }
     }
 }

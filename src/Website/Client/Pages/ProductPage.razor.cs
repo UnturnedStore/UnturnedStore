@@ -58,12 +58,14 @@ namespace Website.Client.Pages
             if (statusCode == HttpStatusCode.OK)
             {
                 Product = await response.Content.ReadFromJsonAsync<ProductModel>();
+
                 if (SteamAuth.IsAuthenticated)
                 {
                     Review = Product.Reviews.FirstOrDefault(x => x.UserId == SteamAuth.User.Id);
                     Product.Reviews.Remove(Review);
                 }
-            }                
+            }
+
             await CartService.ReloadCartAsync();
         }
 
