@@ -29,7 +29,7 @@ namespace Website.Server.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-                foreach (var product in products.ToList())
+                foreach (var product in products)
                 {
                     if (!product.IsEnabled && product.SellerId != int.Parse(User.Identity.Name))
                     {
