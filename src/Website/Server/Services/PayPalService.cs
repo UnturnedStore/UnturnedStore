@@ -119,9 +119,9 @@ namespace Website.Server.Services
                         UserId = order.BuyerId,
                         ProductId = item.ProductId
                     });
-
-                    await discordService.SendPurchaseNotificationAsync(item);
                 }
+
+                discordService.SendPurchaseNotification(order);
             }
         }
 

@@ -80,16 +80,22 @@ namespace Website.Data.Repositories
 
         public async Task<OrderModel> GetOrderAsync(int orderId)
         {
-            const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.SellerId = u.Id " +
-                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id WHERE o.Id = @orderId;";
+            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.* " +
+                "FROM dbo.Orders o " +
+                "JOIN dbo.Users u ON o.SellerId = u.Id " +
+                "JOIN dbo.Users u2 ON o.BuyerId = u2.Id " + 
+                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId " +
+                "JOIN dbo.Products p ON i.ProductId = p.Id " +
+                "WHERE o.Id = @orderId;";
 
             OrderModel order = null;
-            await connection.QueryAsync<OrderModel, UserModel, OrderItemModel, ProductModel, OrderModel>(sql, (o, u, i, p) => 
+            await connection.QueryAsync<OrderModel, UserModel, UserModel, OrderItemModel, ProductModel, OrderModel>(sql, (o, u, u2, i, p) => 
             {
                 if (order == null)
                 {
                     order = o;
                     order.Seller = u;
+                    order.Buyer = u2;
                     order.Items = new List<OrderItemModel>();
                 }
 

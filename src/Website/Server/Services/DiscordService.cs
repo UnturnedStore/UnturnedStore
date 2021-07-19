@@ -133,22 +133,23 @@ namespace Website.Server.Services
             SendEmbed(config["SendPluginUpdateWebhookUrl"], eb.Build());
         }
 
-        public Task SendPurchaseNotificationAsync(OrderItemModel item)
+        public void SendPurchaseNotification(OrderModel order)
         {
-            if (string.IsNullOrEmpty(item.Product.Seller.DiscordWebhookUrl))
-                return Task.CompletedTask;
+            if (string.IsNullOrEmpty(order.Seller.DiscordWebhookUrl))
+                return;
 
             var eb = new EmbedBuilder();
-
             eb.WithColor(Color.Blue);
-            eb.WithAuthor(item.Product.Name);
-            eb.WithDescription($"A new purchase from **{item.Order.Buyer.Name}**");
-            eb.AddField("Product Name", item.Product.Name);
-            eb.AddField("Product Price", item.Product.Price);
+            eb.WithTitle($"New purchase from {order.PaymentPayer}");
             eb.WithCurrentTimestamp();
+            eb.WithFooter(order.Buyer.Name);
 
-            SendEmbed(item.Product.Seller.DiscordWebhookUrl, eb.Build());
-            return Task.CompletedTask;
+            foreach (var item in order.Items)
+            {
+                eb.AddField(item.ProductName, $"${item.Price:N}");
+            }
+
+            SendEmbed(order.Seller.DiscordWebhookUrl, eb.Build());
         }
     }
 }
