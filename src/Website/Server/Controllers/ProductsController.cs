@@ -26,30 +26,20 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetProductsAsync()
         {
             var products = (await productsRepository.GetProductsAsync()).ToList();
+            int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
 
-            if (User.Identity.IsAuthenticated)
-            {
-                foreach (var product in products.ToList())
-                {
-                    if (!product.IsEnabled && product.SellerId != int.Parse(User.Identity.Name))
-                    {
-                        products.Remove(product);
-                    }
-                }
-            }
-            else
-            {
-                products.RemoveAll(x => !x.IsEnabled);
-            }
-
-            return Ok(products);
+            return Ok(products.Where(x => x.IsEnabled || x.SellerId == userId));
         }
 
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetProductAsync(int productId)
         {
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
-            return Ok(await productsRepository.GetProductAsync(productId, userId));
+            var product = await productsRepository.GetProductAsync(productId, userId);
+            if (!product.IsEnabled && product.SellerId != userId)
+                return BadRequest();
+            else
+                return Ok(product);
         }
 
         [HttpGet("{productId}/image")]
