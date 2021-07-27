@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,11 @@ namespace Website.Server.Controllers
             return File(img.Content, img.ContentType);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> PostImageAsync([FromBody] MImage image)
         {
+            image.UserId = int.Parse(User.Identity.Name);
             return Ok(await imagesRepository.AddImageAsync(image));
         }
     }

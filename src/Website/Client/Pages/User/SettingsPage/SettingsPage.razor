@@ -22,68 +22,108 @@
 
     <div class="bg-light p-3 rounded-3">
         <EditForm Model="User" OnValidSubmit="SubmitAsync">
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <InputText class="form-control" @bind-Value="User.Name" />
-                <div class="form-text">Your name max 25 characters</div>
+            <div class="mb-5">
+                <h4>Profile Settings</h4>
+                <div class="mb-3">
+                    <label class="form-label">Avatar</label>
+                    <div>
+                        <label style="cursor: pointer;">
+                            @if (avatarPreview != null)
+                            {
+                                <img class="img-thumbnail" src="@avatarPreviewSrc" width="125" height="125" />
+                            }
+                            else if (User.AvatarImageId != null)
+                            {
+                                <img class="img-thumbnail" src="/api/images/@User.AvatarImageId" width="125" height="125" />
+                            }
+                            else
+                            {
+                                <img class="img-thumbnail" src="/img/profiles/default_avatar.png" width="125" height="125" />
+                            }
+                            <InputFile class="d-none" OnChange="@OnAvatarInputFileChange" />
+                        </label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="User.Name" />
+                    <div class="form-text">Your name max 25 characters</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Color</label>
+                    <input type="color" class="form-control form-control-color" @bind="@User.Color" title="Choose your color">
+                    <div class="form-text">The color for your profile background</div>
+                </div>
             </div>
 
             <AuthorizeView Roles="@RoleConstants.AdminAndSeller" Context="auth">
                 <Authorized>
-                    <div class="mb-3">
-                        <label class="form-label">PayPal Email</label>
-                        <InputText class="form-control" @bind-Value="User.PayPalEmail" />
-                        <div class="form-text">Your PayPal email address you want to receive payments</div>
+                    <div class="mb-5">
+                        <h4>Seller Settings</h4>
+                        <div class="mb-3">
+                            <label class="form-label">PayPal Email</label>
+                            <InputText class="form-control" @bind-Value="User.PayPalEmail" />
+                            <div class="form-text">Your PayPal email address you want to receive payments</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">PayPal Currency</label>
+                            <InputText class="form-control" @bind-Value="User.PayPalCurrency" required />
+                            <div class="form-text">Three characters currency identifier</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Terms & Conditions</label>
+                            <BlazoredTextEditor @ref="editor" DebugLevel="error">
+                                <ToolbarContent>
+                                    <select class="ql-header">
+                                        <option selected=""></option>
+                                        <option value="1"></option>
+                                        <option value="2"></option>
+                                        <option value="3"></option>
+                                        <option value="4"></option>
+                                        <option value="5"></option>
+                                    </select>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-code-block"></button>
+                                    </span>
+                                </ToolbarContent>
+                                <EditorContent>
+                                    @(new MarkupString(User.TermsAndConditions))
+                                </EditorContent>
+                            </BlazoredTextEditor>
+                            <div class="form-text">Terms & Conditions of purchasing your products</div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">PayPal Currency</label>
-                        <InputText class="form-control" @bind-Value="User.PayPalCurrency" required />
-                        <div class="form-text">Three characters currency identifier</div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Terms & Conditions</label>
-                        <BlazoredTextEditor @ref="editor" DebugLevel="error">
-                            <ToolbarContent>
-                                <select class="ql-header">
-                                    <option selected=""></option>
-                                    <option value="1"></option>
-                                    <option value="2"></option>
-                                    <option value="3"></option>
-                                    <option value="4"></option>
-                                    <option value="5"></option>
-                                </select>
-                                <span class="ql-formats">
-                                    <button class="ql-bold"></button>
-                                    <button class="ql-italic"></button>
-                                    <button class="ql-underline"></button>
-                                    <button class="ql-strike"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <select class="ql-color"></select>
-                                    <select class="ql-background"></select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-list" value="ordered"></button>
-                                    <button class="ql-list" value="bullet"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-code-block"></button>
-                                </span>
-                            </ToolbarContent>
-                            <EditorContent>
-                                @(new MarkupString(User.TermsAndConditions))
-                            </EditorContent>
-                        </BlazoredTextEditor>
-                        <div class="form-text">Terms & Conditions of purchasing your products</div>
-                    </div>
+                    
                 </Authorized>
             </AuthorizeView>
 
-            <div class="mb-3">
-                <label class="form-label">Discord Webhook URL</label>
-                <InputText class="form-control" @bind-Value="User.DiscordWebhookUrl" />
-                <div class="form-text">This is used to send you message notifications to Discord</div>
+            <div class="mb-5">
+                <h4>Other Settings</h4>
+                <div class="mb-3">
+                    <label class="form-label">Discord Webhook URL</label>
+                    <InputText class="form-control" @bind-Value="User.DiscordWebhookUrl" />
+                    <div class="form-text">This is used to send you message notifications to Discord</div>
+                </div>
             </div>
+
+
+
+            
 
             <ValidationSummary />
             <DataAnnotationsValidator />

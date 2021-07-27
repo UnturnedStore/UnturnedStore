@@ -1,4 +1,6 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
+﻿@using System.Security.Claims
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="/img/logo.png" alt="" width="40" height="40" class="d-inline-block align-top">
@@ -45,6 +47,7 @@
                                         <li><hr class="dropdown-divider"></li>
                                     </Authorized>
                                 </AuthorizeView>
+                                <li><a class="dropdown-item" href="/users/@context.User.FindFirst(ClaimTypes.NameIdentifier).Value">Profile</a></li>
                                 <li><a class="dropdown-item" href="/settings">Settings</a></li>
                                 <li><a class="dropdown-item" href="/messages">Messages</a></li>
                                 <li><a class="dropdown-item" href="/orders">Orders</a></li>

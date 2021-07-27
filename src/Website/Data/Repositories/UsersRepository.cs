@@ -17,6 +17,31 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
+        public async Task<MUser> GetUserProfileAsync(int userId)
+        {
+            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.AvatarImageId, u.BackgroundImageId, u.Avatar, u.CreateDate, p.* " +
+                "FROM dbo.Users u " +
+                "LEFT JOIN dbo.Products p ON u.Id = p.SellerId AND p.IsEnabled = 1 " +
+                "WHERE u.Id = @userId;";
+
+            MUser user = null;
+            await connection.QueryAsync<MUser, MProduct, MUser>(sql, (u, p) =>
+            {
+                if (user == null)
+                {
+                    user = u;
+                    user.Products = new List<MProduct>();
+                }
+
+                if (p != null)
+                    user.Products.Add(p);
+
+                return null;
+            }, new { userId });
+            
+            return user;
+        }
+
         public async Task<MUser> GetUserPublicAsync(int userId)
         {
             const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.TermsAndConditions, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
@@ -29,13 +54,13 @@ namespace Website.Data.Repositories
                 if (user == null)
                 {
                     user = u;
-                    user.Products = new List<MProductCustomer>();
+                    user.Customers = new List<MProductCustomer>();
                 }
 
                 if (c != null)
                 {
                     c.Product = p;
-                    user.Products.Add(c);
+                    user.Customers.Add(c);
                 }
 
                 return null;
@@ -60,9 +85,9 @@ namespace Website.Data.Repositories
 
         public async Task<MUser> AddUserAsync(MUser user)
         {
-            const string sql = "INSERT INTO dbo.Users (Name, Role, SteamId) " +
-                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Role, INSERTED.SteamId, INSERTED.CreateDate " +
-                "VALUES (@Name, @Role, @SteamId);";
+            const string sql = "INSERT INTO dbo.Users (Name, Role, SteamId, AvatarImageId) " +
+                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Role, INSERTED.SteamId, INSERTED.AvatarImageId, INSERTED.CreateDate " +
+                "VALUES (@Name, @Role, @SteamId, @AvatarImageId);";
 
             return await connection.QuerySingleOrDefaultAsync<MUser>(sql, user);
         }
@@ -82,7 +107,8 @@ namespace Website.Data.Repositories
         public async Task UpdateUserAsync(MUser user)
         {
             const string sql = "UPDATE dbo.Users SET Name = @Name, PayPalEmail = @PayPalEmail, PayPalCurrency = @PayPalCurrency, " +
-                "TermsAndConditions = @TermsAndConditions, DiscordWebhookUrl = @DiscordWebhookUrl " +
+                "TermsAndConditions = @TermsAndConditions, DiscordWebhookUrl = @DiscordWebhookUrl, AvatarImageId = @AvatarImageId, " +
+                "BackgroundImageId = @BackgroundImageId " +
                 "WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, user);

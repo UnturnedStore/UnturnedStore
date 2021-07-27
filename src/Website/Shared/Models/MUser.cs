@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Website.Shared.Models
@@ -14,6 +15,8 @@ namespace Website.Shared.Models
         public string Name { get; set; }
         public string Role { get; set; }
         public string SteamId { get; set; }
+        public int? AvatarImageId { get; set; }
+        public string Color { get; set; }
         public byte[] Avatar { get; set; }
         [MaxLength(255)]
         public string PayPalEmail { get; set; }
@@ -26,7 +29,14 @@ namespace Website.Shared.Models
         public string TermsAndConditions { get; set; }
         public DateTime CreateDate { get; set; }
 
-        public List<MProductCustomer> Products { get; set; }
+        public List<MProductCustomer> Customers { get; set; }
+        public List<MProduct> Products { get; set; }
+        
+        [JsonIgnore]
+        public string SteamProfileUrl => "https://steamcommunity.com/profiles/" + SteamId;
+        [JsonIgnore]
+        public string BackgroundColor => Color ?? "#0066ff";
+        
 
         public static MUser FromUser(MUser user)
         {
@@ -35,6 +45,8 @@ namespace Website.Shared.Models
                 Id = user.Id,
                 SteamId = user.SteamId,
                 Name = user.Name,
+                AvatarImageId = user.AvatarImageId,
+                Color = user.Color,
                 PayPalCurrency = user.PayPalCurrency,
                 PayPalEmail = user.PayPalEmail,
                 Role = user.Role,

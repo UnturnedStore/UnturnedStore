@@ -29,6 +29,7 @@ namespace Website.Client
             builder.Services.AddScoped<CartService>();
             builder.Services.AddTransient<StorageService>();
             builder.Services.AddTransient<ZIPService>();
+            builder.Services.AddScoped<UserService>();
             builder.Services.AddBlazorTable();
 
             await builder.Build().RunAsync();

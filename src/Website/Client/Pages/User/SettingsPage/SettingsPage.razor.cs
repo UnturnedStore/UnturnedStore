@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,10 +39,32 @@ namespace Website.Client.Pages.User.SettingsPage
             user.TermsAndConditions = await editor.GetHTML();
             if (user.TermsAndConditions == "<p><br></p>")
                 user.TermsAndConditions = null;
-            
+
+            if (avatarPreview != null)
+            {
+                var response = await HttpClient.PostAsJsonAsync("api/images", avatarPreview);
+                user.AvatarImageId = int.Parse(await response.Content.ReadAsStringAsync());
+            }
+
             await HttpClient.PutAsJsonAsync("api/users", user);
             NavigationManager.NavigateTo(NavigationManager.Uri, true);
             isLoading = false;
+        }
+
+        private MImage avatarPreview = null;
+        private string avatarPreviewSrc => $"data:{avatarPreview.ContentType};base64,{Convert.ToBase64String(avatarPreview.Content)}";
+
+        private async Task OnAvatarInputFileChange(InputFileChangeEventArgs e)
+        {
+            var imageFile = await e.File.RequestImageFileAsync(e.File.ContentType, 500, 500);
+
+            avatarPreview = new MImage
+            {
+                ContentType = imageFile.ContentType,
+                Name = imageFile.Name,
+                Content = new byte[imageFile.Size]
+            };
+            await imageFile.OpenReadStream(2 * 1024 * 1024).ReadAsync(avatarPreview.Content);
         }
     }
 }

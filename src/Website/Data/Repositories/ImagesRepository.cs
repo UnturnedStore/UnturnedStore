@@ -26,9 +26,9 @@ namespace Website.Data.Repositories
 
         public async Task<int> AddImageAsync(MImage image)
         {
-            const string sql = "INSERT INTO dbo.Images (Name, ContentType, Content) " +
+            const string sql = "INSERT INTO dbo.Images (Name, ContentType, Content, UserId) " +
                 "OUTPUT INSERTED.Id " +
-                "VALUES (@Name, @ContentType, @Content);";
+                "VALUES (@Name, @ContentType, @Content, @UserId);";
 
             return await connection.ExecuteScalarAsync<int>(sql, image);
         }

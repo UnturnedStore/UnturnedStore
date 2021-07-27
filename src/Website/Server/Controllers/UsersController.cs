@@ -26,9 +26,15 @@ namespace Website.Server.Controllers
         }
 
         [HttpGet("{userId}")]
-        public async Task<IActionResult> GetUserProfileAsync(int userId)
+        public async Task<IActionResult> GetUserAsync(int userId)
         {
             return Ok(await usersRepository.GetUserPublicAsync(userId));
+        }
+
+        [HttpGet("{userId}/profile")]
+        public async Task<IActionResult> GetUserProfileAsync(int userId)
+        {
+            return Ok(await usersRepository.GetUserProfileAsync(userId));
         }
 
         [HttpPut]
