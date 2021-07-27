@@ -23,7 +23,7 @@ namespace Website.Server.Controllers
         }
 
         [HttpPut("users")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] UserModel user)
+        public async Task<IActionResult> UpdateUserAsync([FromBody] MUser user)
         {
             await adminRepository.UpdateUserAsync(user);
             return Ok();

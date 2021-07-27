@@ -53,7 +53,7 @@ namespace Website.Server.Services
             });
         }
 
-        public async Task SendReviewAsync(ProductReviewModel review, string baseUrl)
+        public async Task SendReviewAsync(MProductReview review, string baseUrl)
         {
             var product = await productsRepository.GetProductAsync(review.ProductId, 0);
 
@@ -73,7 +73,7 @@ namespace Website.Server.Services
             SendEmbed(config["SendNewReviewWebhookUrl"], eb.Build());
         }
 
-        public async Task SendMessageReplyAsync(MessageReplyModel reply, string baseUrl)
+        public async Task SendMessageReplyAsync(MMessageReply reply, string baseUrl)
         {
             var msg = await messagesRepository.GetMessageAsync(reply.MessageId);
 
@@ -116,7 +116,7 @@ namespace Website.Server.Services
             SendEmbed(discordWebhookUrl, eb.Build());
         }
 
-        public async Task SendVersionUpdateAsync(VersionModel version, string baseUrl)
+        public async Task SendVersionUpdateAsync(MVersion version, string baseUrl)
         {
             version.Branch = await branchesRepository.GetBranchAsync(version.BranchId);
             var product = await productsRepository.GetProductAsync(version.Branch.ProductId, 0);
@@ -133,7 +133,7 @@ namespace Website.Server.Services
             SendEmbed(config["SendPluginUpdateWebhookUrl"], eb.Build());
         }
 
-        public void SendPurchaseNotification(OrderModel order)
+        public void SendPurchaseNotification(MOrder order)
         {
             if (string.IsNullOrEmpty(order.Seller.DiscordWebhookUrl))
                 return;

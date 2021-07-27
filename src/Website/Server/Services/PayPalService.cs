@@ -38,7 +38,7 @@ namespace Website.Server.Services
 
         private string PayPalUrl => PaymentContants.GetPayPalUrl(configuration.GetValue<bool>("UseSandbox"));
 
-        public void PayPalPayment(OrderModel order, string baseUrl)
+        public void PayPalPayment(MOrder order, string baseUrl)
         {
             var dict = new Dictionary<string, string>()
             {
@@ -114,7 +114,7 @@ namespace Website.Server.Services
             {
                 foreach (var item in order.Items)
                 {
-                    await productsRepository.AddProductCustomerAsync(new ProductCustomerModel()
+                    await productsRepository.AddProductCustomerAsync(new MProductCustomer()
                     {
                         UserId = order.BuyerId,
                         ProductId = item.ProductId

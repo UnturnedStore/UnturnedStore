@@ -1,0 +1,52 @@
+﻿@page "/seller/products"
+@using Website.Client.Pages.Seller.ProductsPage.Components
+
+<Title Value="@($"Products Seller - Unturned Store")"></Title>
+
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Products</li>
+    </ol>
+</nav>
+
+<div class="mt-2 p-3 bg-light">
+    @if (Products != null)
+    {
+        <table class="table table-hover mb-3">
+            <caption>@Products.Count Total Products</caption>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Branches</th>
+                    <th>Is Enabled</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Products)
+                {
+                    <tr style="cursor: pointer;" @onclick="() => GoToProduct(product)">
+                        <td class="align-middle"><img src="/api/images/@product.ImageId" width="40" height="40" /></td>
+                        <td class="align-middle">@product.Name</td>
+                        <td class="align-middle">$@product.Price</td>
+                        <td class="align-middle">@product.Branches.Count</td>
+                        <td class="align-middle">@product.IsEnabled</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="mb-3">
+            <button class="btn btn-primary" @onclick="ShowModalAsync">Add Product</button>
+        </div>
+
+    } else
+    {
+        <Progressbar />
+    }
+</div>
+
+<CreateProductModal @ref="Modal" OnSubmitAsync="PostProductAsync" />
+

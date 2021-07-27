@@ -1,0 +1,129 @@
+﻿<div class="modal fade" id="@nameof(CreateProductModal)" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <EditForm Model="Model" OnValidSubmit="SubmitAsync">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create new Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <InputText class="form-control" @bind-Value="Model.Name" />
+                        <div class="form-text">Name should be short up to 20 characters</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <InputText class="form-control" @bind-Value="Model.Description" />
+                        <div class="form-text">This is a short description of your product, for detailed information use tabs</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <InputSelect class="form-control" @bind-Value="Model.Category">
+                            @foreach (string category in ProductConstants.Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </InputSelect>
+                        <div class="form-text">Set the category of your product</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Github Repo URL</label>
+                        <InputText class="form-control" @bind-Value="Model.GithubUrl" />
+                        <div class="form-text">Optional</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <InputNumber class="form-control" @bind-Value="Model.Price" />
+                        <div class="form-text">Price of your product in USD ($)</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Image</label>
+                        <InputFile class="form-control" OnChange="@OnInputFileChange" required />
+                        <div class="form-text">Image for your product, has to be .png</div>
+                    </div>
+
+                    @if (Model.ImageId != 0)
+                    {
+                        <img class="mb-3" src="api/images/@Model.ImageId" width="250" height="250" />
+                    }
+
+                    <div class="mb-3 form-check">
+                        <InputCheckbox @bind-Value="Model.IsEnabled" class="form-check-input" id="productIsEnabledCheck" />
+                        <label class="form-check-label" for="productIsEnabledCheck">Is Enabled</label>
+                    </div>
+
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    @if (isLoading)
+                    {
+                        <LoadingButton />
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    }
+                </div>
+            </EditForm>            
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
+
+    [Inject]
+    public HttpClient HttpClient { get; set; }
+
+    [Parameter]
+    public EventCallback<MProduct> OnSubmitAsync { get; set; }
+
+    public MProduct Model { get; set; } = new MProduct()
+    {
+        Category = ProductConstants.DefaultCategory
+    };
+
+    public async Task ShowAsync()
+    {
+        await JSRuntime.ShowModalStaticAsync(nameof(CreateProductModal));
+    }
+
+    private bool isLoading = false;
+
+    public async Task SubmitAsync()
+    {
+        isLoading = true;
+        await OnSubmitAsync.InvokeAsync(Model);
+        isLoading = false;
+        await JSRuntime.HideModalAsync(nameof(CreateProductModal));
+        Model = new MProduct() { Category = ProductConstants.DefaultCategory };
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var imageFile = e.File;
+
+        imageFile = await imageFile.RequestImageFileAsync("image/png", 500, 500);
+
+        var image = new MImage();
+
+        image.ContentType = imageFile.ContentType;
+        image.Name = imageFile.Name;
+        image.Content = new byte[imageFile.Size];
+        await imageFile.OpenReadStream(50 * 1024 * 1024).ReadAsync(image.Content);
+
+        var response = await HttpClient.PostAsJsonAsync("api/images", image);
+        Model.ImageId = int.Parse(await response.Content.ReadAsStringAsync());
+    }
+}

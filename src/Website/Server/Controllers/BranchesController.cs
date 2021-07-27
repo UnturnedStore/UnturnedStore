@@ -22,7 +22,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost]
-        public async Task<IActionResult> AddBranchAsync([FromBody] BranchModel branch)
+        public async Task<IActionResult> AddBranchAsync([FromBody] MBranch branch)
         {
             if (!await productsRepository.IsProductSellerAsync(branch.ProductId, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -32,7 +32,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPut]
-        public async Task<IActionResult> PutBranchAsync([FromBody] BranchModel branch)
+        public async Task<IActionResult> PutBranchAsync([FromBody] MBranch branch)
         {
             if (!await branchesRepository.IsBranchSellerAsync(branch.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();

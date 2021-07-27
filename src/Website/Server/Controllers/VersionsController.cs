@@ -25,7 +25,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost]
-        public async Task<IActionResult> PostVersionAsync([FromBody] VersionModel version)
+        public async Task<IActionResult> PostVersionAsync([FromBody] MVersion version)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await branchesRepository.IsBranchSellerAsync(version.BranchId, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -39,7 +39,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPut]
-        public async Task<IActionResult> PutVersionAsync([FromBody] VersionModel version)
+        public async Task<IActionResult> PutVersionAsync([FromBody] MVersion version)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await branchesRepository.IsBranchSellerAsync(version.BranchId, int.Parse(User.Identity.Name)))
                 return BadRequest();

@@ -18,16 +18,16 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
-        public async Task UpdateUserAsync(UserModel user)
+        public async Task UpdateUserAsync(MUser user)
         {
             const string sql = "UPDATE dbo.Users SET Role = @Role WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, user);
         }
 
-        public async Task<IEnumerable<ProductModel>> GetProductsAsync()
+        public async Task<IEnumerable<MProduct>> GetProductsAsync()
         {
             const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON p.SellerId = u.Id;";
-            return await connection.QueryAsync<ProductModel, UserModel, ProductModel>(sql, (p, u) => 
+            return await connection.QueryAsync<MProduct, MUser, MProduct>(sql, (p, u) => 
             {
                 p.Seller = u;
                 return p;

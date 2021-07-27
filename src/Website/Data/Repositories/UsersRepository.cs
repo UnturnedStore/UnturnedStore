@@ -17,19 +17,19 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
-        public async Task<UserModel> GetUserPublicAsync(int userId)
+        public async Task<MUser> GetUserPublicAsync(int userId)
         {
             const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.TermsAndConditions, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
                 "LEFT JOIN dbo.Products p ON c.ProductId = p.Id WHERE u.Id = @userId;";
 
-            UserModel user = null;
+            MUser user = null;
 
-            await connection.QueryAsync<UserModel, ProductCustomerModel, ProductModel, UserModel>(sql, (u, c, p) => 
+            await connection.QueryAsync<MUser, MProductCustomer, MProduct, MUser>(sql, (u, c, p) => 
             { 
                 if (user == null)
                 {
                     user = u;
-                    user.Products = new List<ProductCustomerModel>();
+                    user.Products = new List<MProductCustomer>();
                 }
 
                 if (c != null)
@@ -44,27 +44,27 @@ namespace Website.Data.Repositories
             return user;
         }
 
-        public async Task<UserModel> GetUserPrivateAsync(int userId)
+        public async Task<MUser> GetUserPrivateAsync(int userId)
         {
             const string sql = "SELECT * FROM dbo.Users WHERE Id = @userId;";
-            return await connection.QuerySingleOrDefaultAsync<UserModel>(sql, new { userId });
+            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
         }
         
-        public async Task<UserModel> GetUserAsync(string steamId)
+        public async Task<MUser> GetUserAsync(string steamId)
         {
             const string sql = "SELECT Id, Name, Role, SteamId, CreateDate " +
                 "FROM dbo.Users WHERE SteamId = @steamId;";
 
-            return await connection.QuerySingleOrDefaultAsync<UserModel>(sql, new { steamId });
+            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { steamId });
         }
 
-        public async Task<UserModel> AddUserAsync(UserModel user)
+        public async Task<MUser> AddUserAsync(MUser user)
         {
             const string sql = "INSERT INTO dbo.Users (Name, Role, SteamId) " +
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Role, INSERTED.SteamId, INSERTED.CreateDate " +
                 "VALUES (@Name, @Role, @SteamId);";
 
-            return await connection.QuerySingleOrDefaultAsync<UserModel>(sql, user);
+            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, user);
         }
 
         public async Task UpdateUserAvatarAsync(int userId, byte[] avatar)
@@ -79,7 +79,7 @@ namespace Website.Data.Repositories
             return await connection.QuerySingleOrDefaultAsync<byte[]>(sql, new { userId });
         }
 
-        public async Task UpdateUserAsync(UserModel user)
+        public async Task UpdateUserAsync(MUser user)
         {
             const string sql = "UPDATE dbo.Users SET Name = @Name, PayPalEmail = @PayPalEmail, PayPalCurrency = @PayPalCurrency, " +
                 "TermsAndConditions = @TermsAndConditions, DiscordWebhookUrl = @DiscordWebhookUrl " +
@@ -94,10 +94,10 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<string>(sql, new { userId });
         }
 
-        public async Task<IEnumerable<UserModel>> GetUsersAsync()
+        public async Task<IEnumerable<MUser>> GetUsersAsync()
         {
             const string sql = "SELECT Id, Name, SteamId, Role, CreateDate FROM dbo.Users;";
-            return await connection.QueryAsync<UserModel>(sql);
+            return await connection.QueryAsync<MUser>(sql);
         }
     }
 }

@@ -1,0 +1,67 @@
+﻿
+@if (Product != null)
+{
+    <div class="mb-3">
+        <label class="form-label">Select Branch</label>
+        <select class="form-select" @bind="selectedBranchId">
+            @foreach (var branch in Product.Branches)
+            {
+                <option value="@branch.Id">@branch.Name</option>
+            }
+        </select>
+    </div>
+
+
+    @if (Branch != null)
+    {
+        @if (Branch.Versions.Count == 0)
+        {
+            <p>This branch doesn't have any versions</p>
+        }
+
+        <Virtualize Items="versions" Context="version">
+            <div class="card mb-3">
+                <div class="card-header d-flex">
+                    <div class="fw-bold">
+                        @Branch.Name @version.Name
+                    </div>
+                    <div class="ms-auto">
+                        <small class="text-muted"><i class="bi bi-download"></i> @version.DownloadsCount</small>
+                    </div>                    
+                </div>
+                <div class="card-body">
+                    <p class="card-text">@version.Changelog</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="text-muted">
+                            @version.CreateDate
+                        </div>
+                        <div class="ms-auto">
+                            <form method="get" action="api/versions/download/@version.Id">
+                                <button type="submit" class="btn btn-primary">Download this version</button>
+                            </form>                            
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </Virtualize>
+    }
+}
+
+
+@code {
+
+    [Parameter]
+    public MProduct Product { get; set; }
+
+    private int selectedBranchId;
+
+    private MBranch Branch => Product.Branches.FirstOrDefault(x => x.Id == selectedBranchId);
+
+    private List<MVersion> versions => Branch.Versions.OrderByDescending(x => x.CreateDate).ToList();
+
+    protected override void OnParametersSet()
+    {
+        selectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
+    }
+}

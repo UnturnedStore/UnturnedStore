@@ -28,14 +28,14 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { messageId, userId });
         }
 
-        public async Task<MessageModel> AddMessageAsync(MessageModel message)
+        public async Task<MMessage> AddMessageAsync(MMessage message)
         {
             const string sql = "INSERT INTO dbo.Messages (FromUserId, ToUserId, Title) " +
                 "OUTPUT INSERTED.Id, INSERTED.FromUserId, INSERTED.ToUserId, INSERTED.Title, INSERTED.CreateDate " +
                 "VALUES (@FromUserId, @ToUserId, @Title);";
 
-            var msg = await connection.QuerySingleAsync<MessageModel>(sql, message);
-            msg.Replies = new List<MessageReplyModel>();            
+            var msg = await connection.QuerySingleAsync<MMessage>(sql, message);
+            msg.Replies = new List<MMessageReply>();            
 
             foreach (var reply in message.Replies)
             {
@@ -46,17 +46,17 @@ namespace Website.Data.Repositories
             return msg;
         }
 
-        public async Task<MessageReplyModel> AddMessageReplyAsync(MessageReplyModel reply)
+        public async Task<MMessageReply> AddMessageReplyAsync(MMessageReply reply)
         {
             const string sql = "INSERT INTO dbo.MessageReplies (MessageId, UserId, Content) " +
                 "OUTPUT INSERTED.Id, INSERTED.MessageId, INSERTED.UserId, INSERTED.Content, INSERTED.LastUpdate, " +
                 "INSERTED.CreateDate " +
                 "VALUES (@MessageId, @UserId, @Content);";
 
-            return await connection.QuerySingleAsync<MessageReplyModel>(sql, reply);
+            return await connection.QuerySingleAsync<MMessageReply>(sql, reply);
         }
 
-        public async Task UpdateMessageReplyAsync(MessageReplyModel reply)
+        public async Task UpdateMessageReplyAsync(MMessageReply reply)
         {
             const string sql = "UPDATE dbo.MessageReplies SET Content = @Content, LastUpdate = SYSDATETIME() " +
                 "WHERE Id = @Id;";
@@ -76,14 +76,14 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { messageId, userId });
         }
 
-        public async Task<MessageModel> GetMessageAsync(int messageId)
+        public async Task<MMessage> GetMessageAsync(int messageId)
         {
             const string sql = "SELECT m.*, fu.*, tu.* FROM dbo.Messages m " +
                 "JOIN dbo.Users fu ON fu.Id = m.FromUserId " +
                 "JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
                 "WHERE m.Id = @messageId";
 
-            var msg = (await connection.QueryAsync<MessageModel, UserModel, UserModel, MessageModel>(sql, (m, fu, tu) =>
+            var msg = (await connection.QueryAsync<MMessage, MUser, MUser, MMessage>(sql, (m, fu, tu) =>
             {
                 m.FromUser = fu;
                 m.ToUser = tu;
@@ -92,18 +92,18 @@ namespace Website.Data.Repositories
 
             const string sql1 = "SELECT * FROM dbo.MessageReplies WHERE MessageId = @messageId;";
 
-            msg.Replies = (await connection.QueryAsync<MessageReplyModel>(sql1, new { messageId })).ToList();
+            msg.Replies = (await connection.QueryAsync<MMessageReply>(sql1, new { messageId })).ToList();
 
             return msg;
         }
 
-        public async Task<IEnumerable<MessageModel>> GetMessagesAsync(int userId)
+        public async Task<IEnumerable<MMessage>> GetMessagesAsync(int userId)
         {
             const string sql = "SELECT m.*, fu.*, tu.*, r.* FROM dbo.Messages m JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
                 "LEFT JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
 
-            var messages = new List<MessageModel>();
-            await connection.QueryAsync<MessageModel, UserModel, UserModel, MessageReplyModel, MessageModel>(sql, (m, fu, tu, r) => 
+            var messages = new List<MMessage>();
+            await connection.QueryAsync<MMessage, MUser, MUser, MMessageReply, MMessage>(sql, (m, fu, tu, r) => 
             {
                 var msg = messages.FirstOrDefault(x => x.Id == m.Id);
                 if (msg == null)
@@ -111,7 +111,7 @@ namespace Website.Data.Repositories
                     msg = m;
                     m.FromUser = fu;
                     m.ToUser = tu;
-                    msg.Replies = new List<MessageReplyModel>();
+                    msg.Replies = new List<MMessageReply>();
                     messages.Add(msg);
                 }
 

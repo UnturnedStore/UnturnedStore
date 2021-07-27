@@ -32,7 +32,7 @@ namespace Website.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutUserAsync([FromBody] UserModel user)
+        public async Task<IActionResult> PutUserAsync([FromBody] MUser user)
         {
             await usersRepository.UpdateUserAsync(user);
             return Ok();

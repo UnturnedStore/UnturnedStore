@@ -32,11 +32,11 @@ namespace Website.Client.Services
 
             foreach (var orderParams in Carts.ToList())
             {
-                orderParams.Seller = await httpClient.GetFromJsonAsync<UserModel>("api/users/" + orderParams.SellerId);
+                orderParams.Seller = await httpClient.GetFromJsonAsync<MUser>("api/users/" + orderParams.SellerId);
 
                 foreach (var item in orderParams.Items.ToList())
                 {
-                    item.Product = await httpClient.GetFromJsonAsync<ProductModel>("api/products/" + item.ProductId);
+                    item.Product = await httpClient.GetFromJsonAsync<MProduct>("api/products/" + item.ProductId);
 
                     if (item.Product.Customer != null)
                     {

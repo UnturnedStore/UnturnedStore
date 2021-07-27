@@ -18,20 +18,20 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
-        public async Task<IEnumerable<OrderModel>> GetOrdersAsync(int sellerId)
+        public async Task<IEnumerable<MOrder>> GetOrdersAsync(int sellerId)
         {
             const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.BuyerId = u.Id " +
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id WHERE o.SellerId = @sellerId AND Status = 'Completed';";
 
-            List<OrderModel> orders = new List<OrderModel>();
-            await connection.QueryAsync<OrderModel, UserModel, OrderItemModel, ProductModel, OrderModel>(sql, (o, u, i, p) =>
+            List<MOrder> orders = new List<MOrder>();
+            await connection.QueryAsync<MOrder, MUser, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
             {
                 var order = orders.FirstOrDefault(x => x.Id == o.Id);
                 if (order == null)
                 {
                     order = o;
                     order.Buyer = u;
-                    order.Items = new List<OrderItemModel>();
+                    order.Items = new List<MOrderItem>();
                     orders.Add(order);
                 }
 
@@ -47,12 +47,12 @@ namespace Website.Data.Repositories
             return orders;
         }
 
-        public async Task<IEnumerable<ProductCustomerModel>> GetCustomersAsync(int userId)
+        public async Task<IEnumerable<MProductCustomer>> GetCustomersAsync(int userId)
         {
             const string sql = "SELECT c.*, u.*, p.* FROM dbo.ProductCustomers c JOIN dbo.Users u ON u.Id = c.UserId " +
                 "JOIN dbo.Products p ON p.Id = c.ProductId WHERE p.SellerId = @userId;";
 
-            return await connection.QueryAsync<ProductCustomerModel, UserModel, ProductModel, ProductCustomerModel>(sql, (c, u, p) => 
+            return await connection.QueryAsync<MProductCustomer, MUser, MProduct, MProductCustomer>(sql, (c, u, p) => 
             {
                 c.User = u;
                 c.Product = p;                
@@ -60,18 +60,18 @@ namespace Website.Data.Repositories
             }, new { userId });
         }
 
-        public async Task<IEnumerable<ProductModel>> GetProductsAsync(int userId)
+        public async Task<IEnumerable<MProduct>> GetProductsAsync(int userId)
         {
             const string sql = "SELECT p.*, b.* FROM dbo.Products p LEFT JOIN dbo.Branches b ON p.Id = b.ProductId WHERE p.SellerId = @userId;";
 
-            List<ProductModel> products = new List<ProductModel>();
-            await connection.QueryAsync<ProductModel, BranchModel, ProductModel>(sql, (p, b) =>
+            List<MProduct> products = new List<MProduct>();
+            await connection.QueryAsync<MProduct, MBranch, MProduct>(sql, (p, b) =>
             {
                 var product = products.FirstOrDefault(x => x.Id == p.Id);
                 if (product == null)
                 {
                     product = p;
-                    product.Branches = new List<BranchModel>();
+                    product.Branches = new List<MBranch>();
                     products.Add(product);
                 }
 
@@ -84,17 +84,17 @@ namespace Website.Data.Repositories
             return products;
         }
 
-        public async Task<ProductModel> GetProductAsync(int productId)
+        public async Task<MProduct> GetProductAsync(int productId)
         {
             const string sql = "SELECT p.*, t.* FROM dbo.Products p LEFT JOIN dbo.ProductTabs t ON p.Id = t.ProductId WHERE p.Id = @productId;";
 
-            ProductModel product = null;
-            await connection.QueryAsync<ProductModel, ProductTabModel, ProductModel>(sql, (p, t) =>
+            MProduct product = null;
+            await connection.QueryAsync<MProduct, MProductTab, MProduct>(sql, (p, t) =>
             {
                 if (product == null)
                 {
                     product = p;
-                    product.Tabs = new List<ProductTabModel>();
+                    product.Tabs = new List<MProductTab>();
                 }
 
                 if (t != null)
@@ -107,19 +107,19 @@ namespace Website.Data.Repositories
                 return product;
 
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
-            product.Medias = (await connection.QueryAsync<ProductMediaModel>(sql1, product)).ToList();
+            product.Medias = (await connection.QueryAsync<MProductMedia>(sql1, product)).ToList();
 
             const string sql2 = "SELECT b.*, v.Id, v.BranchId, v.Name, v.FileName, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate " +
                 "FROM dbo.Branches b LEFT JOIN dbo.Versions v ON v.BranchId = b.Id WHERE b.ProductId = @Id;";
-            product.Branches = new List<BranchModel>();
-            await connection.QueryAsync<BranchModel, VersionModel, BranchModel>(sql2, (b, v) =>
+            product.Branches = new List<MBranch>();
+            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql2, (b, v) =>
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
 
                 if (branch == null)
                 {
                     branch = b;
-                    branch.Versions = new List<VersionModel>();
+                    branch.Versions = new List<MVersion>();
                     product.Branches.Add(branch);
                 }
 

@@ -51,7 +51,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost]
-        public async Task<IActionResult> PostProductAsync([FromBody] ProductModel product)
+        public async Task<IActionResult> PostProductAsync([FromBody] MProduct product)
         {
             product.SellerId = int.Parse(User.Identity.Name);
             return Ok(await productsRepository.AddProductAsync(product));
@@ -59,7 +59,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPut]
-        public async Task<IActionResult> PutProductAsync([FromBody] ProductModel product)
+        public async Task<IActionResult> PutProductAsync([FromBody] MProduct product)
         {            
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(product.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -70,7 +70,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost("tabs")]
-        public async Task<IActionResult> PostProductTabAsync([FromBody] ProductTabModel tab)
+        public async Task<IActionResult> PostProductTabAsync([FromBody] MProductTab tab)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(tab.ProductId, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -80,7 +80,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPut("tabs")]
-        public async Task<IActionResult> PutProductTabAsync([FromBody] ProductTabModel tab)
+        public async Task<IActionResult> PutProductTabAsync([FromBody] MProductTab tab)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductTabSellerAsync(tab.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -102,7 +102,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost("medias")]
-        public async Task<IActionResult> PostProductMediaAsync([FromBody] ProductMediaModel media)
+        public async Task<IActionResult> PostProductMediaAsync([FromBody] MProductMedia media)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(media.ProductId, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -123,7 +123,7 @@ namespace Website.Server.Controllers
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost("customers")]
-        public async Task<IActionResult> PostProductCustomerAsync([FromBody] ProductCustomerModel customer)
+        public async Task<IActionResult> PostProductCustomerAsync([FromBody] MProductCustomer customer)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(customer.ProductId, int.Parse(User.Identity.Name)))
                 return BadRequest();
@@ -144,7 +144,7 @@ namespace Website.Server.Controllers
         
         [Authorize]
         [HttpPost("reviews")]
-        public async Task<IActionResult> PostProductReviewAsync([FromBody] ProductReviewModel review)
+        public async Task<IActionResult> PostProductReviewAsync([FromBody] MProductReview review)
         {
             review.UserId = int.Parse(User.Identity.Name);
             if (!await productsRepository.CanReviewProductAsync(review.ProductId, review.UserId))
@@ -157,7 +157,7 @@ namespace Website.Server.Controllers
 
         [Authorize]
         [HttpPut("reviews")]
-        public async Task<IActionResult> PutProductReviewAsync([FromBody] ProductReviewModel review)
+        public async Task<IActionResult> PutProductReviewAsync([FromBody] MProductReview review)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductReviewOwnerAsync(review.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();

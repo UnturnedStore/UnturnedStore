@@ -40,7 +40,7 @@ namespace Website.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostMessageAsync([FromBody] MessageModel message)
+        public async Task<IActionResult> PostMessageAsync([FromBody] MMessage message)
         {
             int userId = int.Parse(User.Identity.Name);
             message.FromUserId = userId;
@@ -68,7 +68,7 @@ namespace Website.Server.Controllers
         }
         
         [HttpPost("replies")]
-        public async Task<IActionResult> PostMessageReplyAsync([FromBody] MessageReplyModel reply)
+        public async Task<IActionResult> PostMessageReplyAsync([FromBody] MMessageReply reply)
         {
             int userId = int.Parse(User.Identity.Name);
             if (!await messagesRepository.IsMessageUserAsync(reply.MessageId, userId))
@@ -83,7 +83,7 @@ namespace Website.Server.Controllers
         }
 
         [HttpPut("replies")]
-        public async Task<IActionResult> PutMessageReplyAsync([FromBody] MessageReplyModel reply)
+        public async Task<IActionResult> PutMessageReplyAsync([FromBody] MMessageReply reply)
         {
             if (!await messagesRepository.IsMessageReplyUserAsync(reply.Id, int.Parse(User.Identity.Name)))
                 return BadRequest();

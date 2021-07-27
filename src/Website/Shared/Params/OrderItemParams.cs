@@ -13,6 +13,6 @@ namespace Website.Shared.Params
         public int ProductId { get; set; }
 
         [JsonIgnore]
-        public ProductModel Product { get; set; }
+        public MProduct Product { get; set; }
     }
 }

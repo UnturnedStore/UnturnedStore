@@ -17,7 +17,7 @@ namespace Website.Client.Providers
             this.httpClient = httpClient;
         }
 
-        public UserModel User { get; private set; }
+        public MUser User { get; private set; }
         public bool IsAuthenticated { get; private set; }
 
         public async Task UpdateUserAsync()
@@ -27,7 +27,7 @@ namespace Website.Client.Providers
                 var response = await httpClient.GetAsync("api/users/me");
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    User = await response.Content.ReadFromJsonAsync<UserModel>();
+                    User = await response.Content.ReadFromJsonAsync<MUser>();
                 }
             }
             catch (Exception e)

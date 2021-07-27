@@ -28,7 +28,7 @@ namespace Website.Server.Helpers
 
             var usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
 
-            UserModel user = await usersRepository.GetUserAsync(steamId);
+            MUser user = await usersRepository.GetUserAsync(steamId);
 
             if (user != null)
             {
@@ -54,7 +54,7 @@ namespace Website.Server.Helpers
                 logger.LogError(e, "An exception occurated when downloading player summaries");
             }
 
-            user = new UserModel()
+            user = new MUser()
             {
                 SteamId = steamId,
                 Role = RoleConstants.DefaultRoleId
@@ -80,7 +80,7 @@ namespace Website.Server.Helpers
 
             var usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
 
-            UserModel user = await usersRepository.GetUserAsync(steamId);
+            MUser user = await usersRepository.GetUserAsync(steamId);
 
             List<Claim> claims = new List<Claim>
             {

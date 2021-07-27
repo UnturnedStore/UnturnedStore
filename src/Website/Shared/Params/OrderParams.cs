@@ -19,7 +19,7 @@ namespace Website.Shared.Params
         public List<OrderItemParams> Items { get; set; }
 
         [JsonIgnore]
-        public UserModel Seller { get; set; }
+        public MUser Seller { get; set; }
         [JsonIgnore]
         public bool IsAgree { get; set; }
     }

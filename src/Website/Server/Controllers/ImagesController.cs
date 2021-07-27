@@ -29,7 +29,7 @@ namespace Website.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostImageAsync([FromBody] ImageModel image)
+        public async Task<IActionResult> PostImageAsync([FromBody] MImage image)
         {
             return Ok(await imagesRepository.AddImageAsync(image));
         }

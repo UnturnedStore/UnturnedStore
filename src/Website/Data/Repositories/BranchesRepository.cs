@@ -31,28 +31,28 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { branchId });
         }
 
-        public async Task<BranchModel> AddBranchAsync(BranchModel branch)
+        public async Task<MBranch> AddBranchAsync(MBranch branch)
         {
             const string sql = "INSERT INTO dbo.Branches (Name, Description, ProductId, IsEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.IsEnabled, INSERTED.CreateDate " +
                 "VALUES (@Name, @Description, @ProductId, @IsEnabled);";
-            branch = await connection.QuerySingleAsync<BranchModel>(sql, branch);
-            branch.Versions = new List<VersionModel>();
+            branch = await connection.QuerySingleAsync<MBranch>(sql, branch);
+            branch.Versions = new List<MVersion>();
             return branch;
         }
 
-        public async Task UpdateBranchAsync(BranchModel branch)
+        public async Task UpdateBranchAsync(MBranch branch)
         {
             const string sql = "UPDATE dbo.Branches SET Name = @Name, Description = @Description, " +
                 "IsEnabled = @IsEnabled WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, branch);
         }
 
-        public async Task<BranchModel> GetBranchAsync(int branchId)
+        public async Task<MBranch> GetBranchAsync(int branchId)
         {
             const string sql = "SELECT * FROM dbo.Branches WHERE Id = @branchId;";
 
-            return await connection.QuerySingleOrDefaultAsync<BranchModel>(sql, new { branchId });
+            return await connection.QuerySingleOrDefaultAsync<MBranch>(sql, new { branchId });
         }
     }
 }

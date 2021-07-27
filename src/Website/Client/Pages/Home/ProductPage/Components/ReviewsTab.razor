@@ -1,0 +1,85 @@
+﻿
+@if (Product != null)
+{
+    @if (UserReview == null && Product.Reviews.Count == 0)
+    {
+        <h4>This product doesn't have any reviews</h4>
+    }
+
+    if (UserReview != null && UserReview.Id != 0)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <div class="fw-bold">
+                        <div class="d-flex">
+                            @for (byte i = 1; i <= UserReview.Rating; i++)
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            @for (byte i = UserReview.Rating; i < 5; i++)
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        </div>                        
+                    </div>
+                    <div class="ms-auto">
+                        You
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@UserReview.Title</h5>
+                <div class="mb-3">
+                    @UserReview.Body
+                </div>
+                <div class="text-muted">
+                    @UserReview.LastUpdate
+                </div>
+            </div>
+        </div>
+    }
+
+    @foreach (var review in Product.Reviews.OrderByDescending(x => x.CreateDate))
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <div class="fw-bold">
+                        <div class="d-flex">
+                            @for (byte i = 1; i <= review.Rating; i++)
+                            {
+                                <i class="bi bi-star-fill"></i>
+                            }
+                            @for (byte i = review.Rating; i < 5; i++)
+                            {
+                                <i class="bi bi-star"></i>
+                            }
+                        </div>
+                    </div>
+                    <div class="ms-auto">
+                        @review.User.Name
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">@review.Title</h5>
+                <div class="mb-3">
+                    @review.Body
+                </div>
+                <div class="text-muted">
+                    @review.LastUpdate
+                </div>
+            </div>
+        </div>
+    }
+}
+
+
+@code {
+    [Parameter]
+    public MProduct Product { get; set; }
+    [Parameter]
+    public MProductReview UserReview { get; set; }
+
+}

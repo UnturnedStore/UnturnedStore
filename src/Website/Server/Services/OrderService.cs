@@ -25,11 +25,11 @@ namespace Website.Server.Services
             this.payPalService = payPalService;
         }
 
-        public async Task<OrderModel> CreateOrderAsync(OrderParams orderParams)
+        public async Task<MOrder> CreateOrderAsync(OrderParams orderParams)
         {
             if (orderParams.PaymentMethod == PaymentContants.PayPal)
             {
-                var order = OrderModel.FromParams(orderParams);
+                var order = MOrder.FromParams(orderParams);
 
                 order.Seller = await usersRepository.GetUserPrivateAsync(order.SellerId);
 
@@ -39,7 +39,7 @@ namespace Website.Server.Services
 
                 foreach (var itemParams in orderParams.Items)
                 {
-                    var item = OrderItemModel.FromParams(itemParams);
+                    var item = MOrderItem.FromParams(itemParams);
 
                     item.Product = await productsRepository.GetProductAsync(item.ProductId, order.BuyerId);
                     

@@ -65,26 +65,26 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<int>(sql, new { productId });
         }
 
-        public async Task<IEnumerable<ProductModel>> GetProductsAsync()
+        public async Task<IEnumerable<MProduct>> GetProductsAsync()
         {
-            return await connection.QueryAsync<ProductModel, UserModel, ProductModel>("dbo.GetProducts", (p, u) => 
+            return await connection.QueryAsync<MProduct, MUser, MProduct>("dbo.GetProducts", (p, u) => 
             {
                 p.Seller = u;
                 return p;
             }, commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<ProductModel> GetProductAsync(int productId, int userId)
+        public async Task<MProduct> GetProductAsync(int productId, int userId)
         {
             const string sql = "SELECT p.*, t.* FROM dbo.Products p LEFT JOIN dbo.ProductTabs t ON p.Id = t.ProductId WHERE p.Id = @productId;";
             
-            ProductModel product = null;
-            await connection.QueryAsync<ProductModel, ProductTabModel, ProductModel>(sql, (p, t) => 
+            MProduct product = null;
+            await connection.QueryAsync<MProduct, MProductTab, MProduct>(sql, (p, t) => 
             { 
                 if (product == null)
                 {
                     product = p;
-                    product.Tabs = new List<ProductTabModel>();
+                    product.Tabs = new List<MProductTab>();
                 }
 
                 if (t != null)
@@ -97,20 +97,20 @@ namespace Website.Data.Repositories
                 return null;
 
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
-            product.Medias = (await connection.QueryAsync<ProductMediaModel>(sql1, product)).ToList();
+            product.Medias = (await connection.QueryAsync<MProductMedia>(sql1, product)).ToList();
 
             const string sql2 = "SELECT b.*, v.Id, v.Name, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate FROM dbo.Branches b " +
                 "LEFT JOIN dbo.Versions v ON v.BranchId = b.Id AND v.IsEnabled = 1 WHERE b.ProductId = @Id AND b.IsEnabled = 1;";
 
-            product.Branches = new List<BranchModel>();
+            product.Branches = new List<MBranch>();
 
-            await connection.QueryAsync<BranchModel, VersionModel, BranchModel>(sql2, (b, v) => 
+            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql2, (b, v) => 
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
                 if (branch == null)
                 {
                     branch = b;
-                    branch.Versions = new List<VersionModel>();
+                    branch.Versions = new List<MVersion>();
                     product.Branches.Add(branch);
                 }
 
@@ -123,16 +123,16 @@ namespace Website.Data.Repositories
             }, product);
 
             const string sql3 = "SELECT Id, Name, Role, SteamId, CreateDate FROM dbo.Users WHERE Id = @SellerId;";
-            product.Seller = await connection.QuerySingleAsync<UserModel>(sql3, product);
+            product.Seller = await connection.QuerySingleAsync<MUser>(sql3, product);
 
             if (userId != 0)
             {
                 const string sql4 = "SELECT * FROM dbo.ProductCustomers WHERE ProductId = @productId AND UserId = @userId;";
-                product.Customer = await connection.QuerySingleOrDefaultAsync<UserModel>(sql4, new { productId, userId });
+                product.Customer = await connection.QuerySingleOrDefaultAsync<MUser>(sql4, new { productId, userId });
             }
 
             const string sql5 = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
-            product.Reviews = (await connection.QueryAsync<ProductReviewModel, UserModel, ProductReviewModel>(sql5, (r, u) =>
+            product.Reviews = (await connection.QueryAsync<MProductReview, MUser, MProductReview>(sql5, (r, u) =>
             {
                 r.User = u;
                 return r;
@@ -142,42 +142,42 @@ namespace Website.Data.Repositories
             return product;
         }
 
-        public async Task<ProductModel> AddProductAsync(ProductModel product)
+        public async Task<MProduct> AddProductAsync(MProduct product)
         {
             const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.GithubUrl, INSERTED.Price, " +
                 "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.LastUpdate, INSERTED.CreateDate " +
                 "VALUES (@Name, @Description, @Category, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled);";
-            product = await connection.QuerySingleAsync<ProductModel>(sql, product);
+            product = await connection.QuerySingleAsync<MProduct>(sql, product);
 
             const string sql1 = "INSERT INTO dbo.Branches (ProductId, Name, Description) " +
                 "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.Name, INSERTED.Description, INSERTED.IsEnabled, INSERTED.CreateDate " +
                 "VALUES (@Id, 'master', 'Default branch');";
 
-            product.Branches = new List<BranchModel>
+            product.Branches = new List<MBranch>
             {
-                await connection.QuerySingleAsync<BranchModel>(sql1, product)
+                await connection.QuerySingleAsync<MBranch>(sql1, product)
             };
 
             return product;
         }
 
-        public async Task UpdateProductAsync(ProductModel product)
+        public async Task UpdateProductAsync(MProduct product)
         {
             const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, GithubUrl = @GithubUrl, " +
                 "Price = @Price, ImageId = @ImageId, IsEnabled = @IsEnabled, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, product);
         }
 
-        public async Task<ProductTabModel> AddProductTabAsync(ProductTabModel tab)
+        public async Task<MProductTab> AddProductTabAsync(MProductTab tab)
         {
             const string sql = "INSERT INTO dbo.ProductTabs (ProductId, Title, Content, IsEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.Title, INSERTED.Content, INSERTED.IsEnabled " +
                 "VALUES (@ProductId, @Title, @Content, @IsEnabled);";
-            return await connection.QuerySingleAsync<ProductTabModel>(sql, tab);
+            return await connection.QuerySingleAsync<MProductTab>(sql, tab);
         }
 
-        public async Task UpdateProductTabAsync(ProductTabModel tab)
+        public async Task UpdateProductTabAsync(MProductTab tab)
         {
             const string sql = "UPDATE dbo.ProductTabs SET Title = @Title, Content = @Content, IsEnabled = @IsEnabled " +
                 "WHERE Id = @Id;";
@@ -190,12 +190,12 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { tabId });
         }
 
-        public async Task<ProductMediaModel> AddProductMediaAsync(ProductMediaModel media)
+        public async Task<MProductMedia> AddProductMediaAsync(MProductMedia media)
         {
             const string sql = "INSERT INTO dbo.ProductMedias (ProductId, YoutubeUrl, ImageId) " +
                 "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.YoutubeUrl, INSERTED.ImageId " +
                 "VALUES (@ProductId, @YoutubeUrl, @ImageId);";
-            return await connection.QuerySingleAsync<ProductMediaModel>(sql, media);
+            return await connection.QuerySingleAsync<MProductMedia>(sql, media);
         }
 
         public async Task DeleteProductMediaAsync(int mediaId)
@@ -204,13 +204,13 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { mediaId });
         }
 
-        public async Task<ProductCustomerModel> AddProductCustomerAsync(ProductCustomerModel customer)
+        public async Task<MProductCustomer> AddProductCustomerAsync(MProductCustomer customer)
         {
             const string sql = "INSERT INTO dbo.ProductCustomers (ProductId, UserId) " +
                 "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.UserId, INSERTED.CreateDate " +
                 "VALUES (@ProductId, @UserId);";
 
-            return await connection.QuerySingleAsync<ProductCustomerModel>(sql, customer);
+            return await connection.QuerySingleAsync<MProductCustomer>(sql, customer);
         }
 
         public async Task DeleteProductCustomerAsync(int customerId)
@@ -219,7 +219,7 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { customerId });
         }
 
-        public async Task<ProductReviewModel> AddProductReviewAsync(ProductReviewModel review)
+        public async Task<MProductReview> AddProductReviewAsync(MProductReview review)
         {
             const string sql = "INSERT INTO dbo.ProductReviews (Title, Body, Rating, ProductId, UserId) " +
                 "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.Body, INSERTED.Rating, INSERTED.ProductId, INSERTED.UserId, " +
@@ -228,19 +228,19 @@ namespace Website.Data.Repositories
             return await GetProductReviewAsync(await connection.ExecuteScalarAsync<int>(sql, review));
         }
 
-        public async Task<ProductReviewModel> GetProductReviewAsync(int reviewId)
+        public async Task<MProductReview> GetProductReviewAsync(int reviewId)
         {
             const string sql = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId " +
                 "WHERE r.Id = @reviewId;";
 
-            return (await connection.QueryAsync<ProductReviewModel, UserModel, ProductReviewModel>(sql, (r, u) => 
+            return (await connection.QueryAsync<MProductReview, MUser, MProductReview>(sql, (r, u) => 
             {
                 r.User = u;
                 return r;
             }, new { reviewId })).FirstOrDefault();
         }
 
-        public async Task UpdateProductReviewAsync(ProductReviewModel review)
+        public async Task UpdateProductReviewAsync(MProductReview review)
         {
             const string sql = "UPDATE dbo.ProductReviews SET Title = @Title, Body = @Body, Rating = @Rating, " +
                 "LastUpdate = SYSDATETIME() WHERE Id = @Id;";
@@ -253,12 +253,12 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { reviewId });
         }
 
-        public async Task<IEnumerable<ProductCustomerModel>> GetUserProductsAsync(int userId)
+        public async Task<IEnumerable<MProductCustomer>> GetUserProductsAsync(int userId)
         {
             const string sql = "SELECT c.*, p.*, u.Id, u.Name, u.Role, u.SteamId, u.CreateDate FROM dbo.ProductCustomers c JOIN dbo.Products p on c.ProductId = p.Id " +
                 "JOIN dbo.Users u ON p.SellerId = u.Id WHERE c.UserId = @userId;";
 
-            return await connection.QueryAsync<ProductCustomerModel, ProductModel, UserModel, ProductCustomerModel>(sql, (c, p, u) => 
+            return await connection.QueryAsync<MProductCustomer, MProduct, MUser, MProductCustomer>(sql, (c, p, u) => 
             {
                 c.Product = p;
                 c.Product.Seller = u;
