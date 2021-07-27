@@ -21,6 +21,17 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <InputSelect class="form-control" @bind-Value="Model.Category">
+                            @foreach (string category in ProductConstants.Categories)
+                            {
+                                <option value="@category">@category</option>
+                            }
+                        </InputSelect>
+                        <div class="form-text">Set the category of your product</div>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">Github Repo URL</label>
                         <InputText class="form-control" @bind-Value="Model.GithubUrl" />
                         <div class="form-text">Optional</div>
@@ -80,7 +91,7 @@
 
     public ProductModel Model { get; set; } = new ProductModel()
     {
-        
+        Category = ProductConstants.DefaultCategory
     };
 
     public async Task ShowAsync()
@@ -96,7 +107,7 @@
         await OnSubmitAsync.InvokeAsync(Model);
         isLoading = false;
         await JSRuntime.HideModalAsync(nameof(CreateProductModal));
-        Model = new ProductModel();
+        Model = new ProductModel() { Category = ProductConstants.DefaultCategory };
     }
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)

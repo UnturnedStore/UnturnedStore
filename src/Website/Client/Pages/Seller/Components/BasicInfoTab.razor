@@ -13,6 +13,17 @@
     </div>
 
     <div class="mb-3">
+        <label class="form-label">Category</label>
+        <InputSelect class="form-control" @bind-Value="Product.Category">
+            @foreach (string category in ProductConstants.Categories)
+            {
+                <option value="@category">@category</option>
+            }
+        </InputSelect>
+        <div class="form-text">Set the category of your product</div>
+    </div>
+
+    <div class="mb-3">
         <label class="form-label">Github Repo URL</label>
         <InputText class="form-control" @bind-Value="Product.GithubUrl" />
         <div class="form-text">Enables a Github link on product page</div>

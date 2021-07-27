@@ -23,6 +23,8 @@ namespace Website.Shared.Models
         public int ImageId { get; set; }
         [Range(0, 1000)]
         public decimal Price { get; set; }
+        [Required]
+        public string Category { get; set; }
         public int SellerId { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime LastUpdate { get; set; }
@@ -55,6 +57,7 @@ namespace Website.Shared.Models
                 Id = product.Id,
                 Price = product.Price,
                 Description = product.Description,
+                Category = product.Category,
                 GithubUrl = product.GithubUrl,
                 Name = product.Name,
                 ImageId = product.ImageId,

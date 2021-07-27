@@ -11,6 +11,7 @@ BEGIN
 		p.Id,
 		p.Name,
 		p.Description,
+		p.Category,
 		p.GithubUrl,
 		p.ImageId,
 		p.Price,

@@ -22,7 +22,9 @@ namespace Website.Client.Pages
 
         public IEnumerable<ProductModel> Products { get; set; }
 
-        private IEnumerable<ProductModel> SearchedProducts => Products.Where(x => string.IsNullOrEmpty(searchString) 
+        private IEnumerable<ProductModel> SearchedProducts => Products
+            .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
+            .Where(x => string.IsNullOrEmpty(searchString) 
             || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase));
 
@@ -46,6 +48,33 @@ namespace Website.Client.Pages
         }
 
         private string searchString = string.Empty;
+        private string searchCategory = string.Empty;
+
+        private void ChangeCategory(string category)
+        {
+            searchCategory = category;
+        }
+
+        private string Active(string category)
+        {
+            if (searchCategory == category)
+                return "active";
+            return string.Empty;
+        }
+
+        private string GetCategoryIcon()
+        {
+            if (searchCategory == "Rocket Plugin")
+            {
+                return "fas fa-rocket";
+            } else if (searchCategory == "OpenMod Plugin")
+            {
+                return "fas fa-plug";
+            } else
+            {
+                return "far fa-folder";
+            }
+        }
 
         protected override async Task OnInitializedAsync()
         {
