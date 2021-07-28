@@ -35,10 +35,10 @@
                 @foreach (var msg in ActiveMessages.OrderByDescending(x => x.CreateDate))
                 {
                     <tr style="cursor: pointer;" @onclick="() => GoToMessage(msg)">
-                        <td>@msg.Id</td>
-                        <td>@msg.Title</td>
-                        <td>@msg.Replies.Count</td>
-                        <td>@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser.Name : msg.ToUser.Name)</td>
+                        <td class="align-middle">@msg.Id</td>
+                        <td class="align-middle">@msg.Title</td>
+                        <td class="align-middle">@msg.Replies.Count</td>
+                        <td class="align-middle"><Username User="@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser : msg.ToUser)" /></td>
                     </tr>
                 }
             </tbody>
@@ -60,10 +60,10 @@
                 @foreach (var msg in ClosedMessages.OrderByDescending(x => x.CreateDate))
                 {
                     <tr style="cursor: pointer;" @onclick="() => GoToMessage(msg)">
-                        <td>@msg.Id</td>
-                        <td>@msg.Title</td>
-                        <td>@msg.Replies.Count</td>
-                        <td>@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser.Name : msg.ToUser.Name)</td>
+                        <td class="align-middle">@msg.Id</td>
+                        <td class="align-middle">@msg.Title</td>
+                        <td class="align-middle">@msg.Replies.Count</td>
+                        <td class="align-middle"><Username User="@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser : msg.ToUser)" /></td>
                     </tr>
                 }
             </tbody>

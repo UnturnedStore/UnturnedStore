@@ -107,7 +107,7 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MUser>> GetUsersAsync()
         {
-            const string sql = "SELECT Id, Name, SteamId, Role, CreateDate FROM dbo.Users;";
+            const string sql = "SELECT Id, Name, SteamId, Role, AvatarImageId, CreateDate FROM dbo.Users;";
             return await connection.QueryAsync<MUser>(sql);
         }
     }

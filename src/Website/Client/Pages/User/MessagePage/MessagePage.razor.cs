@@ -79,13 +79,14 @@ namespace Website.Client.Pages.User.MessagePage
             await HttpClient.PatchAsync("api/messages/" + MessageId, null);            
         }
 
-        private string GetUsername(int userId)
+        private MUser User(int userId)
         {
             if (Message.FromUserId == userId)
-                return Message.FromUser.Name;
+                return Message.FromUser;
             if (Message.ToUserId == userId)
-                return Message.ToUser.Name;
-            return userId.ToString();
+                return Message.ToUser;
+
+            return null;
         }
     }
 }

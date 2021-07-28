@@ -39,7 +39,7 @@
                     <tr style="cursor: pointer;" @onclick="() => GoToProduct(product)">
                         <td class="align-middle"><img src="/api/images/@product.ImageId" width="40" height="40" /></td>
                         <td class="align-middle">@product.Name</td>
-                        <td class="align-middle">@product.Seller.Name</td>
+                        <td class="align-middle"><Username User="product.Seller" /></td>
                         <td class="align-middle">$@product.Price</td>
                         <td class="align-middle">@product.IsEnabled</td>
                     </tr>

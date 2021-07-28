@@ -32,9 +32,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <div class="fw-bold">
-                            @GetUsername(reply.UserId)
-                        </div>
+                        <Username User="User(reply.UserId)" />
                         <div class="ms-auto">
                             @if (steamAuth.User.Id == reply.UserId)
                             {
@@ -125,7 +123,7 @@
     {
         <div class="mb-3">
             <div class="alert alert-secondary" role="alert">
-                This message was closed by @GetUsername(Message.ClosingUserId)
+                This message was closed by @User(Message.ClosingUserId)
             </div>
         </div>
     }

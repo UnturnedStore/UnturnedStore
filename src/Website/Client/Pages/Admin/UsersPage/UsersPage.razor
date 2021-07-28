@@ -36,16 +36,16 @@
             <tbody>
                 <Virtualize Items="orderedUsers" Context="user">
                     <tr>
-                        <td>@user.Name</td>
-                        <td>@user.SteamId</td>
-                        <td>
+                        <td class="align-middle"><Username User="user" /></td>
+                        <td class="align-middle">@user.SteamId</td>
+                        <td class="align-middle">
                             <select class="form-select" @bind="user.Role">
                                 <option value="@RoleConstants.DefaultRoleId">@RoleConstants.DefaultRoleId</option>
                                 <option value="@RoleConstants.SellerRoleId">@RoleConstants.SellerRoleId</option>
                                 <option value="@RoleConstants.AdminRoleId">@RoleConstants.AdminRoleId</option>
                             </select>
                         </td>
-                        <td>
+                        <td class="align-middle">
                             @if (loadingUsers.Contains(user))
                             {
                                 <LoadingButton />

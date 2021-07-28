@@ -1,5 +1,6 @@
 ﻿@page "/products/{ProductId:int}"
 @using Website.Client.Pages.Home.ProductPage.Components 
+@using Website.Client.Pages.Home.IndexPage.Components
 
 <Meta property="og:image" content="@string.Concat("/api/products/", ProductId, "/image")" />
 <Meta property="og:image:width" content="128" />
@@ -115,13 +116,8 @@
                     <img src="/api/images/@Product.ImageId" width="150" height="150" />
                     <h4 class="mt-2">@Product.Name</h4>
                     <ul class="list-unstyled">
-                        <li>Author: @Product.Seller.Name</li>
-                        <AuthorizeView>
-                            <Authorized>
-                                <li><a class="text-decoration-none" href="/messages/create/@Product.SellerId">Send Message</a></li>
-                            </Authorized>
-                        </AuthorizeView>
-                        <li>Price: @(Product.Price <= 0 ? "Free" : Product.Price + " " + Product.Seller.PayPalCurrency)</li>
+                        <li>Author: <a class="text-decoration-none" href="/users/@Product.Seller.Id">@Product.Seller.Name</a></li>
+                        <li><ProductPrice Product="Product" /></li>
                         <li>Downloads: @(Product.Branches.Sum(x => x.Versions.Sum(x => x.DownloadsCount)))</li>
                         @if (!string.IsNullOrEmpty(Product.GithubUrl))
                         {
@@ -129,82 +125,71 @@
                         }
                     </ul>
 
-                    @if (DefaultBranch != null)
-                    {
-                        if (IsCustomer)
+                    <div class="d-grid gap-2 mt-3">
+                        @if (IsSeller)
                         {
-                            <div class="d-grid gap-2 mt-3">
-
-                                @if (IsSeller)
+                            <a class="btn btn-success" href="/seller/products/@ProductId">
+                                <i class="bi bi-pencil-square"></i> Edit Product
+                            </a>
+                        }
+                        @if (DefaultBranch != null)
+                        {
+                            @if (IsCustomer && SteamAuth.IsAuthenticated && IsSeller)
+                            {
+                                @if (Review == null)
                                 {
-                                    <a class="btn btn-success" href="/seller/products/@ProductId">
-                                        <i class="bi bi-pencil-square"></i> Edit Product
-                                    </a>
-                                }
-                                else
-                                {
-                                    @if (SteamAuth.IsAuthenticated)
-                                    {
-                                        @if (Review == null)
-                                        {
-                                            <button class="btn btn-info" @onclick="ShowReviewModalAsync">
-                                                <i class="bi bi-star-half"></i> Create Review
-                                            </button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn btn-info" @onclick="ShowReviewModalAsync">
-                                                <i class="bi bi-star-half"></i> Edit Review
-                                            </button>
-                                        }
-                                    }
-                                }
-
-
-
-                                @if (ShowVersions)
-                                {
-                                    <button class="btn btn-secondary" @onclick="ToggleShowVersions">
-                                        <i class="bi bi-info-circle-fill"></i> Show Information
+                                    <button class="btn btn-info" @onclick="ShowReviewModalAsync">
+                                        <i class="bi bi-star-half"></i> Create Review
                                     </button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-secondary" @onclick="ToggleShowVersions">
-                                        <i class="bi bi-gear-fill"></i> Show All Versions
+                                    <button class="btn btn-info" @onclick="ShowReviewModalAsync">
+                                        <i class="bi bi-star-half"></i> Edit Review
                                     </button>
                                 }
+                            }
 
+                            @if (IsCustomer && ShowVersions)
+                            {
+                                <button class="btn btn-secondary" @onclick="ToggleShowVersions">
+                                    <i class="bi bi-info-circle-fill"></i> Show Information
+                                </button>
+                            }
+                            @if (IsCustomer && !ShowVersions)
+                            {
+                                <button class="btn btn-secondary" @onclick="ToggleShowVersions">
+                                    <i class="bi bi-gear-fill"></i> Show All Versions
+                                </button>
+                            }
+                            @if (IsCustomer)
+                            {
                                 <form class="d-grid gap-2" method="get" action="api/versions/download/@LatestVersion.Id">
                                     <button class="btn btn-primary" type="submit">
                                         <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestVersion.Name)
                                     </button>
                                 </form>
+                            }
 
-                            </div>
+                            @if (!IsCustomer && IsInCart)
+                            {
+                                <a class="btn btn-primary" href="/cart">
+                                    <i class="bi bi-cart-fill"></i> Go To Cart
+                                </a>
+                            }
+
+                            @if (!IsCustomer && !IsInCart)
+                            {
+                                <button class="btn btn-primary" @onclick="AddToCartAsync">
+                                    <i class="bi bi-cart-fill"></i> Add To Cart
+                                </button>
+                            }
                         }
                         else
                         {
-                            <div class="d-grid gap-2 mt-3">
-                                @if (IsInCart)
-                                {
-                                    <a class="btn btn-primary" href="/cart">
-                                        <i class="bi bi-cart-fill"></i> Go To Cart
-                                    </a>
-                                }
-                                else
-                                {
-                                    <button class="btn btn-primary" @onclick="AddToCartAsync">
-                                        <i class="bi bi-cart-fill"></i> Add To Cart
-                                    </button>
-                                }
-                            </div>
+                            <strong>This plugin doesn't have any downloads</strong>
                         }
-                    }
-                    else
-                    {
-                        <strong>This plugin doesn't have any downloads</strong>
-                    }
+                    </div>
                 </div>
 
             </div>
