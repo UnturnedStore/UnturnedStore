@@ -1,56 +1,58 @@
 ﻿@page "/users/{UserId:int}"
 @using Website.Client.Pages.Home.UserPage.Components
+@using Website.Client.Pages.Home.IndexPage.Components
 
 @if (User != null)
 {
-    <div class="row mt-5">
+    <div class="row mt-5 mb-3">
         <div class="col-md-3">
-            <UserCard User="User">
-                <div class="card-body" style="margin-top: -20px;">
-                    <div class="fs-5 fw-bold">
-                        @User.Name
-                    </div>
-                    <div class="dropdown-divider" />
-                    <div>
-                        <div class="input-group input-group-sm">
-                            <a href="@User.SteamProfileUrl" target="_blank" class="btn btn-secondary">
-                                <i class="fab fa-steam-square"></i>
-                            </a>
-                            <input class="form-control border-custom text-center" onclick="this.select()" value="@User.SteamId" readonly />
-                        </div>
-
-                    </div>
-                    <div class="dropdown-divider" />
-                    <div class="fw-bold">Badges</div>
-                    <div>
-                        @if (User.Role == RoleConstants.SellerRoleId)
-                        {
-                            <span class="badge bg-primary">Seller</span>
-                        }
-                        else if (User.Role == RoleConstants.AdminRoleId)
-                        {
-                            <span class="badge bg-primary">Admin</span>
-                        }
-                    </div>
-                    <div class="dropdown-divider" />
-                    <div class="d-grid gap-2">
-                        <a class="btn btn-sm btn-primary" href="/messages/create/@User.Id">
-                            <i class="far fa-comments"></i> Send Message
-                        </a>
-                        @if (UserService.UserId == UserId)
-                        {
-                            <a class="btn btn-sm btn-success" href="/settings">
-                                <i class="bi bi-pencil-square"></i> Update Profile
-                            </a>
-                        }
-                    </div>
-                </div>
-            </UserCard>
+            <UserCard User="User" />
         </div>
         <div class="col-md-9">
-
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link @TabClass(EUserTab.Biography)" @onclick="() => ChangeTab(EUserTab.Biography)" href="javascript:void(0)">Biography</a>
+                </li>
+                @if (RoleConstants.AdminAndSeller.Contains(User.Role))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @TabClass(EUserTab.Products)" @onclick="() => ChangeTab(EUserTab.Products)" href="javascript:void(0)">Products (@User.Products.Count)</a>
+                    </li>
+                }
+            </ul>
+            @if (currentTab == EUserTab.Biography)
+            {
+                <BiographyTab User="User" />
+            }
+            else if (currentTab == EUserTab.Products)
+            {
+                <div class="mb-3 mt-3">
+                    <table class="table border border-1 table-hover">
+                        <tbody>
+                            @foreach (var product in User.Products.OrderByDescending(x => x.CreateDate))
+                            {
+                                <tr style="cursor: pointer;" @onclick="() => GoToProduct(product)">
+                                    <td class="align-middle">
+                                        <img src="api/images/@product.ImageId" width="40" height="40" class="rounded" />
+                                        <span class="fw-bold ms-1 align-middle">@product.Name</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <ProductRating Product="product" />
+                                    </td>
+                                    <td class="align-middle fs-6">
+                                        <span><i class="bi bi-download"></i> @product.TotalDownloadsCount</span>
+                                    </td>
+                                    <td class="align-middle fs-6">
+                                        <ProductPrice Product="product" />
+                                    </td>
+                                </tr>
+                            }                                
+                        </tbody>
+                    </table>
+                </div>
+            }
+            
         </div>
     </div>
-
+    
 }
-

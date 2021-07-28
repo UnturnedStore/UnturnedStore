@@ -19,27 +19,11 @@ namespace Website.Data.Repositories
 
         public async Task<MUser> GetUserProfileAsync(int userId)
         {
-            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.AvatarImageId, u.Color, u.Biography, u.CreateDate, p.* " +
-                "FROM dbo.Users u " +
-                "LEFT JOIN dbo.Products p ON u.Id = p.SellerId AND p.IsEnabled = 1 " +
-                "WHERE u.Id = @userId;";
+            const string sql = "SELECT Id, Name, Role, SteamId, AvatarImageId, Color, Biography, CreateDate " +
+                "FROM dbo.Users " +
+                "WHERE Id = @userId;";
 
-            MUser user = null;
-            await connection.QueryAsync<MUser, MProduct, MUser>(sql, (u, p) =>
-            {
-                if (user == null)
-                {
-                    user = u;
-                    user.Products = new List<MProduct>();
-                }
-
-                if (p != null)
-                    user.Products.Add(p);
-
-                return null;
-            }, new { userId });
-            
-            return user;
+            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
         }
 
         public async Task<MUser> GetUserPublicAsync(int userId)

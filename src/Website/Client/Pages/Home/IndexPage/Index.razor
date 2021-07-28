@@ -1,5 +1,5 @@
 ﻿@page "/"
-
+@using Website.Client.Pages.Home.IndexPage.Components
 
 <Title Value="Home - Unturned Store"></Title>
 
@@ -52,62 +52,9 @@
         <div class="row row-cols-1 row-cols-sm-2 justify-content-center">
             @foreach (var product in OrderedProducts)
             {
-                <div class="col bg-light rounded border-2 border" style="width: 350px; height: 150px; margin: 10px 10px 10px 10px;">
-                    <div class="d-flex align-items-center text-center" style="margin-top: -20px;">
-                        <div>
-                            <a href="/products/@product.Id">
-                                <img src="api/images/@product.ImageId" width="85" height="85" class="rounded" />
-                            </a>
-                        </div>                        
-                        <div class="ms-1 text-center w-100" style="margin-bottom: -20px;">
-                            <div>
-                                <a class="ms-2 text-center w-100 text-decoration-none" href="/products/@product.Id">@product.Name</a>                                
-                            </div>
-                            <div> 
-                                <small class="text-muted">Author: @product.Seller.Name</small> <br />
-                            </div>
-                            <div style="margin-top: -5px;">
-                                @for (byte i = 1; i <= product.AverageRating; i++)
-                                {
-                                    <i class="bi bi-star-fill"></i>
-                                }
-                                @for (byte i = product.AverageRating; i < 5; i++)
-                                {
-                                    <i class="bi bi-star"></i>
-                                }
-                                <span class="text-muted ms-1" style="font-size: 12px;">(@product.RatingsCount)</span>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div>
-                        <div class="mt-auto" style="height: 50px;">
-                            <small style="vertical-align: middle;">@product.GetDescription()</small>
-                        </div>
-
-                        <div class="d-flex align-items-center mt-auto">
-                            <div>
-                                <small class="text-muted">
-                                    <span><i class="bi bi-download"></i> @product.TotalDownloadsCount</span>
-                                </small>
-
-                            </div>
-                            <div class="text-muted ms-auto">
-                                @if (product.Price > 0)
-                                {
-                                    <span>Price: $@product.Price</span>
-                                }
-                                else
-                                {
-                                    <span>Price: Free</span>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <ProductCard Product="product" Seller="product.Seller" />
             }
         </div>
-
     </div>
 }
 else

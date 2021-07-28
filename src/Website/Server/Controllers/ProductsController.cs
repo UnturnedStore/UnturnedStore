@@ -25,7 +25,16 @@ namespace Website.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductsAsync()
         {
-            var products = (await productsRepository.GetProductsAsync()).ToList();
+            var products = await productsRepository.GetProductsAsync();
+            int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
+
+            return Ok(products.Where(x => x.IsEnabled || x.SellerId == userId));
+        }
+
+        [HttpGet("user/{sellerId}")]
+        public async Task<IActionResult> GetUserProductsAsync(int sellerId)
+        {
+            var products = await productsRepository.GetUserProductsAsync(sellerId);
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
 
             return Ok(products.Where(x => x.IsEnabled || x.SellerId == userId));
@@ -181,7 +190,7 @@ namespace Website.Server.Controllers
         [HttpGet("my")]
         public async Task<IActionResult> GetUserProductsAsync()
         {
-            return Ok(await productsRepository.GetUserProductsAsync(int.Parse(User.Identity.Name)));
+            return Ok(await productsRepository.GetMyProductsAsync(int.Parse(User.Identity.Name)));
         }
     }
 }

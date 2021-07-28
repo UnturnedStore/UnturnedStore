@@ -1,0 +1,13 @@
+﻿@if (Product.Price > 0)
+{
+    <span>Price: $@Product.Price</span>
+}
+else
+{
+    <span>Price: Free</span>
+}
+
+@code {
+    [Parameter]
+    public MProduct Product { get; set; }
+}

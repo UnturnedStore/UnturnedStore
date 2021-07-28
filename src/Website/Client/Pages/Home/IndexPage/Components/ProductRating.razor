@@ -1,0 +1,14 @@
+﻿@for (byte i = 1; i <= Product.AverageRating; i++)
+{
+    <i class="bi bi-star-fill"></i>
+}
+@for (byte i = Product.AverageRating; i < 5; i++)
+{
+    <i class="bi bi-star"></i>
+}
+<span class="text-muted ms-1" style="font-size: 12px;">(@Product.RatingsCount)</span>
+
+@code {
+    [Parameter]
+    public MProduct Product { get; set; }
+}

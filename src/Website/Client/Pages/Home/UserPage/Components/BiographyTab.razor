@@ -1,0 +1,10 @@
+﻿<div class="p-3 bg-light">
+    @content
+</div>
+
+@code {
+    [Parameter]
+    public MUser User { get; set; }
+
+    private MarkupString content => new MarkupString(User.Biography);
+}

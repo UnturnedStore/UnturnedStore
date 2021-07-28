@@ -74,6 +74,11 @@ namespace Website.Data.Repositories
             }, commandType: CommandType.StoredProcedure);
         }
 
+        public async Task<IEnumerable<MProduct>> GetUserProductsAsync(int userId)
+        {
+            return await connection.QueryAsync<MProduct>("dbo.GetUserProducts", new { UserId = userId }, commandType: CommandType.StoredProcedure);
+        }
+
         public async Task<MProduct> GetProductAsync(int productId, int userId)
         {
             const string sql = "SELECT p.*, t.* FROM dbo.Products p LEFT JOIN dbo.ProductTabs t ON p.Id = t.ProductId WHERE p.Id = @productId;";
@@ -253,7 +258,7 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { reviewId });
         }
 
-        public async Task<IEnumerable<MProductCustomer>> GetUserProductsAsync(int userId)
+        public async Task<IEnumerable<MProductCustomer>> GetMyProductsAsync(int userId)
         {
             const string sql = "SELECT c.*, p.*, u.Id, u.Name, u.Role, u.SteamId, u.CreateDate FROM dbo.ProductCustomers c JOIN dbo.Products p on c.ProductId = p.Id " +
                 "JOIN dbo.Users u ON p.SellerId = u.Id WHERE c.UserId = @userId;";
