@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -23,12 +24,19 @@ namespace Website.Client.Pages.Home.UserPage
 
         public MUser User { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        private bool isLoaded = false;
+
+        protected override async Task OnParametersSetAsync()
         {
-            User = await HttpClient.GetFromJsonAsync<MUser>($"api/users/{UserId}/profile");
-            if (User != null && RoleConstants.AdminAndSeller.Contains(User.Role))
+            var response = await HttpClient.GetAsync($"api/users/{UserId}/profile");
+            isLoaded = true;
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                User.Products = await HttpClient.GetFromJsonAsync<List<MProduct>>($"api/products/user/{UserId}");
+                User = await response.Content.ReadFromJsonAsync<MUser>();
+                if (User != null && RoleConstants.AdminAndSeller.Contains(User.Role))
+                {
+                    User.Products = await HttpClient.GetFromJsonAsync<List<MProduct>>($"api/products/user/{UserId}");
+                }
             }
         }
         
