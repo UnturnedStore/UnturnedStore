@@ -71,7 +71,7 @@ namespace Website.Server.Helpers
                 byte[] avatarContent = await client.GetByteArrayAsync(playerSummary.AvatarFullUrl);
                 MImage img = new MImage()
                 {
-                    Name = user.Name + ".jpg",
+                    Name = "steam_avatar.jpg",
                     Content = avatarContent,
                     ContentType = "image/jpeg"
                 };
