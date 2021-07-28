@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Models;
@@ -38,22 +40,34 @@ namespace Website.Server.Controllers
         }
 
         [HttpPut("profile")]
+        [Authorize]
         public async Task<IActionResult> PutProfileAsync([FromBody] MUser user)
         {
+            if (user.Id != int.Parse(User.Identity.Name))
+                return StatusCode((int)HttpStatusCode.Unauthorized);
+
             await usersRepository.UpdateProfileAsync(user);
             return Ok();
         }
 
         [HttpPut("seller")]
+        [Authorize]
         public async Task<IActionResult> UpdateSellerAsync([FromBody] MUser user)
         {
+            if (user.Id != int.Parse(User.Identity.Name))
+                return StatusCode((int)HttpStatusCode.Unauthorized);
+
             await usersRepository.UpdateSellerAsync(user);
             return Ok();
         }
 
         [HttpPut("notifications")]
+        [Authorize]
         public async Task<IActionResult> UpdateNotificationsAsync([FromBody] MUser user)
         {
+            if (user.Id != int.Parse(User.Identity.Name))
+                return StatusCode((int)HttpStatusCode.Unauthorized);
+
             await usersRepository.UpdateNotificationsAsync(user);
             return Ok();
         }
