@@ -42,20 +42,16 @@
         <div class="dropdown-divider" />
         <div class="fw-bold">Badges</div>
         <div>
-            @if (User.Role == RoleConstants.SellerRoleId)
-            {
-                <span class="badge bg-primary">Seller</span>
-            }
-            else if (User.Role == RoleConstants.AdminRoleId)
-            {
-                <span class="badge bg-primary">Admin</span>
-            }
+            <span class="badge bg-primary">@User.Role</span>
         </div>
         <div class="dropdown-divider" />
         <div class="d-grid gap-2">
-            <a class="btn btn-sm btn-primary" href="/messages/create/@User.Id">
-                <i class="far fa-comments"></i> Send Message
-            </a>
+            @if (UserService.UserId != User.Id)
+            {
+                <a class="btn btn-sm btn-primary" href="/messages/create/@User.Id">
+                    <i class="far fa-comments"></i> Send Message
+                </a>
+            }
             @if (UserService.UserId == User.Id)
             {
                 <a class="btn btn-sm btn-success" href="/settings">
