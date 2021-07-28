@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.TextEditor;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
 using System.Collections.Generic;
@@ -19,17 +20,22 @@ namespace Website.Client.Pages.User.SettingsPage.Components
         [Parameter]
         public EventCallback<bool> IsLoadingChanged { get; set; }
 
-
         [Inject]
         public HttpClient HttpClient { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+
+        private BlazoredTextEditor editor;
 
         private async Task SubmitAsync()
         {
             IsLoading = true;
             await IsLoadingChanged.InvokeAsync(IsLoading);
             var user = MUser.FromUser(User);
+
+            user.Biography = await editor.GetHTML();
+            if (user.Biography == "<p><br></p>")
+                user.Biography = null;
 
             if (avatarPreview != null)
             {

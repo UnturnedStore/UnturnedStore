@@ -1,5 +1,10 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+.ql-editor {
+    min-height: 200px;
+}
+
+
 @font-face {
     font-family: 'ApexMk3';
     src: URL('../fonts/ApexMk3.ttf') format('truetype');

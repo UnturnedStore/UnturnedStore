@@ -19,7 +19,7 @@ namespace Website.Data.Repositories
 
         public async Task<MUser> GetUserProfileAsync(int userId)
         {
-            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.AvatarImageId, u.Color, u.CreateDate, p.* " +
+            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.AvatarImageId, u.Color, u.Biography, u.CreateDate, p.* " +
                 "FROM dbo.Users u " +
                 "LEFT JOIN dbo.Products p ON u.Id = p.SellerId AND p.IsEnabled = 1 " +
                 "WHERE u.Id = @userId;";
@@ -94,7 +94,8 @@ namespace Website.Data.Repositories
 
         public async Task UpdateProfileAsync(MUser user)
         {
-            const string sql = "UPDATE dbo.Users SET Name = @Name, AvatarImageId = @AvatarImageId, Color = @Color WHERE Id = @Id;";
+            const string sql = "UPDATE dbo.Users SET Name = @Name, AvatarImageId = @AvatarImageId, Color = @Color, " +
+                "Biography = @Biography WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, user);
         }

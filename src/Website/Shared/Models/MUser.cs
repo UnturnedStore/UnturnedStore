@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Website.Shared.Models
 {
@@ -27,6 +24,8 @@ namespace Website.Shared.Models
         public string DiscordWebhookUrl { get; set; }
         [MaxLength(4000)]
         public string TermsAndConditions { get; set; }
+        [MaxLength(4000)]
+        public string Biography { get; set; }
         public DateTime CreateDate { get; set; }
 
         public List<MProductCustomer> Customers { get; set; }
@@ -51,6 +50,7 @@ namespace Website.Shared.Models
                 PayPalEmail = user.PayPalEmail,
                 Role = user.Role,
                 TermsAndConditions = user.TermsAndConditions,
+                Biography = user.Biography,
                 DiscordWebhookUrl = user.DiscordWebhookUrl,
                 CreateDate = user.CreateDate
             };

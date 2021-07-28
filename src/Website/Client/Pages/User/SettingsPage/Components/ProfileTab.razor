@@ -1,5 +1,5 @@
 ﻿<h4>Profile Settings</h4>
-<EditForm Model="User" OnValidSubmit="SubmitAsync">    
+<EditForm Model="User" OnValidSubmit="SubmitAsync">
     <div class="mb-3">
         <label class="form-label">Avatar</label>
         <div>
@@ -29,6 +29,43 @@
         <label class="form-label">Color</label>
         <input type="color" class="form-control form-control-color" @bind="@User.Color" title="Choose your color">
         <div class="form-text">The color for your profile background</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Biography</label>
+        <BlazoredTextEditor @ref="editor" DebugLevel="error">
+            <ToolbarContent>
+                <select class="ql-header">
+                    <option selected=""></option>
+                    <option value="1"></option>
+                    <option value="2"></option>
+                    <option value="3"></option>
+                    <option value="4"></option>
+                    <option value="5"></option>
+                </select>
+                <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                </span>
+                <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-code-block"></button>
+                </span>
+            </ToolbarContent>
+            <EditorContent>
+                @(new MarkupString(User.Biography))
+            </EditorContent>
+        </BlazoredTextEditor>
+        <div class="form-text"> Shown on your user profile page, you can write whatever you want in here. </div>
     </div>
 
     <ValidationSummary />
