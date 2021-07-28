@@ -27,6 +27,7 @@ namespace Website.Server.Helpers
             string steamId = context.Principal.FindFirst(ClaimTypes.NameIdentifier).Value[SteamIdStartIndex..];
 
             var usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
+            var imagesRepository = context.HttpContext.RequestServices.GetRequiredService<ImagesRepository>();
 
             MUser user = await usersRepository.GetUserAsync(steamId);
 
@@ -65,13 +66,20 @@ namespace Website.Server.Helpers
                 user.Name = playerSummary.Nickname;
             }
 
-            user = await usersRepository.AddUserAsync(user);
-
             if (playerSummary != null)
             {
-                var avatar = await client.GetByteArrayAsync(playerSummary.AvatarFullUrl);
-                await usersRepository.UpdateUserAvatarAsync(user.Id, avatar);
+                byte[] avatarContent = await client.GetByteArrayAsync(playerSummary.AvatarFullUrl);
+                MImage img = new MImage()
+                {
+                    Name = user.Name + ".jpg",
+                    Content = avatarContent,
+                    ContentType = "image/jpeg"
+                };
+
+                user.AvatarImageId = await imagesRepository.AddImageAsync(img);
             }
+
+            user = await usersRepository.AddUserAsync(user);
         }
 
         public static async Task Validate(CookieValidatePrincipalContext context)

@@ -5,7 +5,7 @@
 	Role VARCHAR(255) NOT NULL,
 	SteamId CHAR(17) NOT NULL,
 	AvatarImageId INT NULL CONSTRAINT FK_Users_AvatarImageId FOREIGN KEY REFERENCES dbo.Images(Id),
-	BackgroundImageId INT NULL CONSTRAINT FK_Users_BackgroundImageId FOREIGN KEY REFERENCES dbo.Images(Id),
+	Color VARCHAR(255) NULL,
 	Avatar VARBINARY(MAX) NULL,
 	PayPalEmail NVARCHAR(255) NULL,
 	PayPalCurrency CHAR(3) NOT NULL CONSTRAINT DF_Users_PayPalCurrency DEFAULT 'USD',

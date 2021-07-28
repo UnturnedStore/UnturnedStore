@@ -19,7 +19,7 @@ namespace Website.Data.Repositories
 
         public async Task<MUser> GetUserProfileAsync(int userId)
         {
-            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.AvatarImageId, u.BackgroundImageId, u.Avatar, u.CreateDate, p.* " +
+            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.AvatarImageId, u.Color, u.CreateDate, p.* " +
                 "FROM dbo.Users u " +
                 "LEFT JOIN dbo.Products p ON u.Id = p.SellerId AND p.IsEnabled = 1 " +
                 "WHERE u.Id = @userId;";
@@ -92,24 +92,24 @@ namespace Website.Data.Repositories
             return await connection.QuerySingleOrDefaultAsync<MUser>(sql, user);
         }
 
-        public async Task UpdateUserAvatarAsync(int userId, byte[] avatar)
+        public async Task UpdateProfileAsync(MUser user)
         {
-            const string sql = "UPDATE dbo.Users SET Avatar = @avatar WHERE Id = @userId;";
-            await connection.ExecuteAsync(sql, new { userId, avatar });
+            const string sql = "UPDATE dbo.Users SET Name = @Name, AvatarImageId = @AvatarImageId, Color = @Color WHERE Id = @Id;";
+
+            await connection.ExecuteAsync(sql, user);
         }
 
-        public async Task<byte[]> GetUserAvatarAsync(int userId)
+        public async Task UpdateSellerAsync(MUser user)
         {
-            const string sql = "SELCT Avatar FROM dbo.Users WHERE Id = @userId;";
-            return await connection.QuerySingleOrDefaultAsync<byte[]>(sql, new { userId });
-        }
-
-        public async Task UpdateUserAsync(MUser user)
-        {
-            const string sql = "UPDATE dbo.Users SET Name = @Name, PayPalEmail = @PayPalEmail, PayPalCurrency = @PayPalCurrency, " +
-                "TermsAndConditions = @TermsAndConditions, DiscordWebhookUrl = @DiscordWebhookUrl, AvatarImageId = @AvatarImageId, " +
-                "BackgroundImageId = @BackgroundImageId " +
+            const string sql = "UPDATE dbo.Users SET PayPalEmail = @PayPalEmail, TermsAndConditions = @TermsAndConditions " + 
                 "WHERE Id = @Id;";
+
+            await connection.ExecuteAsync(sql, user);
+        }
+
+        public async Task UpdateNotificationsAsync(MUser user)
+        {
+            const string sql = "UPDATE dbo.Users SET DiscordWebhookUrl = @DiscordWebhookUrl WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, user);
         }

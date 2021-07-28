@@ -37,10 +37,24 @@ namespace Website.Server.Controllers
             return Ok(await usersRepository.GetUserProfileAsync(userId));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> PutUserAsync([FromBody] MUser user)
+        [HttpPut("profile")]
+        public async Task<IActionResult> PutProfileAsync([FromBody] MUser user)
         {
-            await usersRepository.UpdateUserAsync(user);
+            await usersRepository.UpdateProfileAsync(user);
+            return Ok();
+        }
+
+        [HttpPut("seller")]
+        public async Task<IActionResult> UpdateSellerAsync([FromBody] MUser user)
+        {
+            await usersRepository.UpdateSellerAsync(user);
+            return Ok();
+        }
+
+        [HttpPut("notifications")]
+        public async Task<IActionResult> UpdateNotificationsAsync([FromBody] MUser user)
+        {
+            await usersRepository.UpdateNotificationsAsync(user);
             return Ok();
         }
 

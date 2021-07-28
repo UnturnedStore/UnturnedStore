@@ -26,6 +26,7 @@ BEGIN
 		u.Name, 
 		u.Role, 
 		u.SteamId, 
+		u.AvatarImageId,
 		u.CreateDate		
 	FROM dbo.Products p 
 	JOIN dbo.Users u ON p.SellerId = u.Id 

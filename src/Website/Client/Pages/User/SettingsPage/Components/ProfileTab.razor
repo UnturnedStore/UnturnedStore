@@ -1,0 +1,45 @@
+﻿<h4>Profile Settings</h4>
+<EditForm Model="User" OnValidSubmit="SubmitAsync">    
+    <div class="mb-3">
+        <label class="form-label">Avatar</label>
+        <div>
+            <label style="cursor: pointer;">
+                @if (avatarPreview != null)
+                {
+                    <img class="img-thumbnail" src="@avatarPreviewSrc" width="125" height="125" />
+                }
+                else if (User.AvatarImageId != null)
+                {
+                    <img class="img-thumbnail" src="/api/images/@User.AvatarImageId" width="125" height="125" />
+                }
+                else
+                {
+                    <img class="img-thumbnail" src="/img/profiles/default_avatar.png" width="125" height="125" />
+                }
+                <InputFile class="d-none" OnChange="@OnAvatarInputFileChange" />
+            </label>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="User.Name" />
+        <div class="form-text">Your name max 25 characters</div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Color</label>
+        <input type="color" class="form-control form-control-color" @bind="@User.Color" title="Choose your color">
+        <div class="form-text">The color for your profile background</div>
+    </div>
+
+    <ValidationSummary />
+    <DataAnnotationsValidator />
+
+    @if (IsLoading)
+    {
+        <LoadingButton />
+    }
+    else
+    {
+        <button type="submit" class="btn btn-primary">Update</button>
+    }
+</EditForm>
