@@ -29,7 +29,7 @@
                 <div class="mb-3 mt-3">
                     <table class="table border border-1 table-hover">
                         <tbody>
-                            @foreach (var product in User.Products.OrderByDescending(x => x.CreateDate))
+                            @foreach (var product in User.Products.OrderByDescending(x => x.TotalDownloadsCount))
                             {
                                 <tr style="cursor: pointer;" @onclick="() => GoToProduct(product)">
                                     <td class="align-middle">

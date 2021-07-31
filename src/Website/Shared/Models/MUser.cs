@@ -29,7 +29,6 @@ namespace Website.Shared.Models
         public DateTime CreateDate { get; set; }
 
         public List<MProductCustomer> Customers { get; set; }
-        public List<MProduct> Products { get; set; }
         
         [JsonIgnore]
         public string SteamProfileUrl => "https://steamcommunity.com/profiles/" + SteamId;

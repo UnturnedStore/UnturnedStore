@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Website.Client.Services;
 using Website.Shared.Constants;
 using Website.Shared.Models;
+using Website.Shared.Models.Children;
 
 namespace Website.Client.Pages.Home.UserPage
 {
@@ -22,7 +23,7 @@ namespace Website.Client.Pages.Home.UserPage
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        public MUser User { get; set; }
+        public MUserProfile User { get; set; }
 
         private bool isLoaded = false;
 
@@ -32,11 +33,7 @@ namespace Website.Client.Pages.Home.UserPage
             isLoaded = true;
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                User = await response.Content.ReadFromJsonAsync<MUser>();
-                if (User != null && RoleConstants.AdminAndSeller.Contains(User.Role))
-                {
-                    User.Products = await HttpClient.GetFromJsonAsync<List<MProduct>>($"api/products/user/{UserId}");
-                }
+                User = await response.Content.ReadFromJsonAsync<MUserProfile>();
             }
         }
         

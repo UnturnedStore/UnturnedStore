@@ -42,13 +42,17 @@
         <div class="dropdown-divider" />
         <div class="fw-bold">Badges</div>
         <div>
-            <span class="badge bg-primary">@User.Role</span>
+            <span class="badge bg-primary m-1">@User.Role</span>
+            @if (RoleConstants.IsSeller(User.Role) && User.Sales > 0)
+            {
+                <span class="badge bg-info m-1">@User.Sales sale@(User.Sales == 1 ? "" : "s")</span>
+            }
         </div>
         <div class="dropdown-divider" />
         <div class="d-grid gap-2">
             @if (UserService.UserId != User.Id)
             {
-                <a class="btn btn-sm btn-primary" href="/messages/create/@User.Id">
+                <a class="btn btn-sm btn-primary @Disabled()" href="/messages/create/@User.Id">
                     <i class="far fa-comments"></i> Send Message
                 </a>
             }
@@ -65,8 +69,10 @@
 
 @code {
     [Parameter]
-    public MUser User { get; set; }
+    public MUserProfile User { get; set; }
 
     [Inject]
     public UserService UserService { get; set; }
+
+    public string Disabled() => UserService.IsAuthenticated ? "" : "disabled";
 }

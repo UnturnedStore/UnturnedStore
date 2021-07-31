@@ -1,10 +1,12 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
 using Website.Shared.Models;
+using Website.Shared.Models.Children;
 
 namespace Website.Data.Repositories
 {
@@ -17,13 +19,29 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
-        public async Task<MUser> GetUserProfileAsync(int userId)
+        public async Task<MUserProfile> GetUserProfileAsync(int userId)
         {
-            const string sql = "SELECT Id, Name, Role, SteamId, AvatarImageId, Color, Biography, CreateDate " +
-                "FROM dbo.Users " +
-                "WHERE Id = @userId;";
+            const string sql = "dbo.GetUserProfile";
 
-            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
+            MUserProfile user = null;
+
+            await connection.QueryAsync<MUserProfile, MProduct, MUserProfile>(sql, (u, p) => 
+            { 
+                if (user == null)
+                {
+                    user = u;
+                    user.Products = new List<MProduct>();
+                }
+
+                if (p != null)
+                {
+                    user.Products.Add(p);
+                }
+
+                return null;
+            }, new { UserId = userId }, commandType: CommandType.StoredProcedure);
+
+            return user;
         }
 
         public async Task<MUser> GetUserPublicAsync(int userId)

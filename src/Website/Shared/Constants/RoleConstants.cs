@@ -13,5 +13,7 @@ namespace Website.Shared.Constants
         public const string SellerRoleId = "Seller";
 
         public const string AdminAndSeller = AdminRoleId + "," + SellerRoleId;
+
+        public static bool IsSeller(string role) => AdminAndSeller.Contains(role);
     }
 }

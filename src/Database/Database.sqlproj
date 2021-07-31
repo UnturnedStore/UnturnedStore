@@ -73,6 +73,7 @@
     <Build Include="tables\ProductReviews.sql" />
     <Build Include="procedures\GetProducts.sql" />
     <Build Include="procedures\GetUserProducts.sql" />
+    <Build Include="procedures\GetUserProfile.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />
