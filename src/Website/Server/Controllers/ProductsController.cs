@@ -25,10 +25,10 @@ namespace Website.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductsAsync()
         {
-            var products = await productsRepository.GetProductsAsync();
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
+            var products = await productsRepository.GetProductsAsync(userId);
 
-            return Ok(products.Where(x => x.IsEnabled || x.SellerId == userId));
+            return Ok(products);
         }
 
         [HttpGet("user/{sellerId}")]
@@ -45,7 +45,8 @@ namespace Website.Server.Controllers
         {
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
             var product = await productsRepository.GetProductAsync(productId, userId);
-            if (!product.IsEnabled && product.SellerId != userId)
+            
+            if (!product.IsEnabled && product.SellerId != userId && product.Customer == null)
                 return BadRequest();
             else
                 return Ok(product);

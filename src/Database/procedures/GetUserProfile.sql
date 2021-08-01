@@ -61,5 +61,5 @@ AS
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
 	LEFT JOIN CTE_UserSales us ON us.UserId = u.Id
-	WHERE u.Id = @UserId;
+	WHERE u.Id = @UserId AND p.IsEnabled = 1;
 RETURN 0

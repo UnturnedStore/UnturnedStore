@@ -1,11 +1,23 @@
-﻿CREATE PROCEDURE dbo.GetProducts
+﻿CREATE PROCEDURE dbo.GetProducts 
+	@UserId INT
 AS
 BEGIN
 	WITH CTE_ProductDownloads AS (
-		SELECT ProductId, TotalDownloadsCount = SUM(v.DownloadsCount) FROM dbo.Branches b LEFT JOIN dbo.Versions v ON v.BranchId = b.Id GROUP BY ProductId
+		SELECT 
+			ProductId, 
+			TotalDownloadsCount = SUM(v.DownloadsCount)
+		FROM dbo.Branches b 
+		LEFT JOIN dbo.Versions v ON v.BranchId = b.Id 
+		GROUP BY ProductId
 	), 
 	CTE_ProductRating AS (
-		SELECT ProductId, AverageRating = AVG(r.Rating), RatingsCount = COUNT(*) FROM dbo.Products p LEFT JOIN dbo.ProductReviews r ON p.Id = r.ProductId GROUP BY ProductId
+		SELECT 
+			ProductId, 
+			AverageRating = AVG(r.Rating), 
+			RatingsCount = COUNT(*) 
+		FROM dbo.Products p 
+		LEFT JOIN dbo.ProductReviews r ON p.Id = r.ProductId 
+		GROUP BY ProductId
 	)
 	SELECT 
 		p.Id,
@@ -31,5 +43,12 @@ BEGIN
 	FROM dbo.Products p 
 	JOIN dbo.Users u ON p.SellerId = u.Id 
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
-	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id;
+	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
+	WHERE p.IsEnabled = 1
+	OR p.SellerId = @UserId
+	OR EXISTS (
+		SELECT * FROM dbo.ProductCustomers c 
+		WHERE c.ProductId = p.Id 
+		AND c.UserId = @UserId
+	);
 END;

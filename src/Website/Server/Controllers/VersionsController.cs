@@ -68,9 +68,14 @@ namespace Website.Server.Controllers
             if (User.Identity?.IsAuthenticated ?? false)
                 userId = int.Parse(User.Identity.Name);
 
-            bool isOwner = await versionsRepository.IsVersionOwnerAsync(versionId, userId);
+            bool isOwner = false;
+            if (userId != 0)
+            {
+                isOwner = await versionsRepository.IsVersionOwnerAsync(versionId, userId);
+            }
+
             var version = await versionsRepository.GetVersionAsync(versionId, isOwner);
-            if (!isOwner && version.Branch.Product.Price > 0 && !User.IsInRole(RoleConstants.AdminRoleId))
+            if (!isOwner && !User.IsInRole(RoleConstants.AdminRoleId) && (!version.Branch.Product.IsEnabled || version.Branch.Product.Price > 0))
             {
                 if (!await versionsRepository.IsVersionCustomerAsync(versionId, userId))
                     return Unauthorized();

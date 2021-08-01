@@ -46,11 +46,11 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { tabId, userId });
         }
 
-        public async Task<bool> IsProductCustomerSellerAsync(int productId, int userId)
+        public async Task<bool> IsProductCustomerSellerAsync(int customerId, int userId)
         {
             const string sql = "SELECT COUNT(*) FROM dbo.ProductCustomers c JOIN dbo.Products p ON p.Id = c.ProductId " +
-                "WHERE c.Id = @productId aND p.SellerId = @userId;";
-            return await connection.ExecuteScalarAsync<bool>(sql, new { productId, userId });
+                "WHERE c.Id = @productId AND p.SellerId = @userId;";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { customerId, userId });
         }
 
         public async Task<bool> IsProductSellerAsync(int productId, int userId)
@@ -65,13 +65,13 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<int>(sql, new { productId });
         }
 
-        public async Task<IEnumerable<MProduct>> GetProductsAsync()
+        public async Task<IEnumerable<MProduct>> GetProductsAsync(int userId)
         {
             return await connection.QueryAsync<MProduct, MUser, MProduct>("dbo.GetProducts", (p, u) => 
             {
                 p.Seller = u;
                 return p;
-            }, commandType: CommandType.StoredProcedure);
+            }, new { UserId = userId }, commandType: CommandType.StoredProcedure);
         }
 
         public async Task<IEnumerable<MProduct>> GetUserProductsAsync(int userId)
