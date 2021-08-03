@@ -44,6 +44,12 @@ namespace Website.Data.Repositories
             return user;
         }
 
+        public async Task<int> GetUserAvatarImageIdAsync(int userId)
+        {
+            const string sql = "SELECT AvatarImageId FROM dbo.Users WHERE Id = @userId;";
+            return await connection.ExecuteScalarAsync<int>(sql, new { userId });
+        }
+
         public async Task<MUser> GetUserPublicAsync(int userId)
         {
             const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.TermsAndConditions, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +

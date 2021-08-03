@@ -32,6 +32,13 @@ namespace Website.Server.Controllers
             return Ok(await usersRepository.GetUserPublicAsync(userId));
         }
 
+        [HttpGet("{userId}/avatar")]
+        public async Task<IActionResult> GetUserAvatarAsync(int userId)
+        {
+            int imageId = await usersRepository.GetUserAvatarImageIdAsync(userId);
+            return Redirect($"/api/images/{imageId}");
+        }
+
         [HttpGet("{userId}/profile")]
         public async Task<IActionResult> GetUserProfileAsync(int userId)
         {

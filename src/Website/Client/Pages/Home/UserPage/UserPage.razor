@@ -2,8 +2,19 @@
 @using Website.Client.Pages.Home.UserPage.Components
 @using Website.Client.Pages.Home.IndexPage.Components
 
+<Meta property="og:image" content="@string.Concat("/api/users/", UserId, "/avatar")" />
+<Meta property="og:image:width" content="128" />
+<Meta property="og:image:height" content="128" />
+
 @if (User != null)
 {
+    <Title Value="@string.Join(" - ", User.Name, "Unturned Store")"></Title>
+
+    <Meta name="description" content="@User.Biography" />
+    <Meta property="og:title" content="@User.Name" />
+
+    <Meta property="og:description" content="@User.Biography" />
+
     <div class="row mt-5 mb-3">
         <div class="col-md-3">
             <UserCard User="User" />
@@ -46,15 +57,16 @@
                                         <ProductPrice Product="product" />
                                     </td>
                                 </tr>
-                            }                                
+                            }
                         </tbody>
                     </table>
                 </div>
             }
-            
+
         </div>
     </div>
-} else if (isLoaded)
+}
+else if (isLoaded)
 {
     <h4>User not found</h4>
 }

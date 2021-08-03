@@ -57,9 +57,9 @@ AS
 		AverageRating = ISNULL(r.AverageRating, 0), 
 		RatingsCount = ISNULL(RatingsCount, 0)	
 	FROM dbo.Users u 
-	LEFT JOIN dbo.Products p ON p.SellerId = u.Id
+	LEFT JOIN dbo.Products p ON p.SellerId = u.Id AND p.IsEnabled = 1
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
 	LEFT JOIN CTE_UserSales us ON us.UserId = u.Id
-	WHERE u.Id = @UserId AND p.IsEnabled = 1;
+	WHERE u.Id = @UserId;
 RETURN 0
