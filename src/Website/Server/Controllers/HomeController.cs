@@ -23,5 +23,11 @@ namespace Website.Server.Controllers
         {
             return Redirect(configuration["DiscordInviteURL"]);
         }
+
+        [HttpGet("forum")]
+        public IActionResult Forum()
+        {
+            return Redirect(configuration["ForumURL"]);
+        }
     }
 }
