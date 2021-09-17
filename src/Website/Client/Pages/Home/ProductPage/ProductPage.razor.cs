@@ -101,5 +101,11 @@ namespace Website.Client.Pages.Home.ProductPage
         {
             Review = review;
         }
+
+        private async Task DeleteReviewAsync(MProductReview review)
+        {
+            await HttpClient.DeleteAsync("api/products/reviews/" + review.Id);
+            Product.Reviews.Remove(review);
+        }
     }
 }

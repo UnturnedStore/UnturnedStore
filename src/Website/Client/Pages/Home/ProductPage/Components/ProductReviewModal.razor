@@ -80,6 +80,8 @@
 
     [Parameter]
     public EventCallback<MProductReview> ReviewChanged { get; set; }
+    [Parameter]
+    public EventCallback<MProductReview> OnDeleteReview { get; set; }
 
     public MProductReview Model { get; set; }
 
@@ -132,7 +134,7 @@
     public async Task DeleteAsync()
     {
         isLoading2 = true;
-        await HttpClient.DeleteAsync("api/products/reviews/" + Model.Id);
+        await OnDeleteReview.InvokeAsync();
         isLoading2 = false;
         await JSRuntime.HideModalAsync(nameof(ProductReviewModal));
         Model = null;

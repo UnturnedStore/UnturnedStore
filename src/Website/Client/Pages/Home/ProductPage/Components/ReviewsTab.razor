@@ -33,8 +33,10 @@
                 <div class="mb-3">
                     @UserReview.Body
                 </div>
-                <div class="text-muted">
-                    @UserReview.LastUpdate
+                <div class="d-flex">
+                    <div class="text-muted">
+                        @UserReview.LastUpdate
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -67,19 +69,24 @@
                 <div class="mb-3">
                     @review.Body
                 </div>
-                <div class="text-muted">
-                    @review.LastUpdate
-                </div>
+                <div class="d-flex align-items-center">
+                    <div class="text-muted">
+                        @review.LastUpdate
+                    </div>
+                    @if (UserService.IsAdmin)
+                    {
+                        <div class="ms-auto">
+                            <button class="btn btn-outline-danger" @onclick="() => AskDeleteReviewAsync(review)">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </div>
+                    }
+                </div>                
             </div>
         </div>
     }
 }
 
-
-@code {
-    [Parameter]
-    public MProduct Product { get; set; }
-    [Parameter]
-    public MProductReview UserReview { get; set; }
-
-}
+<ConfirmModal @ref="DeleteReviewConfirm" TItem="MProductReview" ModalId="DeleteReviewConfirm" Title="Delete review?" BtnClass="btn-outline-danger" BtnText="Delete" OnConfirm="DeleteReviewAsync" >
+    Are you sure you want to delete review for <span class="fw-bold">@Product.Name</span> by <span class="fw-bold">@DeleteReviewConfirm.Item.User.Name</span>?
+</ConfirmModal>

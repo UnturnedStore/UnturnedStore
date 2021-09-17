@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Website.Client.Providers;
+using Website.Shared.Constants;
 
 namespace Website.Client.Services
 {
@@ -19,5 +20,6 @@ namespace Website.Client.Services
         public bool IsAuthenticated => steamAuth.IsAuthenticated;
         public int UserId => steamAuth.User?.Id ?? 0;
         public string Name => steamAuth.User?.Name ?? "null";
+        public bool IsAdmin => steamAuth.User?.Role?.Equals(RoleConstants.AdminRoleId) ?? false;
     }
 }
