@@ -46,6 +46,11 @@ namespace Website.Server.Controllers
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
             var product = await productsRepository.GetProductAsync(productId, userId);
             
+            if (product == null)
+            {
+                return NoContent();
+            }
+
             if (!product.IsEnabled && product.SellerId != userId && product.Customer == null)
                 return BadRequest();
             else
