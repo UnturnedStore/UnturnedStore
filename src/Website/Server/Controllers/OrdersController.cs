@@ -8,6 +8,7 @@ using Website.Data.Repositories;
 using Website.Payments.Abstractions;
 using Website.Payments.Models;
 using Website.Payments.Providers;
+using Website.Server.Extensions;
 using Website.Server.Services;
 using Website.Shared.Extensions;
 using Website.Shared.Models;
@@ -65,8 +66,8 @@ namespace Website.Server.Controllers
 
             return order.PaymentMethod switch
             {
-                "PayPal" => Redirect(paymentProviders.Get<PayPalPaymentProvider>().GetPaymentUrl(order, Request.Headers["Origin"])),
-                _ => StatusCode((int)HttpStatusCode.ServiceUnavailable),
+                "PayPal" => Redirect(paymentProviders.Get<PayPalPaymentProvider>().GetPaymentUrl(order, Request.GetBaseUrl())),
+                _ => StatusCode((int)HttpStatusCode.ServiceUnavailable)
             };
         }
 
