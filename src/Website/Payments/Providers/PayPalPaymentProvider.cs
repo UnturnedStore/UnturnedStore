@@ -49,7 +49,7 @@ namespace Website.Payments.Providers
                 { "no_shipping", "1" },
                 { "no_note", "1" },
                 { "notify_url", PaymentConstants.Providers.PayPal.GetNotifyUrl(baseUrl) },
-                { "return", baseUrl + "/orders" },
+                { "return", baseUrl },
                 { "cancel_return", baseUrl }
             };
 

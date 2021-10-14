@@ -9,7 +9,6 @@ namespace Website.Payments.Constants
     public static class PaymentConstants
     {
 
-
         public static class Providers
         {
             public static class Nano
@@ -25,7 +24,7 @@ namespace Website.Payments.Constants
                 public const string PayPalSandobxUrl = "https://www.sandbox.paypal.com/cgi-bin/";
                 public const string PayPalUrl = "https://www.paypal.com/cgi-bin/";
 
-                public static string GetNotifyUrl(string baseUrl) => baseUrl + NotifyUrl;
+                public static string GetNotifyUrl(string baseUrl) => baseUrl.TrimEnd('/') + NotifyUrl;
                 public static string GetPayPalUrl(bool useSandbox) => useSandbox ? PayPalSandobxUrl : PayPalUrl;
 
                 public const string PendingStatus = "Pending";
