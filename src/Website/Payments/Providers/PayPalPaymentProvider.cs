@@ -50,7 +50,8 @@ namespace Website.Payments.Providers
                 { "no_note", "1" },
                 { "notify_url", PaymentConstants.Providers.PayPal.GetNotifyUrl(baseUrl) },
                 { "return", baseUrl },
-                { "cancel_return", baseUrl }
+                { "cancel_return", baseUrl },
+                { "image_url", PaymentConstants.GetLogoUrl(baseUrl) }
             };
 
             for (int i = 1; i <= order.Items.Count; i++)

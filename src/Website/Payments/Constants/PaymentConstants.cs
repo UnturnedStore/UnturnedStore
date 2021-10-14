@@ -8,6 +8,8 @@ namespace Website.Payments.Constants
 {
     public static class PaymentConstants
     {
+        public const string LogoUrl = "/img/logo.png";
+        public static string GetLogoUrl(string baseUrl) => baseUrl.TrimEnd('/') + LogoUrl; 
 
         public static class Providers
         {
