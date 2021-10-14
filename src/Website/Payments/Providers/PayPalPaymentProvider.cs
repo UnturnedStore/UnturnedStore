@@ -33,7 +33,7 @@ namespace Website.Payments.Providers
 
         public void BuildOrder(MOrder order)
         {
-            order.PaymentReceiver = order.Seller.PayPalEmail;
+            order.PaymentReceiver = order.Seller.PayPalAddress;
             order.Currency = order.Seller.PayPalCurrency;
         }
 

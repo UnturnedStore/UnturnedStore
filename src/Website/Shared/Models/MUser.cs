@@ -8,23 +8,26 @@ namespace Website.Shared.Models
     public class MUser
     {
         public int Id { get; set; }
-        [MaxLength(25)]
+        [StringLength(25)]
         public string Name { get; set; }
         public string Role { get; set; }
         public string SteamId { get; set; }
         public int? AvatarImageId { get; set; }
         public string Color { get; set; }
         public byte[] Avatar { get; set; }
-        [MaxLength(255)]
-        public string PayPalEmail { get; set; }
-        [MinLength(3)]
-        [MaxLength(3)]
+        public bool IsPayPalEnabled { get; set; }
+        [StringLength(255)]
+        public string PayPalAddress { get; set; }
+        [StringLength(3, MinimumLength = 3)]
         public string PayPalCurrency { get; set; }
-        [MaxLength(255)]
+        public bool IsNanoEnabled { get; set; }
+        [StringLength(255)]
+        public string NanoAddress { get; set; }
+        [StringLength(255)]
         public string DiscordWebhookUrl { get; set; }
-        [MaxLength(4000)]
+        [StringLength(4000)]
         public string TermsAndConditions { get; set; }
-        [MaxLength(4000)]
+        [StringLength(4000)]
         public string Biography { get; set; }
         public DateTime CreateDate { get; set; }
 
@@ -45,8 +48,11 @@ namespace Website.Shared.Models
                 Name = user.Name,
                 AvatarImageId = user.AvatarImageId,
                 Color = user.Color,
+                IsPayPalEnabled = user.IsPayPalEnabled,
+                PayPalAddress = user.PayPalAddress,
                 PayPalCurrency = user.PayPalCurrency,
-                PayPalEmail = user.PayPalEmail,
+                IsNanoEnabled = user.IsNanoEnabled,
+                NanoAddress = user.NanoAddress,
                 Role = user.Role,
                 TermsAndConditions = user.TermsAndConditions,
                 Biography = user.Biography,
