@@ -40,12 +40,12 @@ namespace Website.Client.Pages.Home.CartPage
             if (!orderParams.IsAgree)
                 return;
 
-            orderParams.PaymentMethod = PaymentContants.PayPal;
-            var response = await HttpClient.PostAsJsonAsync("api/orders", orderParams);
+            orderParams.PaymentMethod = OrderConstants.Methods.PayPal;
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/orders", orderParams);
 
-            var order = await response.Content.ReadFromJsonAsync<MOrder>();
+            MOrder order = await response.Content.ReadFromJsonAsync<MOrder>();
             isWaitingForProvider = true;
-            NavigationManager.NavigateTo(order.PaymentUrl, true);
+            NavigationManager.NavigateTo($"api/orders/{order.Id}/pay", true);
             await CartService.RemoveCartAsync(orderParams);
         }
 

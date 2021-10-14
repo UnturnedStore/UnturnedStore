@@ -63,7 +63,7 @@ namespace Website.Client.Services
                 orderParams = new OrderParams()
                 {
                     SellerId = item.Product.SellerId,
-                    PaymentMethod = PaymentContants.PayPal,
+                    PaymentMethod = OrderConstants.Methods.PayPal,
                     Seller = item.Product.Seller,
                     Items = new List<OrderItemParams>()
                 };

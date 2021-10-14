@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Client\Website.Client.csproj" />
     <ProjectReference Include="..\Data\Website.Data.csproj" />
+    <ProjectReference Include="..\Payments\Website.Payments.csproj" />
     <ProjectReference Include="..\Shared\Website.Shared.csproj" />
   </ItemGroup>
 
