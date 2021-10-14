@@ -140,7 +140,7 @@ namespace Website.Server.Services
 
             var eb = new EmbedBuilder();
             eb.WithColor(Color.Blue);
-            eb.WithTitle($"New purchase from {order.PaymentPayer}");
+            eb.WithTitle($"New purchase from {order.PaymentSender}");
             eb.WithCurrentTimestamp();
             eb.WithFooter(order.Buyer.Name);
 

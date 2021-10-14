@@ -16,8 +16,7 @@ namespace Website.Shared.Models
         public string Currency { get; set; }
         public string PaymentMethod { get; set; }
         public string PaymentReceiver { get; set; }
-        public string PaymentUrl { get; set; }
-        public string PaymentPayer { get; set; }
+        public string PaymentSender { get; set; }
         public string TransactionId { get; set; }
         public string Status { get; set; }
         public DateTime LastUpdate { get; set; }

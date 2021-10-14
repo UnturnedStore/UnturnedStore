@@ -116,7 +116,7 @@ namespace Website.Payments.Providers
             result.Status = PaymentStatus.Valid;
             result.Order.TransactionId = dict["txn_id"];
             result.Order.Status = dict["payment_status"];
-            result.Order.PaymentPayer = dict["payer_email"];
+            result.Order.PaymentSender = dict["payer_email"];
 
             return result;
         }

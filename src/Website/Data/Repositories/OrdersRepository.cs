@@ -20,14 +20,8 @@ namespace Website.Data.Repositories
 
         public async Task UpdateOrderAsync(MOrder order)
         {
-            const string sql = "UPDATE dbo.Orders SET PaymentPayer = @PaymentPayer, Status = @Status, " +
+            const string sql = "UPDATE dbo.Orders SET PaymentSender = @PaymentSender, Status = @Status, " +
                 "TransactionId = @TransactionId, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
-            await connection.ExecuteAsync(sql, order);
-        }
-
-        public async Task UpdateOrderPaymentUrlAsync(MOrder order)
-        {
-            const string sql = "UPDATE dbo.Orders SET PaymentUrl = @PaymentUrl WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, order);
         }
 

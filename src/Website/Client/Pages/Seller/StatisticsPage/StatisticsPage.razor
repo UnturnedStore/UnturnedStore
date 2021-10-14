@@ -49,7 +49,7 @@
             </Column>
             <Column TableItem="MOrderItem" Title="User" Field="@(x => x.Order.Buyer.Name)" Sortable="true" Width="20%" />
             <Column TableItem="MOrderItem" Title="Payment Method" Field="@(x => x.Order.PaymentMethod)" Sortable="true" Width="15%" />
-            <Column TableItem="MOrderItem" Title="Email" Field="@(x => x.Order.PaymentPayer)" Sortable="true" Width="33%" />
+            <Column TableItem="MOrderItem" Title="Email" Field="@(x => x.Order.PaymentSender)" Sortable="true" Width="33%" />
             <Column TableItem="MOrderItem" Title="Price" Field="@(x => x.Price)" Sortable="true" Width="7%" />
 
             <Pager ShowPageNumber="true" ShowTotalCount="true" />
