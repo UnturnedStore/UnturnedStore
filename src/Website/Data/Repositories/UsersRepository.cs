@@ -50,6 +50,14 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<int>(sql, new { userId });
         }
 
+        public async Task<MUser> GetUserSellerAsync(int userId)
+        {
+            const string sql = "SELECT Id, Name, Role, SteamId, TermsAndConditions, IsPayPalEnabled, IsNanoEnabled " +
+                "FROM dbo.Users WHERE id = @userId;";
+
+            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
+        }
+
         public async Task<MUser> GetUserPublicAsync(int userId)
         {
             const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.TermsAndConditions, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +

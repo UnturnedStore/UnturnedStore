@@ -32,7 +32,7 @@ namespace Website.Client.Services
 
             foreach (var orderParams in Carts.ToList())
             {
-                orderParams.Seller = await httpClient.GetFromJsonAsync<MUser>("api/users/" + orderParams.SellerId);
+                orderParams.Seller = await httpClient.GetFromJsonAsync<MUser>($"api/users/{orderParams.SellerId}/seller");
 
                 foreach (var item in orderParams.Items.ToList())
                 {
@@ -46,9 +46,17 @@ namespace Website.Client.Services
             }
         }
 
-        private async Task SaveCartAsync()
+        public async Task UpdateCartAsync()
         {
             await storageService.SetSessionItemAsync("carts", Carts);
+        }
+
+        public async Task<OrderParams> GetOrderParamsAsync(int sellerId)
+        {
+            if (Carts == null)
+                await ReloadCartAsync();
+
+            return Carts.FirstOrDefault(x => x.SellerId == sellerId);
         }
 
         public async Task AddToCartAsync(OrderItemParams item)
@@ -56,7 +64,7 @@ namespace Website.Client.Services
             if (Carts == null)
                 await ReloadCartAsync();
 
-            var orderParams = Carts.FirstOrDefault(x => x.SellerId == item.Product.SellerId);
+            OrderParams orderParams = Carts.FirstOrDefault(x => x.SellerId == item.Product.SellerId);
             
             if (orderParams == null)
             {
@@ -71,7 +79,7 @@ namespace Website.Client.Services
             }
 
             orderParams.Items.Add(item);            
-            await SaveCartAsync();
+            await UpdateCartAsync();
         }
 
         public async Task RemoveFromCartAsync(OrderParams orderParams, OrderItemParams item)
@@ -85,7 +93,7 @@ namespace Website.Client.Services
                 Carts.Remove(orderParams);
             }
 
-            await SaveCartAsync();
+            await UpdateCartAsync();
         }
 
         public async Task RemoveCartAsync(OrderParams orderParams)
@@ -94,7 +102,7 @@ namespace Website.Client.Services
                 await ReloadCartAsync();
 
             if (Carts.Remove(orderParams))
-                await SaveCartAsync();
+                await UpdateCartAsync();
         }
     }
 }

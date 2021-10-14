@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Website.Shared.Constants;
 
 namespace Website.Shared.Models
 {
@@ -37,7 +38,20 @@ namespace Website.Shared.Models
         public string SteamProfileUrl => "https://steamcommunity.com/profiles/" + SteamId;
         [JsonIgnore]
         public string BackgroundColor => Color ?? "#0066ff";
-        
+        [JsonIgnore]
+        public IEnumerable<string> PaymentMethods
+        {
+            get
+            {
+                List<string> paymentMethods = new();
+                if (IsPayPalEnabled)
+                    paymentMethods.Add(OrderConstants.Methods.PayPal);
+                if (IsNanoEnabled)
+                    paymentMethods.Add(OrderConstants.Methods.Nano);
+
+                return paymentMethods;
+            }
+        }
 
         public static MUser FromUser(MUser user)
         {

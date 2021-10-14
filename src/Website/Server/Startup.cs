@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using SteamWebAPI2.Utilities;
 using System;
 using System.Data.SqlClient;
+using Website.Data.Extensions;
 using Website.Data.Repositories;
 using Website.Payments.Extensions;
 using Website.Payments.Options;
@@ -28,15 +29,7 @@ namespace Website.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient(x => new SqlConnection(Configuration.GetConnectionString("Default")));
-            services.AddTransient<UsersRepository>();
-            services.AddTransient<ImagesRepository>();
-            services.AddTransient<ProductsRepository>();
-            services.AddTransient<BranchesRepository>();
-            services.AddTransient<VersionsRepository>();
-            services.AddTransient<SellersRepository>();
-            services.AddTransient<OrdersRepository>();
-            services.AddTransient<MessagesRepository>();
-            services.AddTransient<AdminRepository>();
+            services.AddRepositories();
 
             services.AddTransient<OrderService>();
             services.AddTransient<DiscordService>();

@@ -22,6 +22,7 @@
         public class NanoOptions
         {
             public bool IsEnabled { get; set; }
+            public string NodeUrl { get; set; }
         }
     }
 }

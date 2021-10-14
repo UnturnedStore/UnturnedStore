@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
+using Website.Shared.Constants;
 using Website.Shared.Models;
 
 namespace Website.Server.Controllers
@@ -44,6 +45,17 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetUserProfileAsync(int userId)
         {
             return Ok(await usersRepository.GetUserProfileAsync(userId));
+        }
+
+        [HttpGet("{userId}/seller")]
+        public async Task<IActionResult> GetUserSellerAsync(int userId)
+        {
+            MUser user = await usersRepository.GetUserSellerAsync(userId);
+
+            if (!RoleConstants.IsSeller(user.Role))
+                return BadRequest();
+
+            return Ok(user);
         }
 
         [Authorize]

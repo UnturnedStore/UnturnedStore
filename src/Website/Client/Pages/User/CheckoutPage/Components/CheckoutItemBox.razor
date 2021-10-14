@@ -1,0 +1,31 @@
+﻿<div class="row p-2 border align-items-center mb-1 rounded shadow-sm">
+    <div class="d-flex align-items-center">
+        <div>
+            <span class="text-nowrap">@Item.Product.Name</span><br />
+        </div>
+        <div class="ms-auto">
+            <small class="text-muted">$@Item.Product.Price.ToString("N")</small>
+        </div>
+
+    </div>
+    @*<div class="m-lg-0 mt-1">
+        <div class="d-flex align-items-center">
+            <div>
+                <span><span>x</span>@CartItem.Quantity</span>
+            </div>
+            <div class="ms-auto">
+                @CartItem.Product.Price PLN
+                @if (CartItem.Product.IsReduced)
+                {
+                    <ReducedBadge Class="fs-5" />
+                }
+            </div>
+
+        </div>
+    </div>*@
+</div>
+
+@code {
+    [Parameter]
+    public OrderItemParams Item { get; set; }
+}
