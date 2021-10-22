@@ -1,0 +1,39 @@
+﻿<style rel="stylesheet">
+    .card-bg-top {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    .avatar-border {
+        border: 2px solid @User.BackgroundColor;
+    }
+
+    .bg-user {
+        background-color: @User.BackgroundColor;
+    }
+</style>
+
+<div class="card">
+    <div class="card-bg-top bg-user" />
+    <div class="ms-3" style="margin-top: -60px;">
+        @if (User.AvatarImageId.HasValue)
+        {
+            <img class="rounded-circle avatar-border shadow-lg" src="api/images/@User.AvatarImageId" style="height: 100px; width: 100px; " />
+        }
+        else
+        {
+            <img class="rounded-circle avatar-border shadow-lg" src="/img/profiles/default_avatar.png" style="height: 100px; width: 100px;" />
+        }
+    </div>
+    <div class="card-body" style="margin-top: -20px;">
+        <div class="fs-4 fw-bold">
+            @User.Name
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public MUser User { get; set; }
+}

@@ -52,7 +52,7 @@ namespace Website.Data.Repositories
 
         public async Task<MUser> GetUserSellerAsync(int userId)
         {
-            const string sql = "SELECT Id, Name, Role, SteamId, TermsAndConditions, IsPayPalEnabled, IsNanoEnabled " +
+            const string sql = "SELECT Id, AvatarImageId, Name, Role, SteamId, TermsAndConditions, IsPayPalEnabled, IsNanoEnabled " +
                 "FROM dbo.Users WHERE id = @userId;";
 
             return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
