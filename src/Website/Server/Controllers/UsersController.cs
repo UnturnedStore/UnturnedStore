@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Models;
@@ -95,15 +96,23 @@ namespace Website.Server.Controllers
         [HttpGet("~/signin"), HttpPost("~/signin")]
         public IActionResult SignIn([FromQuery] string returnUrl = "/")
         {
-            return Challenge(new AuthenticationProperties { RedirectUri = returnUrl }, "Steam");
+            return Challenge(new AuthenticationProperties 
+            { 
+                RedirectUri = returnUrl,
+                IsPersistent = true,
+                IssuedUtc = DateTime.UtcNow,
+                ExpiresUtc = DateTime.UtcNow.AddDays(7)
+            }, "Steam");
         }
 
         [ResponseCache(NoStore = true, Duration = 0)]
         [HttpGet("~/signout"), HttpPost("~/signout")]
         public IActionResult LogOut([FromQuery] string returnUrl = "/")
         {
-            return SignOut(new AuthenticationProperties { RedirectUri = returnUrl },
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            return SignOut(new AuthenticationProperties 
+            {
+                RedirectUri = returnUrl,
+            }, CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }
 }
