@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -29,9 +30,9 @@ namespace Website.Client.Pages.Home.CartPage
             await CartService.ReloadCartAsync();
         }
 
-        private async Task RemoveFromCartAsync(OrderParams orderParams, OrderItemParams item)
-        {
-            await CartService.RemoveFromCartAsync(orderParams, item);
+        private async Task RemoveFromCartAsync(OrderParams cart, OrderItemParams item)
+        {   
+            await CartService.RemoveFromCartAsync(cart, item);
         }
 
         private bool isWaitingForProvider = false;

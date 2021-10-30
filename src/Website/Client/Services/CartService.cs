@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Client.Shared;
 using Website.Shared.Constants;
 using Website.Shared.Models;
 using Website.Shared.Params;
@@ -14,6 +15,12 @@ namespace Website.Client.Services
         private readonly StorageService storageService;
         private readonly HttpClient httpClient;
 
+        private NavMenu NavMenu { get; set; }
+        public void SetNavMenu(NavMenu navMenu)
+        {
+            NavMenu = navMenu;
+        }
+
         public CartService(StorageService storageService, HttpClient httpClient)
         {
             this.storageService = storageService;
@@ -22,8 +29,13 @@ namespace Website.Client.Services
 
         public List<OrderParams> Carts { get; private set; }
 
-        public async Task ReloadCartAsync()
+        private bool wasReloaded = false;
+
+        public async Task ReloadCartAsync(bool onlyIfNull = false)
         {
+            if (onlyIfNull && wasReloaded)
+                return;
+
             Carts = await storageService.GetSessionItemAsync<List<OrderParams>>("carts");
             if (Carts == null)
             {
@@ -44,11 +56,17 @@ namespace Website.Client.Services
                     }                        
                 }
             }
+
+            wasReloaded = true;
+            if (NavMenu != null)
+                NavMenu.Refresh();
         }
 
         public async Task UpdateCartAsync()
-        {
+        {            
             await storageService.SetSessionItemAsync("carts", Carts);
+            if (NavMenu != null)
+                NavMenu.Refresh();
         }
 
         public async Task<OrderParams> GetOrderParamsAsync(int sellerId)
