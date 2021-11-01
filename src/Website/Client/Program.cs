@@ -32,7 +32,9 @@ namespace Website.Client
             builder.Services.AddScoped<UserService>();
             builder.Services.AddBlazorTable();
 
-            await builder.Build().RunAsync();
+            WebAssemblyHost host = builder.Build();
+            await host.Services.GetRequiredService<CartService>().ReloadCartAsync();
+            await host.RunAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -9,6 +10,7 @@ using Website.Shared.Params;
 
 namespace Website.Client.Pages.User.CheckoutPage
 {
+    [Authorize]
     public partial class CheckoutPage
     {
         [Parameter]
@@ -23,16 +25,20 @@ namespace Website.Client.Pages.User.CheckoutPage
 
         public OrderParams OrderParams { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        private bool isLoaded = false;
+        protected override async Task OnParametersSetAsync()
         {
-            OrderParams = await CartService.GetOrderParamsAsync(SellerId);
-            if (OrderParams == null)
-                return;
+            OrderParams = CartService.GetOrderParams(SellerId);
             
-            if (string.IsNullOrEmpty(OrderParams.PaymentMethod))
+            if (OrderParams != null)
             {
-                await ChangePaymentMethod(OrderParams.Seller.PaymentMethods.FirstOrDefault());
+                if (string.IsNullOrEmpty(OrderParams.PaymentMethod))
+                {
+                    await ChangePaymentMethod(OrderParams.Seller.PaymentMethods.FirstOrDefault());
+                }
             }
+
+            isLoaded = true;
         }
 
         private async Task ChangePaymentMethod(string paymentMethod)

@@ -16,10 +16,9 @@ namespace Website.Client.Shared
         [Inject]
         public CartService CartService { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             CartService.SetNavMenu(this);
-            await CartService.ReloadCartAsync(true);
             Refresh();
         }
 

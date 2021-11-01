@@ -2,13 +2,7 @@
 @using Website.Client.Pages.User.CheckoutPage.Components
 
 
-@if (OrderParams == null)
-{
-    <StatementText>
-        You don't have anything from this seller in your cart!
-    </StatementText>
-}
-else
+@if (OrderParams != null)
 {
     <div class="row">
         <div class="col-xl-8 mb-3">
@@ -16,10 +10,10 @@ else
                 <div class="d-flex align-items-center border border-1 shadow-sm p-2 rounded">
                     <div class="ms-2">
                         <Avatar User="OrderParams.Seller" Height="32" Width="32" />
-                    </div> 
+                    </div>
                     <div class="ms-2 fs-5">
                         Purchase from @OrderParams.Seller.Name
-                    </div>                    
+                    </div>
                 </div>
             </div>
             <div class="mb-3">
@@ -70,7 +64,7 @@ else
 
                         </div>
                     </div>
-                </div>                
+                </div>
             </div>
         </div>
         <div class="col-xl-4">
@@ -112,5 +106,14 @@ else
             </div>
         </div>
     </div>
+}
+else if (isLoaded)  
+{
+    <StatementText>
+        You don't have anything from this seller in your cart!
+    </StatementText>
+} else
+{
+    <Progressbar />
 }
 
