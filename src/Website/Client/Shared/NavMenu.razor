@@ -21,59 +21,70 @@
                     <a class="nav-link" href="/discord">Discord</a>
                 </li>
             </ul>
-            <a href="/cart" class="h-100 d-flex align-items-center text-black-50">
-                <div class="position-relative ms-2 me-2" style="margin-top: -5px;">
-                    <i class="bi bi-cart-fill fs-4"></i>
-                    @if (CartService.Carts != null && CartService.Carts.Sum(x => x.Items.Count) > 0)
-                    {
-                        <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top: 100%; left: 100%;">
-                            @CartService.Carts.Sum(x => x.Items.Count)
-                        </span>
-                    }
+            <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center" style="height: 40px;">
+                    <div style="margin-bottom: 6px;">
+                        <a href="/cart" class="d-flex align-items-center text-black-50 ps-2 pe-2 align-middle">
+                            <div class="position-relative">
+                                <i class="bi bi-cart-fill fs-4"></i>
+                                @if (CartService.Carts != null && CartService.Carts.Sum(x => x.Items.Count) > 0)
+                                {
+                                    <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top: 100%; left: 100%;">
+                                        @CartService.Carts.Sum(x => x.Items.Count)
+                                    </span>
+                                }
+                            </div>
+                        </a>
+                    </div>                    
                 </div>
-            </a>
-            <AuthorizeView>
-                <Authorized>
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                @context.User.Identity.Name
+                <div class="ms-3 d-flex align-items-center"  style="height: 40px;">
+                    <AuthorizeView>
+                        <Authorized>
+                            <div class="dropdown">
+                                <a class="text-decoration-none text-black-50 d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                    <div>
+                                        <Avatar User="UserService.User" Width="34" Height="34" Class="border border-2 m-auto" />
+                                    </div>                                    
+                                    <small>
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </small>
+                                    
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
+                                        <Authorized>
+                                            <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>
+                                            <li><a class="dropdown-item" href="/admin/products">Manage Products</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        </Authorized>
+                                    </AuthorizeView>
+                                    <AuthorizeView Context="context2" Roles="@RoleConstants.AdminAndSeller">
+                                        <Authorized>
+                                            <li><a class="dropdown-item" href="/seller/statistics">Your Statistics</a></li>
+                                            <li><a class="dropdown-item" href="/seller/products">Your Products</a></li>
+                                            <li><a class="dropdown-item" href="/seller/customers">Your Customers</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        </Authorized>
+                                    </AuthorizeView>
+                                    <li><a class="dropdown-item" href="/users/@context.User.FindFirst(ClaimTypes.NameIdentifier).Value">Profile</a></li>
+                                    <li><a class="dropdown-item" href="/settings">Settings</a></li>
+                                    <li><a class="dropdown-item" href="/messages">Messages</a></li>
+                                    <li><a class="dropdown-item" href="/orders">Orders</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
+                                </ul>
+                            </div>
+                        </Authorized>
+                        <NotAuthorized>
+                            <a href="/signin">
+                                <img src="/img/steam/buttons/sits_small.png" />
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
-                                    <Authorized>
-                                        <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>
-                                        <li><a class="dropdown-item" href="/admin/products">Manage Products</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    </Authorized>
-                                </AuthorizeView>
-                                <AuthorizeView Context="context2" Roles="@RoleConstants.AdminAndSeller">
-                                    <Authorized>
-                                        <li><a class="dropdown-item" href="/seller/statistics">Your Statistics</a></li>
-                                        <li><a class="dropdown-item" href="/seller/products">Your Products</a></li>
-                                        <li><a class="dropdown-item" href="/seller/customers">Your Customers</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                    </Authorized>
-                                </AuthorizeView>
-                                <li><a class="dropdown-item" href="/users/@context.User.FindFirst(ClaimTypes.NameIdentifier).Value">Profile</a></li>
-                                <li><a class="dropdown-item" href="/settings">Settings</a></li>
-                                <li><a class="dropdown-item" href="/messages">Messages</a></li>
-                                <li><a class="dropdown-item" href="/orders">Orders</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </Authorized>
-                <NotAuthorized>
-                    <a href="/signin">
-                        <img src="/img/steam/buttons/sits_small.png" />
-                    </a>
-                </NotAuthorized>
-            </AuthorizeView>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            </div>
+            
+            
         </div>
     </div>
 </nav>
-
-@code {
-} 

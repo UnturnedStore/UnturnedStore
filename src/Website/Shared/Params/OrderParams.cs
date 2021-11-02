@@ -22,6 +22,6 @@ namespace Website.Shared.Params
         public MUser Seller { get; set; }
         [JsonIgnore]
         public bool IsAgree { get; set; }
-        public string GetTotalCost() => Items != null ? Items.Sum(x => x.Product.Price).ToString("N") : string.Empty;
+        public string GetTotalCost() => Items != null ? Items.Sum(x => x.Product.Price).ToString("N2") : string.Empty;
     }
 }

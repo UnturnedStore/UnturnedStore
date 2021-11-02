@@ -1,10 +1,10 @@
-﻿@if (User.AvatarImageId.HasValue)
+﻿@if (GetAvatarImageId().HasValue)
 {
-    <img src="api/images/@User.AvatarImageId" width="@Width" height="@Height" class="rounded-circle" />
+    <img src="api/images/@GetAvatarImageId()" width="@Width" height="@Height" class="rounded-circle @Class" />
 }
 else
 {
-    <img src="/img/profiles/default_avatar.png" width="@Width" height="@Height" class="rounded-circle" />
+    <img src="/img/profiles/default_avatar.png" width="@Width" height="@Height" class="rounded-circle @Class" />
 }
 
 @code {
@@ -14,4 +14,10 @@ else
     public int Height { get; set; }
     [Parameter]
     public MUser User { get; set; }
+    [Parameter]
+    public int? AvatarImageId { get; set; }
+    [Parameter]
+    public string Class { get; set; }
+
+    public int? GetAvatarImageId() => User == null ? AvatarImageId : User.AvatarImageId;
 }
