@@ -37,6 +37,12 @@
                             </div>
                         </label>
                     }
+                    @if (!OrderParams.Seller.PaymentMethods.Any())
+                    {
+                        <div class="alert alert-info">
+                            Unfortunately this seller doesn't provide any payment methods
+                        </div>
+                    }
 
                 </div>
             </div>
@@ -86,24 +92,27 @@
                         <span class="fw-bold">@OrderParams.GetTotalCost() USD</span>
                     </div>
                 </div>
-                <div class="text-center mt-3 d-grid gap-2">
-                    @if (order != null)
-                    {
-                        <a class="btn btn-success disabled" href="javascript:void(0)">
-                            <span class="spinner-border spinner-border-sm" role="status"></span> Waiting for @order.PaymentMethod
-                        </a>
-                    }
-                    else
-                    {
-                        <a class="btn btn-success @BtnDisabled" href="javascript:void(0)" @onclick="CreateOrderAsync">
-                            <span class="ms-1"><i class="bi bi-cash-coin"></i></span> Checkout with @OrderParams.PaymentMethod
-                        </a>
-                        @if (BtnDisabledTitle != null)
+                @if (OrderParams.Seller.PaymentMethods.Contains(OrderParams.PaymentMethod))
+                {
+                    <div class="text-center mt-3 d-grid gap-2">
+                        @if (order != null)
                         {
-                            <small class="text-danger text-start"><i class="bi bi-exclamation-lg"></i> @BtnDisabledTitle</small>
+                            <a class="btn btn-success disabled" href="javascript:void(0)">
+                                <span class="spinner-border spinner-border-sm" role="status"></span> Waiting for @order.PaymentMethod
+                            </a>
                         }
-                    }
-                </div>
+                        else
+                        {
+                            <a class="btn btn-success @BtnDisabled" href="javascript:void(0)" @onclick="CreateOrderAsync">
+                                <span class="ms-1"><i class="bi bi-cash-coin"></i></span> Checkout with @OrderParams.PaymentMethod
+                            </a>
+                            @if (BtnDisabledTitle != null)
+                            {
+                                <small class="text-danger text-start"><i class="bi bi-exclamation-lg"></i> @BtnDisabledTitle</small>
+                            }
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>
