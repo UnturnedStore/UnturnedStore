@@ -37,7 +37,7 @@
                         </a>
                     </div>                    
                 </div>
-                <div class="ms-3 d-flex align-items-center"  style="height: 40px;">
+                <div class="ms-3 d-flex align-items-center" style="height: 40px;">
                     <AuthorizeView>
                         <Authorized>
                             <div class="dropdown">
@@ -51,7 +51,7 @@
                                     
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
+                                    <AuthorizeView Context="context2" Roles="@RoleConstants.AdminAndSeller">
                                         <Authorized>
                                             <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>
                                             <li><a class="dropdown-item" href="/admin/products">Manage Products</a></li>
@@ -83,8 +83,6 @@
                     </AuthorizeView>
                 </div>
             </div>
-            
-            
         </div>
     </div>
 </nav>

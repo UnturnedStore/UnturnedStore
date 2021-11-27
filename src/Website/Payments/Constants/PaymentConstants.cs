@@ -15,7 +15,8 @@ namespace Website.Payments.Constants
         {
             public static class Nano
             {
-
+                public const string Name = "Nano";
+                public const string CurrencyCode = "XNO";
             }
 
             public static class PayPal

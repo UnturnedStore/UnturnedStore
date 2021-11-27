@@ -1,0 +1,14 @@
+﻿CREATE TABLE dbo.NanoPayments
+(
+	Id INT IDENTITY(1, 1) NOT NULL CONSTRAINT PK_NanoPayments PRIMARY KEY,
+	OrderId INT NOT NULL CONSTRAINT FK_NanoPayments_OrderId FOREIGN KEY REFERENCES dbo.Orders(Id),
+	SellerAddress NVARCHAR(255) NOT NULL,
+	ReceiveAddress NVARCHAR(255) NOT NULL,
+	ReceivePrivateKey VARBINARY(MAX) NOT NULL,
+	Amount DECIMAL NOT NULL,
+	IsReceived AS CAST(IIF (SendAddress IS NULL, 0, 1) AS BIT),
+	SendAddress VARCHAR(255) NULL,	
+	ReceiveDate DATETIME2(0) NULL,
+	CreateDate DATETIME2(0) NOT NULL CONSTRAINT DF_NanoPayments_CreateDate DEFAULT SYSDATETIME(),
+	CONSTRAINT UK_NanoPayments UNIQUE (ReceiveAddress)
+)

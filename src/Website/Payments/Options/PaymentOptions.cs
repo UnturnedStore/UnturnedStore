@@ -23,6 +23,8 @@
         {
             public bool IsEnabled { get; set; }
             public string NodeUrl { get; set; }
+            public string WebSocketUrl { get; set; }
+            public string CoinMarketCapAPIKey { get; set; }
         }
     }
 }
