@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using RestoreMonarchy.PaymentGateway.Client;
+using System;
 using System.Threading.Tasks;
+using RestoreMonarchy.PaymentGateway.Client.Models;
 using Website.Data.Repositories;
-using Website.Payments;
-using Website.Payments.Abstractions;
-using Website.Payments.Models;
-using Website.Payments.Providers;
+using Website.Server.Options;
 using Website.Shared.Constants;
 using Website.Shared.Models;
 using Website.Shared.Params;
@@ -22,43 +19,46 @@ namespace Website.Server.Services
         private readonly UsersRepository usersRepository;
         private readonly ILogger<OrderService> logger;
         private readonly DiscordService discordService;
-        private readonly IPaymentProviders paymentProviders;
+
+        public PaymentGatewayClient PaymentGatewayClient { get; }
 
         public OrderService(OrdersRepository ordersRepository, ProductsRepository productsRepository, UsersRepository usersRepository, 
-            ILogger<OrderService> logger, DiscordService discordService, IPaymentProviders paymentProviders)
+            ILogger<OrderService> logger, DiscordService discordService, PaymentGatewayClient paymentGatewayClient)
         {
             this.ordersRepository = ordersRepository;
             this.productsRepository = productsRepository;
             this.usersRepository = usersRepository;
             this.logger = logger;
             this.discordService = discordService;
-            this.paymentProviders = paymentProviders;            
+
+            PaymentGatewayClient = paymentGatewayClient;
         }
 
-        public async Task UpdateOrderAsync(ValidatePaymentResult result)
+        public async Task UpdateOrderAsync(Guid paymentId)
         {
-            if (result.Status != PaymentStatus.Valid)
+            MOrder order = await ordersRepository.GetOrderAsync(paymentId);
+
+            if (order.Status == OrderConstants.Status.Completed)
             {
-                logger.LogWarning(result.ErrorMessage);
+                // Order was already completed
                 return;
             }
 
-            await ordersRepository.UpdateOrderAsync(result.Order);
+            order.Status = OrderConstants.Status.Completed;
+            order.LastUpdate = DateTime.Now;
+            await ordersRepository.UpdateOrderAsync(order);
 
-            if (result.Order.Status == OrderConstants.Status.Completed)
+            foreach (MOrderItem item in order.Items)
             {
-                foreach (var item in result.Order.Items)
+                await productsRepository.AddProductCustomerAsync(new MProductCustomer()
                 {
-                    await productsRepository.AddProductCustomerAsync(new MProductCustomer()
-                    {
-                        UserId = result.Order.BuyerId,
-                        ProductId = item.ProductId
-                    });
-                }
-
-                discordService.SendPurchaseNotification(result.Order);
-                logger.LogInformation($"Successfully finished the order #{result.Order.Id}");
+                    UserId = order.BuyerId,
+                    ProductId = item.ProductId
+                });
             }
+
+            discordService.SendPurchaseNotification(order);
+            logger.LogInformation($"Successfully finished the order #{order.Id}");
         }
 
         public async Task<MOrder> CreateOrderAsync(OrderParams orderParams)
@@ -66,15 +66,14 @@ namespace Website.Server.Services
             MOrder order = MOrder.FromParams(orderParams);
             order.Seller = await usersRepository.GetUserPrivateAsync(order.SellerId);
             order.Status = OrderConstants.Status.Pending;
-
-            if (orderParams.PaymentMethod == "PayPal")
-            {
-                paymentProviders.Get<PayPalPaymentProvider>().BuildOrder(order);
-            }
+            order.Currency = order.Seller.PayPalCurrency;
+            order.PaymentMethod = orderParams.PaymentMethod;
+            order.PaymentReceiver = order.GetReceiver(order.PaymentMethod);
+            
 
             foreach (var itemParams in orderParams.Items)
             {
-                var item = MOrderItem.FromParams(itemParams);
+                MOrderItem item = MOrderItem.FromParams(itemParams);
 
                 item.Product = await productsRepository.GetProductAsync(item.ProductId, order.BuyerId);
 
@@ -94,8 +93,16 @@ namespace Website.Server.Services
                 order.Items.Add(item);
             }
 
-            return await ordersRepository.AddOrderAsync(order);
-            
+            Payment payment = Payment.Create(order.PaymentMethod, string.Empty, 
+                order.GetReceiver(order.PaymentMethod), order.Currency, order.TotalPrice);
+
+            foreach (MOrderItem item in order.Items)
+            {
+                payment.AddItem(item.ProductName, 1, item.Price);
+            }
+
+            order.PaymentId = await PaymentGatewayClient.CreatePaymentAsync(payment);
+            return await ordersRepository.AddOrderAsync(order);            
         }
     }
 }

@@ -17,39 +17,25 @@
     </ol>
 </nav>
 
-
-
 <div class="bg-light p-3">
-    @if (!isWaitingForProvider)
-    {
-        <div class="mb-3">
-            <a href="/">Continue Shopping</a>
-        </div>
+    <div class="mb-3">
+        <a href="/">Continue Shopping</a>
+    </div>
 
-        @if (Carts != null)
+    @if (Carts != null)
+    {
+        if (Carts.Count == 0)
         {
-            if (Carts.Count == 0)
-            {
-                <div class="text-center">
-                    <h5>You don't have anything in your cart</h5>
-                    <a class="btn btn-primary" href="/">Continue Shopping</a>
-                </div>
-            }
-
-            foreach (OrderParams cart in Carts)
-            {
-                <SellerCart Cart="cart" OnRemoveFromCart="(item) => RemoveFromCartAsync(cart, item)" />
-            }
-        }
-    }
-    else
-    {
-        <div class="d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+            <div class="text-center">
+                <h5>You don't have anything in your cart</h5>
+                <a class="btn btn-primary" href="/">Continue Shopping</a>
             </div>
-            <h5 class="ms-1">Waiting for payment provider...</h5>
-        </div>
+        }
+
+        foreach (OrderParams cart in Carts)
+        {
+            <SellerCart Cart="cart" OnRemoveFromCart="(item) => RemoveFromCartAsync(cart, item)" />
+        }
     }
 </div>
 

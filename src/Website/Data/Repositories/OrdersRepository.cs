@@ -20,15 +20,14 @@ namespace Website.Data.Repositories
 
         public async Task UpdateOrderAsync(MOrder order)
         {
-            const string sql = "UPDATE dbo.Orders SET PaymentSender = @PaymentSender, Status = @Status, " +
-                "TransactionId = @TransactionId, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
+            const string sql = "UPDATE dbo.Orders SET Status = @Status, LastUpdate = @LastUpdate WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, order);
         }
 
         public async Task<MOrder> AddOrderAsync(MOrder order)
         {
-            const string sql = "INSERT INTO dbo.Orders (BuyerId, SellerId, TotalPrice, Currency, PaymentMethod, PaymentReceiver, Status) " +
-                "OUTPUT INSERTED.Id VALUES (@BuyerId, @SellerId, @TotalPrice, @Currency, @PaymentMethod, @PaymentReceiver, @Status);";
+            const string sql = "INSERT INTO dbo.Orders (PaymentId, BuyerId, SellerId, TotalPrice, Currency, PaymentMethod, PaymentReceiver, Status) " +
+                "OUTPUT INSERTED.Id VALUES (@PaymentId, @BuyerId, @SellerId, @TotalPrice, @Currency, @PaymentMethod, @PaymentReceiver, @Status);";
 
             order.Id = await connection.ExecuteScalarAsync<int>(sql, order);
 
@@ -72,6 +71,19 @@ namespace Website.Data.Repositories
             return orders;
         }
 
+        public async Task<MOrder> GetOrderAsync(Guid paymentId)
+        {
+            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.* " +
+                "FROM dbo.Orders o " +
+                "JOIN dbo.Users u ON o.SellerId = u.Id " +
+                "JOIN dbo.Users u2 ON o.BuyerId = u2.Id " +
+                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId " +
+                "JOIN dbo.Products p ON i.ProductId = p.Id " +
+                "WHERE o.PaymentId = @paymentId;";
+
+            return await GetOrderSharedAsync(sql, new { paymentId });
+        }
+
         public async Task<MOrder> GetOrderAsync(int orderId)
         {
             const string sql = "SELECT o.*, u.*, u2.*, i.*, p.* " +
@@ -82,8 +94,13 @@ namespace Website.Data.Repositories
                 "JOIN dbo.Products p ON i.ProductId = p.Id " +
                 "WHERE o.Id = @orderId;";
 
+            return await GetOrderSharedAsync(sql, new { orderId });
+        }
+
+        private async Task<MOrder> GetOrderSharedAsync(string sql, object param)
+        {
             MOrder order = null;
-            await connection.QueryAsync<MOrder, MUser, MUser, MOrderItem, MProduct, MOrder>(sql, (o, u, u2, i, p) => 
+            await connection.QueryAsync<MOrder, MUser, MUser, MOrderItem, MProduct, MOrder>(sql, (o, u, u2, i, p) =>
             {
                 if (order == null)
                 {
@@ -100,7 +117,7 @@ namespace Website.Data.Repositories
                 }
 
                 return null;
-            }, new { orderId });
+            }, param);
 
             return order;
         }

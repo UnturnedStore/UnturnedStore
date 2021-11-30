@@ -35,21 +35,6 @@ namespace Website.Client.Pages.Home.CartPage
             await CartService.RemoveFromCartAsync(cart, item);
         }
 
-        private bool isWaitingForProvider = false;
-        private async Task CheckoutPayPalAsync(OrderParams orderParams)
-        {
-            if (!orderParams.IsAgree)
-                return;
-
-            orderParams.PaymentMethod = OrderConstants.Methods.PayPal;
-            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/orders", orderParams);
-
-            MOrder order = await response.Content.ReadFromJsonAsync<MOrder>();
-            isWaitingForProvider = true;
-            NavigationManager.NavigateTo($"api/orders/{order.Id}/pay", true);
-            await CartService.RemoveCartAsync(orderParams);
-        }
-
         public async Task ShowTermsModalAsync(MUser seller)
         {
             await TermsModal.ShowAsync(seller);

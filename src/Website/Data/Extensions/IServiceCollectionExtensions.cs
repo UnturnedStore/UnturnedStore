@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Website.Data.Repositories;
 
 namespace Website.Data.Extensions
@@ -21,7 +16,6 @@ namespace Website.Data.Extensions
             services.AddScoped<OrdersRepository>();
             services.AddScoped<MessagesRepository>();
             services.AddScoped<AdminRepository>();
-            services.AddScoped<PaymentsRepository>();
         }
     }
 }

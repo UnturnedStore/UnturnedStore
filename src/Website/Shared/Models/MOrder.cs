@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestoreMonarchy.PaymentGateway.Client.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Website.Shared.Models
     public class MOrder
     {
         public int Id { get; set; }
+        public Guid PaymentId { get; set; }
         public int BuyerId { get; set; }
         public int SellerId { get; set; }
         public decimal TotalPrice { get; set; }
@@ -25,6 +27,17 @@ namespace Website.Shared.Models
         public MUser Buyer { get; set; }
         public MUser Seller { get; set; }
         public List<MOrderItem> Items { get; set; }
+
+        public string GetReceiver(string paymentMethod)
+        {
+            return paymentMethod switch
+            {
+                PaymentProviders.PayPal => Seller.PayPalAddress,
+                PaymentProviders.Nano => Seller.NanoAddress,
+                PaymentProviders.Mock => Seller.Name,
+                _ => null,
+            };
+        }
 
         public static MOrder FromParams(OrderParams orderParams)
         {

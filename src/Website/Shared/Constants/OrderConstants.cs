@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestoreMonarchy.PaymentGateway.Client.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,8 @@ namespace Website.Shared.Constants
 
         public class Methods
         {
-            public const string PayPal = "PayPal";
-            public const string Nano = "Nano";
+            public static string PayPal => PaymentProviders.PayPal;
+            public static string Nano => PaymentProviders.Nano;
         }
 
         

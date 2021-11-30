@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using RestoreMonarchy.PaymentGateway.Client;
 using SteamWebAPI2.Utilities;
 using System;
 using System.Data.SqlClient;
 using Website.Data.Extensions;
-using Website.Data.Repositories;
-using Website.Payments.Extensions;
-using Website.Payments.Options;
 using Website.Server.Helpers;
+using Website.Server.Options;
 using Website.Server.Services;
 
 namespace Website.Server
@@ -34,11 +34,11 @@ namespace Website.Server
             services.AddTransient<OrderService>();
             services.AddTransient<DiscordService>();
 
-            // Add payment services
+            // Add options
             services.AddOptions();
-            services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.Payment));
-            services.AddPayments();
+            services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.Key));
 
+            services.AddTransient<PaymentGatewayClient>((s) => new (s.GetRequiredService<IOptions<PaymentOptions>>().Value));
 
             services.AddTransient(x => new SteamWebInterfaceFactory(Configuration["SteamWebAPIKey"]));           
 

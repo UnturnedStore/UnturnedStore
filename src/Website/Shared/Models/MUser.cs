@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestoreMonarchy.PaymentGateway.Client.Constants;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -45,9 +46,9 @@ namespace Website.Shared.Models
             {
                 List<string> paymentMethods = new();
                 if (IsPayPalEnabled)
-                    paymentMethods.Add(OrderConstants.Methods.PayPal);
+                    paymentMethods.Add(PaymentProviders.PayPal);
                 if (IsNanoEnabled)
-                    paymentMethods.Add(OrderConstants.Methods.Nano);
+                    paymentMethods.Add(PaymentProviders.Nano);
 
                 return paymentMethods;
             }

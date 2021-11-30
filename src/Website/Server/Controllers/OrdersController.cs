@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
-using Website.Payments.Abstractions;
-using Website.Payments.Models;
-using Website.Payments.Providers;
-using Website.Server.Extensions;
 using Website.Server.Services;
 using Website.Shared.Extensions;
 using Website.Shared.Models;
@@ -22,13 +18,11 @@ namespace Website.Server.Controllers
     {
         private readonly OrdersRepository ordersRepository;
         private readonly OrderService orderService;
-        private readonly IPaymentProviders paymentProviders;
 
-        public OrdersController(OrdersRepository ordersRepository, OrderService orderService, IPaymentProviders paymentProviders)
+        public OrdersController(OrdersRepository ordersRepository, OrderService orderService)
         {
             this.ordersRepository = ordersRepository;
             this.orderService = orderService;
-            this.paymentProviders = paymentProviders;
         }
 
         [Authorize]
@@ -38,7 +32,7 @@ namespace Website.Server.Controllers
             orderParams.BaseUrl = Request.Headers["Origin"];
             orderParams.BuyerId = User.Id();
 
-            var order = await orderService.CreateOrderAsync(orderParams);
+            MOrder order = await orderService.CreateOrderAsync(orderParams);
             if (order == null)
                 return BadRequest();
 
@@ -64,17 +58,14 @@ namespace Website.Server.Controllers
             if (order.BuyerId != User.Id())
                 return BadRequest();
 
-            return order.PaymentMethod switch
-            {
-                "PayPal" => Redirect(paymentProviders.Get<PayPalPaymentProvider>().GetPaymentUrl(order, Request.GetBaseUrl())),
-                _ => StatusCode((int)HttpStatusCode.ServiceUnavailable)
-            };
+            return Redirect(orderService.PaymentGatewayClient.BuildPayUrl(order.PaymentId));
         }
 
-        [HttpPost("PayPal")]
-        public async Task<IActionResult> PayPalAsync()
+        [HttpPost("Notify")]
+        public async Task<IActionResult> NotifyAsync()
         {
-            PayPalPaymentProvider paypal = paymentProviders.Get<PayPalPaymentProvider>();
+            if (!orderService.PaymentGatewayClient.ValdiateNotifyRequest(Request))
+                return Forbid();
 
             string requestBody;
             using (StreamReader reader = new(Request.Body, Encoding.ASCII))
@@ -82,8 +73,10 @@ namespace Website.Server.Controllers
                 requestBody = await reader.ReadToEndAsync();
             }
 
-            ValidatePaymentResult result = await paypal.ValidatePaymentAsync(requestBody);
-            await orderService.UpdateOrderAsync(result);
+            if (!Guid.TryParse(requestBody, out Guid paymentId))
+                return BadRequest();
+
+            await orderService.UpdateOrderAsync(paymentId);
             return Ok();
         }
     }
