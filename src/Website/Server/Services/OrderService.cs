@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Payments;
 using Website.Payments.Abstractions;
-using Website.Payments.Constants;
 using Website.Payments.Models;
 using Website.Payments.Providers;
 using Website.Shared.Constants;
@@ -68,12 +67,9 @@ namespace Website.Server.Services
             order.Seller = await usersRepository.GetUserPrivateAsync(order.SellerId);
             order.Status = OrderConstants.Status.Pending;
 
-            if (orderParams.PaymentMethod == PaymentConstants.Providers.PayPal.Name)
+            if (orderParams.PaymentMethod == "PayPal")
             {
                 paymentProviders.Get<PayPalPaymentProvider>().BuildOrder(order);
-            } else if (orderParams.PaymentMethod == PaymentConstants.Providers.Nano.Name)
-            {
-                paymentProviders.Get<NanoPaymentProvider>().BuildOrder(order);
             }
 
             foreach (var itemParams in orderParams.Items)
@@ -98,7 +94,8 @@ namespace Website.Server.Services
                 order.Items.Add(item);
             }
 
-            return await ordersRepository.AddOrderAsync(order);            
+            return await ordersRepository.AddOrderAsync(order);
+            
         }
     }
 }
