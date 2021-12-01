@@ -23,6 +23,7 @@ namespace Website.Client.Pages.User.CheckoutPage
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        public string[] PaymentMethods { get; set; } = new string[0];
         public OrderParams OrderParams { get; set; }
 
         private bool isLoaded = false;
@@ -32,9 +33,10 @@ namespace Website.Client.Pages.User.CheckoutPage
             
             if (OrderParams != null)
             {
+                PaymentMethods = await HttpClient.GetFromJsonAsync<string[]>($"api/payments/{SellerId}");
                 if (string.IsNullOrEmpty(OrderParams.PaymentMethod))
                 {
-                    await ChangePaymentMethod(OrderParams.Seller.PaymentMethods.FirstOrDefault());
+                    await ChangePaymentMethod(PaymentMethods.FirstOrDefault());
                 }
             }
 

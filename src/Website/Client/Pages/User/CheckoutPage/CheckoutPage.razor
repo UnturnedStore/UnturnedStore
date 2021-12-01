@@ -21,7 +21,7 @@
                     Select payment method
                 </div>
                 <div class="list-group mb-2">
-                    @foreach (string paymentMethod in OrderParams.Seller.PaymentMethods)
+                    @foreach (string paymentMethod in PaymentMethods)
                     {
                         <label class="list-group-item d-flex align-items-center" style="cursor: pointer;">
                             <div>
@@ -37,7 +37,8 @@
                             </div>
                         </label>
                     }
-                    @if (!OrderParams.Seller.PaymentMethods.Any())
+
+                    @if (!PaymentMethods.Any())
                     {
                         <div class="alert alert-info">
                             Unfortunately this seller doesn't provide any payment methods
@@ -92,7 +93,7 @@
                         <span class="fw-bold">@OrderParams.GetTotalCost() USD</span>
                     </div>
                 </div>
-                @if (OrderParams.Seller.PaymentMethods.Contains(OrderParams.PaymentMethod))
+                @if (PaymentMethods.Contains(OrderParams.PaymentMethod))
                 {
                     <div class="text-center mt-3 d-grid gap-2">
                         @if (order != null)

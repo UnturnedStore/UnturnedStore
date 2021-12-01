@@ -39,19 +39,18 @@ namespace Website.Shared.Models
         public string SteamProfileUrl => "https://steamcommunity.com/profiles/" + SteamId;
         [JsonIgnore]
         public string BackgroundColor => Color ?? "#0066ff";
-        [JsonIgnore]
-        public IEnumerable<string> PaymentMethods
-        {
-            get
-            {
-                List<string> paymentMethods = new();
-                if (IsPayPalEnabled)
-                    paymentMethods.Add(PaymentProviders.PayPal);
-                if (IsNanoEnabled)
-                    paymentMethods.Add(PaymentProviders.Nano);
 
-                return paymentMethods;
-            }
+        public string[] GetPaymentProviders(bool isMockEnabled)
+        {
+            List<string> paymentMethods = new();
+            if (IsPayPalEnabled)
+                paymentMethods.Add(PaymentProviders.PayPal);
+            if (IsNanoEnabled)
+                paymentMethods.Add(PaymentProviders.Nano);
+            if (isMockEnabled)
+                paymentMethods.Add(PaymentProviders.Mock);
+
+            return paymentMethods.ToArray();
         }
 
         public static MUser FromUser(MUser user)

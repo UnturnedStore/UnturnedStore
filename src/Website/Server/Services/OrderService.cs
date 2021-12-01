@@ -48,6 +48,8 @@ namespace Website.Server.Services
             order.LastUpdate = DateTime.Now;
             await ordersRepository.UpdateOrderAsync(order);
 
+            
+
             foreach (MOrderItem item in order.Items)
             {
                 await productsRepository.AddProductCustomerAsync(new MProductCustomer()

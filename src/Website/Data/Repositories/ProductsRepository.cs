@@ -49,7 +49,7 @@ namespace Website.Data.Repositories
         public async Task<bool> IsProductCustomerSellerAsync(int customerId, int userId)
         {
             const string sql = "SELECT COUNT(*) FROM dbo.ProductCustomers c JOIN dbo.Products p ON p.Id = c.ProductId " +
-                "WHERE c.Id = @productId AND p.SellerId = @userId;";
+                "WHERE c.Id = @customerId AND p.SellerId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { customerId, userId });
         }
 
