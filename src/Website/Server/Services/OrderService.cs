@@ -38,17 +38,21 @@ namespace Website.Server.Services
         {
             MOrder order = await ordersRepository.GetOrderAsync(paymentId);
 
+            if (order == null)
+            {
+                logger.LogWarning("Order for payment id {0} not found", paymentId);
+                return;
+            }
+
             if (order.Status == OrderConstants.Status.Completed)
             {
-                // Order was already completed
+                logger.LogWarning("Order #{0} was already completed", order.Id);
                 return;
             }
 
             order.Status = OrderConstants.Status.Completed;
             order.LastUpdate = DateTime.Now;
             await ordersRepository.UpdateOrderAsync(order);
-
-            
 
             foreach (MOrderItem item in order.Items)
             {
