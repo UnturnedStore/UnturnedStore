@@ -68,15 +68,21 @@ namespace Website.Server.Helpers
 
             if (playerSummary != null)
             {
-                byte[] avatarContent = await client.GetByteArrayAsync(playerSummary.AvatarFullUrl);
-                MImage img = new MImage()
+                try
                 {
-                    Name = "steam_avatar.jpg",
-                    Content = avatarContent,
-                    ContentType = "image/jpeg"
-                };
+                    byte[] avatarContent = await client.GetByteArrayAsync(playerSummary.AvatarFullUrl);
+                    MImage img = new MImage()
+                    {
+                        Name = "steam_avatar.jpg",
+                        Content = avatarContent,
+                        ContentType = "image/jpeg"
+                    };
 
-                user.AvatarImageId = await imagesRepository.AddImageAsync(img);
+                    user.AvatarImageId = await imagesRepository.AddImageAsync(img);
+                } catch (Exception e)
+                {
+                    logger.LogError(e, $"An exception occurated when downloading player avatar {playerSummary.SteamId}");
+                }                
             }
 
             user = await usersRepository.AddUserAsync(user);
