@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Pages.Home.CartPage.Components;
 using Website.Client.Services;
-using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Client.Pages.Home.CartPage

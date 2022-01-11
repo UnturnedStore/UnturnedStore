@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Client.Providers
 {

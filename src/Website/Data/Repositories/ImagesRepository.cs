@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Data.Repositories
 {

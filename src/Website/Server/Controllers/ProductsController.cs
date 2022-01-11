@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
 using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Server.Controllers
 {

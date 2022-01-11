@@ -7,7 +7,7 @@ using RestoreMonarchy.PaymentGateway.Client.Models;
 using Website.Data.Repositories;
 using Website.Server.Options;
 using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Server.Services

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Website.Client.Providers;
 using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Client.Services
 {

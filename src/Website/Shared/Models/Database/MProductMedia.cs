@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Website.Shared.Models
+namespace Website.Shared.Models.Database
 {
     public class MProductMedia
     {

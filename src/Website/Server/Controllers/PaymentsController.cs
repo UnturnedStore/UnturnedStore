@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Server.Controllers
 {
@@ -28,9 +28,8 @@ namespace Website.Server.Controllers
             MUser user = await usersRepository.GetUserPrivateAsync(sellerId);
             if (!RoleConstants.IsSeller(user.Role))
                 return BadRequest();
-
             
-            return Ok(user.GetPaymentProviders(configuration.GetValue<bool>("IsMockEnabled")));
+            return Ok(user.GetSellerPaymentProviders(configuration.GetValue<bool>("IsMockEnabled")));
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Website.Client.Services;
 using Website.Client.Shared.Components;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.Home.ProductPage.Components
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using System.Net.Http.Json;
 
 namespace Website.Client.Pages.Seller.UploadVersionPage

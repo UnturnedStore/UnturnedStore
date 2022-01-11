@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Website.Shared.Models
+namespace Website.Shared.Models.Database
 {
     public class MProductCustomer
     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Website.Shared.Models
+namespace Website.Shared.Models.Database
 {
     public class MProduct
     {

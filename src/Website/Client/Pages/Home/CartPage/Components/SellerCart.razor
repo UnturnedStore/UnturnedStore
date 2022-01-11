@@ -3,13 +3,19 @@
 {
     <div class="card mb-3">
         <div class="card-header">
-            <h5><i class="bi bi-cart-fill"></i> @Cart.Seller.Name Products</h5>
+            <div class="fs-6 d-flex align-items-center">
+                <Avatar User="@Cart.Seller" Width="25" Height="25" />
+
+                <div class="ms-1">
+                    <a href="/users/@Cart.Seller.Id" class="text-decoration-none text-dark">@Cart.Seller.Name</a> Products
+                </div>
+            </div>
         </div>
         <div class="card-body">
 
             <table class="table table-striped mb-3">
                 <thead>
-                    <tr>
+                    <tr>    
                         <th scope="col">Product</th>
                         <th scope="col"></th>
                         <th scope="col">Price</th>

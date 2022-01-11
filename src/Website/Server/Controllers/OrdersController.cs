@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
 using Website.Shared.Extensions;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Server.Controllers

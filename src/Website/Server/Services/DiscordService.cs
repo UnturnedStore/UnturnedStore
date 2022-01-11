@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Server.Services
 {
