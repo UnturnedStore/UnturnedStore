@@ -24,21 +24,21 @@ namespace Website.Shared.Models.Database
         public DateTime LastUpdate { get; set; }
         public DateTime CreateDate { get; set; }
 
-        public MUser User { get; set; }
+        public UserInfo User { get; set; }
 
-        public static MProductReview FromReview(MProductReview review)
+        public MProductReview Clone()
         {
             return new MProductReview()
             {
-                Id = review.Id,
-                Title = review.Title,
-                Body = review.Body,
-                Rating = review.Rating,
-                ProductId = review.ProductId,
-                UserId = review.UserId,
-                LastUpdate = review.LastUpdate,
-                CreateDate = review.CreateDate,
-                User = review.User
+                Id = Id,
+                Title = Title,
+                Body = Body,
+                Rating = Rating,
+                ProductId = ProductId,
+                UserId = UserId,
+                LastUpdate = LastUpdate,
+                CreateDate = CreateDate,
+                User = User
             };
         }
     }

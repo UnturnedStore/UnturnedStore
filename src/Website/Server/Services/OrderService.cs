@@ -9,6 +9,7 @@ using Website.Server.Options;
 using Website.Shared.Constants;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
+using Website.Shared.Models;
 
 namespace Website.Server.Services
 {
@@ -70,7 +71,7 @@ namespace Website.Server.Services
         public async Task<MOrder> CreateOrderAsync(OrderParams orderParams)
         {
             MOrder order = MOrder.FromParams(orderParams);
-            order.Seller = await usersRepository.GetUserPrivateAsync(order.SellerId);
+            order.Seller = await usersRepository.GetUserAsync<Seller>(order.SellerId);
             order.Status = OrderConstants.Status.Pending;
             order.Currency = order.Seller.PayPalCurrency;
             order.PaymentMethod = orderParams.PaymentMethod;

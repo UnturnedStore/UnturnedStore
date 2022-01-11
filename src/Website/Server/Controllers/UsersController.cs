@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Constants;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
 namespace Website.Server.Controllers
@@ -31,7 +32,7 @@ namespace Website.Server.Controllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetUserAsync(int userId)
         {
-            return Ok(await usersRepository.GetUserPublicAsync(userId));
+            return Ok(await usersRepository.GetUserAsync<UserInfo>(userId));
         }
 
         [HttpGet("{userId}/avatar")]
@@ -50,12 +51,12 @@ namespace Website.Server.Controllers
         [HttpGet("{userId}/seller")]
         public async Task<IActionResult> GetUserSellerAsync(int userId)
         {
-            MUser user = await usersRepository.GetUserSellerAsync(userId);
+            Seller seller = await usersRepository.GetUserAsync<Seller>(userId);
 
-            if (!RoleConstants.IsSeller(user.Role))
+            if (!RoleConstants.IsSeller(seller.Role))
                 return BadRequest();
 
-            return Ok(user);
+            return Ok(seller);
         }
 
         [Authorize]
@@ -96,7 +97,7 @@ namespace Website.Server.Controllers
         {
             if (User.Identity?.IsAuthenticated ?? false)
             {
-                return Ok(await usersRepository.GetUserPrivateAsync(int.Parse(User.Identity.Name)));
+                return Ok(await usersRepository.GetUserAsync<UserInfo>(int.Parse(User.Identity.Name)));
             }
             else
             {

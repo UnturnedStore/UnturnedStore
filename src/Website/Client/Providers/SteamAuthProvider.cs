@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
 namespace Website.Client.Providers
@@ -17,7 +18,7 @@ namespace Website.Client.Providers
             this.httpClient = httpClient;
         }
 
-        public MUser User { get; private set; }
+        public UserInfo User { get; private set; }
         public bool IsAuthenticated { get; private set; }
 
         public async Task UpdateUserAsync()
@@ -27,7 +28,7 @@ namespace Website.Client.Providers
                 var response = await httpClient.GetAsync("api/users/me");
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    User = await response.Content.ReadFromJsonAsync<MUser>();
+                    User = await response.Content.ReadFromJsonAsync<UserInfo>();
                 }
             }
             catch (Exception e)

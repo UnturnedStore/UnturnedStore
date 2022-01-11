@@ -14,7 +14,6 @@ namespace Website.Shared.Models.Database
         public string YoutubeUrl { get; set; }
         public int? ImageId { get; set; }
 
-
         public string GetEmbedUrl()
         {
             var uri = new Uri(YoutubeUrl);

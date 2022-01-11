@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
 namespace Website.Data.Repositories
@@ -27,9 +28,9 @@ namespace Website.Data.Repositories
         public async Task<IEnumerable<MProduct>> GetProductsAsync()
         {
             const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON p.SellerId = u.Id;";
-            return await connection.QueryAsync<MProduct, MUser, MProduct>(sql, (p, u) => 
+            return await connection.QueryAsync<MProduct, Seller, MProduct>(sql, (p, s) => 
             {
-                p.Seller = u;
+                p.Seller = s;
                 return p;
             });
         }

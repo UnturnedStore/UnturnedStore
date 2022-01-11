@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Shared;
 using Website.Shared.Constants;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
@@ -39,7 +40,7 @@ namespace Website.Client.Services
 
             foreach (OrderParams orderParams in Carts.ToList())
             {
-                orderParams.Seller = await httpClient.GetFromJsonAsync<MUser>($"api/users/{orderParams.SellerId}/seller");
+                orderParams.Seller = await httpClient.GetFromJsonAsync<Seller>($"api/users/{orderParams.SellerId}/seller");
                 foreach (OrderItemParams item in orderParams.Items.ToList())
                 {
                     item.Product = await httpClient.GetFromJsonAsync<MProduct>("api/products/" + item.ProductId);

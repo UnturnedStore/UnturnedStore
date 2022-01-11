@@ -14,7 +14,7 @@ namespace Website.Shared.Models.Database
         public int UserId { get; set; }
         public DateTime CreateDate { get; set; }
 
-        public MUser User { get; set; }
+        public UserInfo User { get; set; }
         public MProduct Product { get; set; }
     }
 }

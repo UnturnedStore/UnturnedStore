@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
 namespace Website.Shared.Params
@@ -19,7 +20,7 @@ namespace Website.Shared.Params
         public List<OrderItemParams> Items { get; set; }
 
         [JsonIgnore]
-        public MUser Seller { get; set; }
+        public Seller Seller { get; set; }
         [JsonIgnore]
         public bool IsAgree { get; set; }
         public string GetTotalCost() => Items != null ? Items.Sum(x => x.Product.Price).ToString("N2") : string.Empty;

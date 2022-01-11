@@ -16,7 +16,6 @@ namespace Website.Shared.Models.Database
         public string SteamId { get; set; }
         public int? AvatarImageId { get; set; }
         public string Color { get; set; }
-        public byte[] Avatar { get; set; }
         public bool IsPayPalEnabled { get; set; }
         [StringLength(255)]
         public string PayPalAddress { get; set; }

@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
 namespace Website.Data.Repositories
@@ -48,7 +49,7 @@ namespace Website.Data.Repositories
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id  WHERE o.BuyerId = @userId;";
 
             List<MOrder> orders = new List<MOrder>();
-            await connection.QueryAsync<MOrder, MUser, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
+            await connection.QueryAsync<MOrder, Seller, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
             {
                 var order = orders.FirstOrDefault(x => x.Id == o.Id);
                 if (order == null)
@@ -100,7 +101,7 @@ namespace Website.Data.Repositories
         private async Task<MOrder> GetOrderSharedAsync(string sql, object param)
         {
             MOrder order = null;
-            await connection.QueryAsync<MOrder, MUser, MUser, MOrderItem, MProduct, MOrder>(sql, (o, u, u2, i, p) =>
+            await connection.QueryAsync<MOrder, Seller, UserInfo, MOrderItem, MProduct, MOrder>(sql, (o, u, u2, i, p) =>
             {
                 if (order == null)
                 {

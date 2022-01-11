@@ -24,8 +24,8 @@ namespace Website.Shared.Models.Database
         public DateTime LastUpdate { get; set; }
         public DateTime CreateDate { get; set; }
 
-        public MUser Buyer { get; set; }
-        public MUser Seller { get; set; }
+        public UserInfo Buyer { get; set; }
+        public Seller Seller { get; set; }
         public List<MOrderItem> Items { get; set; }
 
         public string GetReceiver(string paymentMethod)

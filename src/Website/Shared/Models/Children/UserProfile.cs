@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Website.Shared.Models.Database;
 
 namespace Website.Shared.Models.Children
 {
-    public class MUserProfile : MUser
+    public class UserProfile : MUser
     {
         public int Sales { get; set; }
         public List<MProduct> Products { get; set; }

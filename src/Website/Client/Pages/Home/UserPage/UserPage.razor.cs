@@ -23,7 +23,7 @@ namespace Website.Client.Pages.Home.UserPage
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        public MUserProfile User { get; set; }
+        public UserProfile User { get; set; }
 
         private bool isLoaded = false;
 
@@ -33,7 +33,7 @@ namespace Website.Client.Pages.Home.UserPage
             isLoaded = true;
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                User = await response.Content.ReadFromJsonAsync<MUserProfile>();
+                User = await response.Content.ReadFromJsonAsync<UserProfile>();
             }
         }
         

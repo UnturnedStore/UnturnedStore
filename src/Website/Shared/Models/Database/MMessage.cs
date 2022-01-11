@@ -19,8 +19,8 @@ namespace Website.Shared.Models.Database
         public int ClosingUserId { get; set; }
         public DateTime CreateDate { get; set; }        
 
-        public MUser FromUser { get; set; }
-        public MUser ToUser { get; set; }
+        public UserInfo FromUser { get; set; }
+        public UserInfo ToUser { get; set; }
 
         public List<MMessageReply> Replies { get; set; }
     }

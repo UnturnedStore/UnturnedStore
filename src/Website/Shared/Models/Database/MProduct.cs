@@ -34,8 +34,8 @@ namespace Website.Shared.Models.Database
         public byte AverageRating { get; set; }
         public int RatingsCount { get; set; }
 
-        public MUser Seller { get; set; }
-        public MUser Customer { get; set; }
+        public Seller Seller { get; set; }
+        public UserInfo Customer { get; set; }
 
         public List<MProductTab> Tabs { get; set; }
         public List<MProductMedia> Medias { get; set; }
