@@ -19,8 +19,6 @@ namespace Website.Shared.Models.Database
         public bool IsPayPalEnabled { get; set; }
         [StringLength(255)]
         public string PayPalAddress { get; set; }
-        [StringLength(3, MinimumLength = 3)]
-        public string PayPalCurrency { get; set; }
         public bool IsNanoEnabled { get; set; }
         [StringLength(255)]
         public string NanoAddress { get; set; }
@@ -63,7 +61,6 @@ namespace Website.Shared.Models.Database
                 Color = user.Color,
                 IsPayPalEnabled = user.IsPayPalEnabled,
                 PayPalAddress = user.PayPalAddress,
-                PayPalCurrency = user.PayPalCurrency,
                 IsNanoEnabled = user.IsNanoEnabled,
                 NanoAddress = user.NanoAddress,
                 Role = user.Role,

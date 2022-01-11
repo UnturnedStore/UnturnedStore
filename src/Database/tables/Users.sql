@@ -9,7 +9,6 @@
 	Avatar VARBINARY(MAX) NULL,
 	IsPayPalEnabled BIT NOT NULL CONSTRAINT DF_Users_IsPayPalEnabled DEFAULT 0,
 	PayPalAddress NVARCHAR(255) NULL,
-	PayPalCurrency CHAR(3) NOT NULL CONSTRAINT DF_Users_PayPalCurrency DEFAULT 'USD',
 	IsNanoEnabled BIT NOT NULL CONSTRAINT DF_Users_IsNanoEnabled DEFAULT 0,
 	NanoAddress NVARCHAR(255) NULL,
 	DiscordWebhookUrl NVARCHAR(255) NULL,
