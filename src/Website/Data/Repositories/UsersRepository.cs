@@ -49,17 +49,16 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<int>(sql, new { userId });
         }
 
+        public async Task<MUser> GetUserAsync(int userId)
+        {
+            const string sql = "SELECT * FROM dbo.Users WHERE Id = @userId;";
+            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
+        }
+
         public async Task<T> GetUserAsync<T>(int userId) where T : UserInfo
         {
             const string sql = "SELECT * FROM dbo.Users WHERE Id = @userId;";
             return await connection.QuerySingleOrDefaultAsync<T>(sql, new { userId });
-        }
-
-        public async Task<MUser> GetUserSellerAsync(int userId)
-        {
-            const string sql = "SELECT * FROM dbo.Users WHERE Id = @userId;";
-
-            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
         }
 
         public async Task<MUser> GetUserPublicAsync(int userId)

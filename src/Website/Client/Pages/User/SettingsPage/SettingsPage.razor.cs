@@ -28,7 +28,7 @@ namespace Website.Client.Pages.User.SettingsPage
 
         protected override async Task OnInitializedAsync()
         {
-            User = await HttpClient.GetFromJsonAsync<MUser>("api/users/me");
+            User = await HttpClient.GetFromJsonAsync<MUser>("api/users/settings");
         }
 
         private enum ESettingsTab

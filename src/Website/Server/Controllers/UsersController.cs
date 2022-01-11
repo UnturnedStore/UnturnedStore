@@ -35,6 +35,27 @@ namespace Website.Server.Controllers
             return Ok(await usersRepository.GetUserAsync<UserInfo>(userId));
         }
 
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMeUserAsync()
+        {
+            if (User.Identity?.IsAuthenticated ?? false)
+            {
+                return Ok(await usersRepository.GetUserAsync<UserInfo>(int.Parse(User.Identity.Name)));
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("settings")]
+        public async Task<IActionResult> GetSettingAsync()
+        {
+            return Ok(await usersRepository.GetUserAsync(int.Parse(User.Identity.Name)));
+        }
+
         [HttpGet("{userId}/avatar")]
         public async Task<IActionResult> GetUserAvatarAsync(int userId)
         {
@@ -90,19 +111,6 @@ namespace Website.Server.Controllers
 
             await usersRepository.UpdateNotificationsAsync(user);
             return Ok();
-        }
-
-        [HttpGet("me")]
-        public async Task<IActionResult> GetMeUserAsync()
-        {
-            if (User.Identity?.IsAuthenticated ?? false)
-            {
-                return Ok(await usersRepository.GetUserAsync<UserInfo>(int.Parse(User.Identity.Name)));
-            }
-            else
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
-            }
         }
 
         [ResponseCache(NoStore = true, Duration = 0)]

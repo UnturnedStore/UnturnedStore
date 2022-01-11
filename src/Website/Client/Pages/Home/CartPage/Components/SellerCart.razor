@@ -28,7 +28,7 @@
                         <tr>
                             <td class="align-middle"><img src="/api/images/@item.Product.ImageId" width="40" height="40" /></td>
                             <td class="align-middle"><a href="/products/@item.ProductId">@item.Product.Name</a></td>
-                            <td class="align-middle">@item.Product.Price @Cart.Seller.PayPalCurrency</td>
+                            <td class="align-middle">@item.Product.Price USD</td>
                             <td class="align-middle">
                                 <button class="btn btn-outline-danger" @onclick="() => RemoveFromCartAsync(item)">
                                     <i class="bi bi-trash-fill"></i>
@@ -39,7 +39,7 @@
                     <tr>
                         <td></td>
                         <th class="align-middle fw-bold">Total</th>
-                        <td class="align-middle fw-bold">@Cart.Items.Sum(x => x.Product.Price) @Cart.Seller.PayPalCurrency</td>
+                        <td class="align-middle fw-bold">@Cart.Items.Sum(x => x.Product.Price) USD</td>
                         <td></td>
                         <td></td>
                     </tr>

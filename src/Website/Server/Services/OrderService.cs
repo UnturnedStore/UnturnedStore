@@ -73,7 +73,7 @@ namespace Website.Server.Services
             MOrder order = MOrder.FromParams(orderParams);
             order.Seller = await usersRepository.GetUserAsync<Seller>(order.SellerId);
             order.Status = OrderConstants.Status.Pending;
-            order.Currency = order.Seller.PayPalCurrency;
+            order.Currency = "USD";
             order.PaymentMethod = orderParams.PaymentMethod;
             order.PaymentReceiver = order.GetReceiver(order.PaymentMethod);
             
