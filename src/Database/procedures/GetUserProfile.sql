@@ -40,6 +40,7 @@ AS
 		u.AvatarImageId,
 		u.Biography,
 		u.Color,
+		u.IsVerifiedSeller,
 		u.CreateDate,
 		Sales = ISNULL(us.Sales, 0),
 		p.Id,

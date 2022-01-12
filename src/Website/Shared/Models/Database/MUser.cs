@@ -28,6 +28,7 @@ namespace Website.Shared.Models.Database
         public string TermsAndConditions { get; set; }
         [StringLength(4000)]
         public string Biography { get; set; }
+        public bool IsVerifiedSeller { get; set; }
         public DateTime CreateDate { get; set; }
 
         public List<MProductCustomer> Customers { get; set; }

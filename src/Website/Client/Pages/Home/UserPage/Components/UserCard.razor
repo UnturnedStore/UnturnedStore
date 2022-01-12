@@ -47,6 +47,11 @@
             {
                 <span class="badge bg-info m-1">@User.Sales sale@(User.Sales == 1 ? "" : "s")</span>
             }
+            @if (User.IsVerifiedSeller)
+            {
+                <span class="badge bg-success m-1"><i class="bi bi-patch-check-fill"></i> Verified Seller</span>
+            }
+            
         </div>
         <div class="dropdown-divider" />
         <div class="d-grid gap-2">
