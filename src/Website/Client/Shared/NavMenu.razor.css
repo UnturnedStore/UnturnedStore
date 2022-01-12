@@ -1,0 +1,47 @@
+﻿.button-badge-count {
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    color: white;
+    border-radius: 20%;
+
+    padding: 2px 5px 2px 5px;
+    font-weight: 900;
+
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+    background-color: red;
+    font-family: Arial;
+}
+@media only screen and (max-width: 992px) {
+    .navbar--right {
+        flex-direction: row;
+    }
+}
+
+
+i {
+    transform: translateY(7%);
+}
+
+.navbar-btn-avatar,
+.navbar-btn-avatar:active,
+.navbar-btn-avatar:hover,
+.navbar-btn-avatar:focus,
+.navbar-btn-avatar:hover:active,
+.navbar-btn-avatar:active:focus {
+    border: 0;
+    background: transparent;
+    outline: none !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    display: block;
+}
+
+    .navbar-btn-avatar img {
+        height: 32px;
+        width: 32px;
+        border-radius: 4px;
+    }
