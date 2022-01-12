@@ -8,5 +8,6 @@
         public string NanoAddress { get; set; }
         public string DiscordWebhookUrl { get; set; }
         public string TermsAndConditions { get; set; }
+        public bool IsVerifiedSeller { get; set; }
     }
 }

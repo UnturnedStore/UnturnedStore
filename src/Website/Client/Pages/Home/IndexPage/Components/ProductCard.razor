@@ -1,6 +1,6 @@
 ﻿<div class="col bg-light rounded border-2 border" style="width: 350px; height: 150px; margin: 10px 10px 10px 10px;">
     <div class="d-flex align-items-center text-center" style="margin-top: -20px;">
-        <div>
+        <div class="position-relative">
             <a href="/products/@Product.Id">
                 <img src="api/images/@Product.ImageId" width="85" height="85" class="rounded" />
             </a>
@@ -10,7 +10,13 @@
                 <a class="ms-2 text-center w-100 text-decoration-none" href="/products/@Product.Id">@Product.Name</a>
             </div>
             <div>
-                <small class="text-muted">Author: <a class="text-decoration-none" href="/users/@Seller.Id">@Seller.Name</a></small> <br />
+                <small class="text-muted">
+                    Author: <a class="text-decoration-none" href="/users/@Seller.Id">@Seller.Name</a>
+                    @if (Seller.IsVerifiedSeller)
+                    {
+                        <i class="bi bi-patch-check text-success fw-bold"></i>
+                    }      
+                </small> <br />
             </div>
             <div style="margin-top: -5px;">
                 <ProductRating Product="Product" />
@@ -28,7 +34,6 @@
                 <small class="text-muted">
                     <span><i class="bi bi-download"></i> @Product.TotalDownloadsCount</span>
                 </small>
-
             </div>
             <div class="text-muted ms-auto">
                 <ProductPrice Product="Product" />
