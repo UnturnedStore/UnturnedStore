@@ -23,7 +23,7 @@
     </nav>
 
     <div class="row">
-        <div class="col-3">
+        <div class="col-md-3">
             <div class="list-group">
                 <div class="list-group-item fw-bold">Account Settings</div>
                 <a href="javascript:void(0)" @onclick="() => ChangeTab(ESettingsTab.Profile)" class="list-group-item list-group-item-action @LoadingClass() @TabClass(ESettingsTab.Profile)">
@@ -42,7 +42,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-9">
+        <div class="col-md-9">
             <div class="bg-light p-3 rounded-3">
                 @if (currentTab == ESettingsTab.Profile)
                 {

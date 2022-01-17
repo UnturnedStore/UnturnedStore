@@ -27,7 +27,7 @@
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center">
             <div class="form-check form-switch">
-                <InputCheckbox class="form-check-input" @bind-Value="User.IsNanoEnabled" id="IsNanoEnabled" />
+                <InputCheckbox class="form-check-input" @bind-Value="User.IsNanoEnabled" id="IsNanoEnabled" disabled="@(!User.IsNanoEnabled)" />
                 <label class="form-check-label" style="cursor: pointer;" for="IsNanoEnabled">Nano payments</label>
             </div>
         </div>
