@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Website.Client.Providers;
 using Website.Shared.Constants;
+using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Client.Services
 {
@@ -21,5 +23,6 @@ namespace Website.Client.Services
         public int UserId => steamAuth.User?.Id ?? 0;
         public string Name => steamAuth.User?.Name ?? "null";
         public bool IsAdmin => steamAuth.User?.Role?.Equals(RoleConstants.AdminRoleId) ?? false;
+        public UserInfo User => steamAuth.User;
     }
 }

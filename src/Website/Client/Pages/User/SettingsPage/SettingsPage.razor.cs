@@ -10,7 +10,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Providers;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.User.SettingsPage
 {
@@ -28,7 +28,7 @@ namespace Website.Client.Pages.User.SettingsPage
 
         protected override async Task OnInitializedAsync()
         {
-            User = await HttpClient.GetFromJsonAsync<MUser>("api/users/me");
+            User = await HttpClient.GetFromJsonAsync<MUser>("api/users/settings");
         }
 
         private enum ESettingsTab

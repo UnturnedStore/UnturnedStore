@@ -1,17 +1,51 @@
 ﻿
-<h4>Seller Settings</h4>
+<div class="mb-3">
+    <h4>Seller Settings</h4>
+</div>
 <EditForm OnValidSubmit="SubmitAsync" Model="User">
 
-    <div class="mb-3">
-        <label class="form-label">PayPal Email</label>
-        <InputText class="form-control" @bind-Value="User.PayPalEmail" />
-        <div class="form-text">Your PayPal email address you want to receive payments</div>
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center">
+            <div class="form-check form-switch">
+                <InputCheckbox class="form-check-input" @bind-Value="User.IsPayPalEnabled" id="IsPayPalEnabled" />
+                <label class="form-check-label" style="cursor: pointer;" for="IsPayPalEnabled">PayPal payments</label>
+            </div>
+        </div>
+
+        @if (User.IsPayPalEnabled)
+        {
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">PayPal Email</label>
+                    <InputText class="form-control" @bind-Value="User.PayPalAddress" />
+                    <div class="form-text">Your PayPal email address you want to receive payments</div>
+                </div>
+            </div>
+        }
     </div>
-    <div class="mb-3">
-        <label class="form-label">PayPal Currency</label>
-        <InputText class="form-control" @bind-Value="User.PayPalCurrency" readonly />
-        <div class="form-text">Three characters currency identifier</div>
+
+    <div class="card mb-3">
+        <div class="card-header d-flex align-items-center">
+            <div class="form-check form-switch">
+                <InputCheckbox class="form-check-input" @bind-Value="User.IsNanoEnabled" id="IsNanoEnabled" />
+                <label class="form-check-label" style="cursor: pointer;" for="IsNanoEnabled">Nano payments</label>
+            </div>
+        </div>
+
+        @if (User.IsNanoEnabled)
+        {
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Nano Address</label>
+                    <InputText class="form-control" @bind-Value="User.NanoAddress" />
+                    <div class="form-text">Your Nano address you want to receive payments</div>
+                </div>
+            </div>
+        }
     </div>
+
+
+
 
     <div class="mb-3">
         <label class="form-label">Terms & Conditions</label>

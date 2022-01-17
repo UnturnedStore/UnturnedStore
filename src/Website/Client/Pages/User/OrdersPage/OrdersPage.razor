@@ -14,6 +14,7 @@
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item active" aria-current="page">Orders</li>
         </ol>
     </nav>
@@ -28,13 +29,13 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th scope="col">ID</th>
+                                <th scope="col">Customer ID</th>
                                 <th scope="col">Product</th>
                                 <th scope="col">Create Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var customer in Customers)
+                            @foreach (var customer in Customers.OrderByDescending(x => x.CreateDate))
                             {
                                 <tr>
                                     <td class="align-middle">@customer.Id</td>
@@ -62,6 +63,9 @@
                 {
                     <h6 class="text-muted">You aren't customer of any products</h6>
                 }
+            } else
+            {
+                <Progressbar />
             }
         </div>
 
@@ -101,6 +105,9 @@
                 {
                     <h6 class="text-muted">You didn't place any orders</h6>
                 }
+            } else
+            {
+                <Progressbar />
             }
         </div>
 

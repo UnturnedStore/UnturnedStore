@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Data.Repositories
 {
@@ -24,7 +25,7 @@ namespace Website.Data.Repositories
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id WHERE o.SellerId = @sellerId AND Status = 'Completed';";
 
             List<MOrder> orders = new List<MOrder>();
-            await connection.QueryAsync<MOrder, MUser, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
+            await connection.QueryAsync<MOrder, UserInfo, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
             {
                 var order = orders.FirstOrDefault(x => x.Id == o.Id);
                 if (order == null)
@@ -52,7 +53,7 @@ namespace Website.Data.Repositories
             const string sql = "SELECT c.*, u.*, p.* FROM dbo.ProductCustomers c JOIN dbo.Users u ON u.Id = c.UserId " +
                 "JOIN dbo.Products p ON p.Id = c.ProductId WHERE p.SellerId = @userId;";
 
-            return await connection.QueryAsync<MProductCustomer, MUser, MProduct, MProductCustomer>(sql, (c, u, p) => 
+            return await connection.QueryAsync<MProductCustomer, UserInfo, MProduct, MProductCustomer>(sql, (c, u, p) => 
             {
                 c.User = u;
                 c.Product = p;                

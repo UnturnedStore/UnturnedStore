@@ -7,11 +7,14 @@
 	AvatarImageId INT NULL CONSTRAINT FK_Users_AvatarImageId FOREIGN KEY REFERENCES dbo.Images(Id),
 	Color VARCHAR(255) NULL,
 	Avatar VARBINARY(MAX) NULL,
-	PayPalEmail NVARCHAR(255) NULL,
-	PayPalCurrency CHAR(3) NOT NULL CONSTRAINT DF_Users_PayPalCurrency DEFAULT 'USD',
+	IsPayPalEnabled BIT NOT NULL CONSTRAINT DF_Users_IsPayPalEnabled DEFAULT 0,
+	PayPalAddress NVARCHAR(255) NULL,
+	IsNanoEnabled BIT NOT NULL CONSTRAINT DF_Users_IsNanoEnabled DEFAULT 0,
+	NanoAddress NVARCHAR(255) NULL,
 	DiscordWebhookUrl NVARCHAR(255) NULL,
 	TermsAndConditions NVARCHAR(4000) NULL,
 	Biography NVARCHAR(4000) NULL,
+	IsVerifiedSeller BIT NOT NULL CONSTRAINT DF_Users_IsVerifiedSeller DEFAULT 0,
 	CreateDate DATETIME2(0) NOT NULL CONSTRAINT DF_Users_CreateDate DEFAULT SYSDATETIME(),
 	CONSTRAINT UK_Users_SteamId UNIQUE (SteamId)
 )

@@ -3,8 +3,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Client.Shared;
 using Website.Shared.Constants;
 using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Client.Services
@@ -13,6 +15,12 @@ namespace Website.Client.Services
     {
         private readonly StorageService storageService;
         private readonly HttpClient httpClient;
+
+        private NavMenu NavMenu { get; set; }
+        public void SetNavMenu(NavMenu navMenu)
+        {
+            NavMenu = navMenu;
+        }
 
         public CartService(StorageService storageService, HttpClient httpClient)
         {
@@ -30,40 +38,46 @@ namespace Website.Client.Services
                 Carts = new List<OrderParams>();
             }
 
-            foreach (var orderParams in Carts.ToList())
+            foreach (OrderParams orderParams in Carts.ToList())
             {
-                orderParams.Seller = await httpClient.GetFromJsonAsync<MUser>("api/users/" + orderParams.SellerId);
-
-                foreach (var item in orderParams.Items.ToList())
+                orderParams.Seller = await httpClient.GetFromJsonAsync<Seller>($"api/users/{orderParams.SellerId}/seller");
+                foreach (OrderItemParams item in orderParams.Items.ToList())
                 {
                     item.Product = await httpClient.GetFromJsonAsync<MProduct>("api/products/" + item.ProductId);
 
                     if (item.Product.Customer != null)
                     {
                         await RemoveFromCartAsync(orderParams, item);
-                    }                        
+                    }    
                 }
             }
+
+            if (NavMenu != null)
+                NavMenu.Refresh();
         }
 
-        private async Task SaveCartAsync()
-        {
+        public async Task UpdateCartAsync()
+        {            
             await storageService.SetSessionItemAsync("carts", Carts);
+            if (NavMenu != null)
+                NavMenu.Refresh();
+        }
+
+        public OrderParams GetOrderParams(int sellerId)
+        {
+            return Carts.FirstOrDefault(x => x.SellerId == sellerId);
         }
 
         public async Task AddToCartAsync(OrderItemParams item)
         {
-            if (Carts == null)
-                await ReloadCartAsync();
-
-            var orderParams = Carts.FirstOrDefault(x => x.SellerId == item.Product.SellerId);
+            OrderParams orderParams = Carts.FirstOrDefault(x => x.SellerId == item.Product.SellerId);
             
             if (orderParams == null)
             {
                 orderParams = new OrderParams()
                 {
                     SellerId = item.Product.SellerId,
-                    PaymentMethod = PaymentContants.PayPal,
+                    PaymentMethod = OrderConstants.Methods.PayPal,
                     Seller = item.Product.Seller,
                     Items = new List<OrderItemParams>()
                 };
@@ -71,30 +85,24 @@ namespace Website.Client.Services
             }
 
             orderParams.Items.Add(item);            
-            await SaveCartAsync();
+            await UpdateCartAsync();
         }
 
         public async Task RemoveFromCartAsync(OrderParams orderParams, OrderItemParams item)
         {
-            if (Carts == null)
-                await ReloadCartAsync();
-
             orderParams.Items.Remove(item);
             if (orderParams.Items.Count == 0)
             {
                 Carts.Remove(orderParams);
             }
 
-            await SaveCartAsync();
+            await UpdateCartAsync();
         }
 
         public async Task RemoveCartAsync(OrderParams orderParams)
         {
-            if (Carts == null)
-                await ReloadCartAsync();
-
             if (Carts.Remove(orderParams))
-                await SaveCartAsync();
+                await UpdateCartAsync();
         }
     }
 }

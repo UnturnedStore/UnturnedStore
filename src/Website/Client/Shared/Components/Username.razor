@@ -1,14 +1,7 @@
 ﻿<a href="/users/@User.Id" class="text-decoration-none text-dark">
     <div class="d-flex align-items-center">
         <div>
-            @if (User.AvatarImageId.HasValue)
-            {
-                <img src="api/images/@User.AvatarImageId" width="32" height="32" class="rounded-circle" />
-            }
-            else
-            {
-                <img src="/img/profiles/default_avatar.png" width="32" height="32" class="rounded-circle" />
-            }
+            <Avatar User="User" Width="32" Height="32" />
         </div>
         <div class="fw-bold ms-2">
             @User.Name
@@ -18,5 +11,5 @@
 
 @code {
     [Parameter]
-    public MUser User { get; set; }
+    public UserInfo User { get; set; }
 }

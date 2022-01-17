@@ -1,0 +1,23 @@
+﻿@if (GetAvatarImageId().HasValue)
+{
+    <img src="api/images/@GetAvatarImageId()" width="@Width" height="@Height" class="rounded-circle @Class" />
+}
+else
+{
+    <img src="/img/profiles/default_avatar.png" width="@Width" height="@Height" class="rounded-circle @Class" />
+}
+
+@code {
+    [Parameter]
+    public int Width { get; set; }
+    [Parameter]
+    public int Height { get; set; }
+    [Parameter]
+    public UserInfo User { get; set; }
+    [Parameter]
+    public int? AvatarImageId { get; set; }
+    [Parameter]
+    public string Class { get; set; }
+
+    public int? GetAvatarImageId() => User == null ? AvatarImageId : User.AvatarImageId;
+}

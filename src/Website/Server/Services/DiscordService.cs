@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Server.Services
 {
@@ -140,7 +140,7 @@ namespace Website.Server.Services
 
             var eb = new EmbedBuilder();
             eb.WithColor(Color.Blue);
-            eb.WithTitle($"New purchase from {order.PaymentPayer}");
+            eb.WithTitle($"New purchase from {order.PaymentSender}");
             eb.WithCurrentTimestamp();
             eb.WithFooter(order.Buyer.Name);
 

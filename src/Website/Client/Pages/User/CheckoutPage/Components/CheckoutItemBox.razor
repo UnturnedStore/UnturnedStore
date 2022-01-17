@@ -1,0 +1,19 @@
+﻿<div class="row p-2 border align-items-center mb-1 rounded shadow-sm">
+    <div class="d-flex align-items-center">
+        <div>
+            <img src="/api/images/@Item.Product.ImageId" width="30" height="30"  />
+        </div>
+        <div class="ms-2">
+            <span class="text-nowrap">@Item.Product.Name</span><br />
+        </div>
+        <div class="ms-auto">
+            <small class="text-muted">$@Item.Product.Price</small>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public OrderItemParams Item { get; set; }
+}

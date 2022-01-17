@@ -1,0 +1,130 @@
+﻿@page "/checkout/{SellerId:int}"
+@using Website.Client.Pages.User.CheckoutPage.Components
+
+
+@if (OrderParams != null)
+{
+    <div class="row">
+        <div class="col-xl-8 mb-3">
+            <div class="mb-3">
+                <div class="d-flex align-items-center border border-1 shadow-sm p-2 rounded">
+                    <div class="ms-2">
+                        <Avatar User="OrderParams.Seller" Height="32" Width="32" />
+                    </div>
+                    <div class="ms-2 fs-5">
+                        Purchase from @OrderParams.Seller.Name
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="fs-5 mb-2">
+                    Select payment method
+                </div>
+                <div class="list-group mb-2">
+                    @foreach (string paymentMethod in PaymentMethods)
+                    {
+                        <label class="list-group-item d-flex align-items-center" style="cursor: pointer;">
+                            <div>
+                                <input class="form-check-input me-2" type="radio" @onchange="() => ChangePaymentMethod(paymentMethod)" disabled="@IsDisabled" checked="@IsChecked(paymentMethod)">
+                            </div>
+                            <div>
+                                <span class="fw-bold">@paymentMethod</span>
+                            </div>
+                            <div class="ms-auto d-inline-flex align-items-center">
+                                <span style="height: 36px;" class="position-relative d-inline-flex align-items-center justify-content-center">
+                                    <img class="h-100 w-auto position-relative" src="/img/payment/@(paymentMethod.ToLower()).png" />
+                                </span>
+                            </div>
+                        </label>
+                    }
+
+                    @if (!PaymentMethods.Any())
+                    {
+                        <div class="alert alert-info">
+                            Unfortunately this seller doesn't provide any payment methods
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="fs-5 mb-2">
+                    Agreement with seller
+                </div>
+                <div class="card">
+                    <div class="card-header fw-bold">
+                        @OrderParams.Seller.Name's terms & conditions
+                    </div>
+                    <div class="card-body">
+                        @(new MarkupString(OrderParams.Seller.TermsAndConditions))
+                    </div>
+                    <div class="card-footer d-flex align-items-center">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" @bind-value="OrderParams.IsAgree" disabled="@IsDisabled" id="termsandconditionscheck" style="cursor: pointer;">
+                            <label class="form-check-label" for="termsandconditionscheck" style="cursor: pointer;">
+                                I agree to @OrderParams.Seller.Name's terms & conditions of this purchase
+                                @if (!OrderParams.IsAgree)
+                                {
+                                    <span class="text-danger fw-bold">*</span>
+                                }
+                            </label>
+                            
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4">
+
+
+            <div class="ms-3 me-3 mb-2 mt-1">
+                @foreach (OrderItemParams item in OrderParams.Items)
+                {
+                    <CheckoutItemBox Item="item" />
+                }
+            </div>
+            <div class="p-3 bg-light rounded border border-1 mb-1">
+                <div class="d-flex fs-5">
+                    <div>
+                        <span class="fw-bold">Total Cost</span>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="fw-bold">@OrderParams.GetTotalCost() USD</span>
+                    </div>
+                </div>
+                @if (PaymentMethods.Contains(OrderParams.PaymentMethod))
+                {
+                    <div class="text-center mt-3 d-grid gap-2">
+                        @if (order != null)
+                        {
+                            <a class="btn btn-success disabled" href="javascript:void(0)">
+                                <span class="spinner-border spinner-border-sm" role="status"></span> Waiting for @order.PaymentMethod
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-success @BtnDisabled" href="javascript:void(0)" @onclick="CreateOrderAsync">
+                                <span class="ms-1"><i class="bi bi-cash-coin"></i></span> Checkout with @OrderParams.PaymentMethod
+                            </a>
+                            @if (BtnDisabledTitle != null)
+                            {
+                                <small class="text-danger text-start"><i class="bi bi-exclamation-lg"></i> @BtnDisabledTitle</small>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else if (isLoaded)  
+{
+    <StatementText>
+        You don't have anything from this seller in your cart!
+    </StatementText>
+} else
+{
+    <Progressbar />
+}
+

@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Pages.Home.CartPage.Components;
 using Website.Client.Services;
-using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Client.Pages.Home.CartPage
@@ -29,24 +27,9 @@ namespace Website.Client.Pages.Home.CartPage
             await CartService.ReloadCartAsync();
         }
 
-        private async Task RemoveFromCartAsync(OrderParams orderParams, OrderItemParams item)
-        {
-            await CartService.RemoveFromCartAsync(orderParams, item);
-        }
-
-        private bool isWaitingForProvider = false;
-        private async Task CheckoutPayPalAsync(OrderParams orderParams)
-        {
-            if (!orderParams.IsAgree)
-                return;
-
-            orderParams.PaymentMethod = PaymentContants.PayPal;
-            var response = await HttpClient.PostAsJsonAsync("api/orders", orderParams);
-
-            var order = await response.Content.ReadFromJsonAsync<MOrder>();
-            isWaitingForProvider = true;
-            NavigationManager.NavigateTo(order.PaymentUrl, true);
-            await CartService.RemoveCartAsync(orderParams);
+        private async Task RemoveFromCartAsync(OrderParams cart, OrderItemParams item)
+        {   
+            await CartService.RemoveFromCartAsync(cart, item);
         }
 
         public async Task ShowTermsModalAsync(MUser seller)

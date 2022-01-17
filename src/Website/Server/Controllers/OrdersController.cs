@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
-using Website.Shared.Constants;
-using Website.Shared.Models;
+using Website.Shared.Extensions;
+using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Server.Controllers
@@ -18,13 +18,11 @@ namespace Website.Server.Controllers
     {
         private readonly OrdersRepository ordersRepository;
         private readonly OrderService orderService;
-        private readonly PayPalService paypalService;
 
-        public OrdersController(OrdersRepository ordersRepository, OrderService orderService, PayPalService paypalService)
+        public OrdersController(OrdersRepository ordersRepository, OrderService orderService)
         {
             this.ordersRepository = ordersRepository;
             this.orderService = orderService;
-            this.paypalService = paypalService;
         }
 
         [Authorize]
@@ -32,8 +30,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PostOrderAsync([FromBody] OrderParams orderParams)
         {
             orderParams.BaseUrl = Request.Headers["Origin"];
-            orderParams.BuyerId = int.Parse(User.Identity.Name);
-            var order = await orderService.CreateOrderAsync(orderParams);
+            orderParams.BuyerId = User.Id();
+
+            MOrder order = await orderService.CreateOrderAsync(orderParams);
             if (order == null)
                 return BadRequest();
 
@@ -44,13 +43,40 @@ namespace Website.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOrdersAsync()
         {
-            return Ok(await ordersRepository.GetOrdersAsync(int.Parse(User.Identity.Name)));
+            return Ok(await ordersRepository.GetOrdersAsync(User.Id()));
         }
-        
-        [HttpPost(PaymentContants.PayPal)]
-        public async Task<IActionResult> PayPalAsync()
+
+        [Authorize]
+        [HttpGet("{orderId}/pay")]
+        public async Task<IActionResult> PayOrderAsync(int orderId)
         {
-            await paypalService.ProcessPaymentAsync(Request);
+            MOrder order = await ordersRepository.GetOrderAsync(orderId);
+
+            if (order == null)
+                return NotFound();
+
+            if (order.BuyerId != User.Id())
+                return BadRequest();
+
+            return Redirect(orderService.PaymentGatewayClient.BuildPayUrl(order.PaymentId));
+        }
+
+        [HttpPost("Notify")]
+        public async Task<IActionResult> NotifyAsync()
+        {
+            if (!orderService.PaymentGatewayClient.ValdiateNotifyRequest(Request))
+                return Forbid();
+
+            string requestBody;
+            using (StreamReader reader = new(Request.Body, Encoding.ASCII))
+            {
+                requestBody = await reader.ReadToEndAsync();
+            }
+
+            if (!Guid.TryParse(requestBody, out Guid paymentId))
+                return BadRequest();
+
+            await orderService.UpdateOrderAsync(paymentId);
             return Ok();
         }
     }

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Data.Repositories
 {
@@ -84,7 +85,7 @@ namespace Website.Data.Repositories
                 "JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
                 "WHERE m.Id = @messageId";
 
-            var msg = (await connection.QueryAsync<MMessage, MUser, MUser, MMessage>(sql, (m, fu, tu) =>
+            var msg = (await connection.QueryAsync<MMessage, UserInfo, UserInfo, MMessage>(sql, (m, fu, tu) =>
             {
                 m.FromUser = fu;
                 m.ToUser = tu;
@@ -104,7 +105,7 @@ namespace Website.Data.Repositories
                 "LEFT JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
 
             var messages = new List<MMessage>();
-            await connection.QueryAsync<MMessage, MUser, MUser, MMessageReply, MMessage>(sql, (m, fu, tu, r) => 
+            await connection.QueryAsync<MMessage, UserInfo, UserInfo, MMessageReply, MMessage>(sql, (m, fu, tu, r) => 
             {
                 var msg = messages.FirstOrDefault(x => x.Id == m.Id);
                 if (msg == null)

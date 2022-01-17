@@ -108,7 +108,7 @@
             if (review == null)
                 Model = new MProductReview() { ProductId = Product.Id };
             else
-                Model = MProductReview.FromReview(review);
+                Model = review.Clone();
         }
         await JSRuntime.ShowModalStaticAsync(nameof(ProductReviewModal));
     }

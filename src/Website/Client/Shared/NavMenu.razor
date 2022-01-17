@@ -1,37 +1,63 @@
 ﻿@using System.Security.Claims
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom border-2 fixed-top shadow">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="/img/logo.png" alt="" width="40" height="40" class="d-inline-block align-top">
             <div class="ms-2 unturned-font">Unturned Store</div>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-expanded="false">
-            <span class="navbar-toggler-icon"></span>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-collapse-main">
+            <i class="fas fa-bars fs-3"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarToggler">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <div id="navbar-collapse-main" class="collapse navbar-collapse">
+            <ul class="navbar-nav fs-5">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Products</a>
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-home"></i> Home
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/about">About</a>
+                    <a href="/discord" target="_blank" class="nav-link">
+                        <i class="fab fa-discord"></i> Discord
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/discord">Discord</a>
+                    <a href="/about" class="nav-link">
+                        <i class="fas fa-info-circle"></i> About
+                    </a>
                 </li>
             </ul>
-            <AuthorizeView>
-                <Authorized>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/cart"><i class="bi bi-cart-fill"></i></a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                @context.User.Identity.Name
+
+            <ul class="navbar-nav ms-auto fs-4 align-items-center navbar--right">
+                <li class="nav-item ms-2">
+                    <a href="/messages" class="nav-link position-relative">
+                        <i class="far fa-envelope"></i>
+                    </a>                
+                </li>
+                <li class="nav-item ms-2">
+                    <a href="javascript:void(0)" class="nav-link position-relative">
+                        <i class="far fa-bell"></i>
+                    </a>
+                </li>
+                <li class="nav-item ms-2">
+                    <a href="/cart" class="nav-link position-relative">
+                        <i class="fas fa-shopping-cart"></i>
+                        @if (CartService.Carts != null && CartService.Carts.Sum(x => x.Items.Count) > 0)
+                        {
+                            <span class="button-badge-count">@CartService.Carts.Sum(x => x.Items.Count)</span>
+                        }
+                    </a>
+                </li>
+                
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item dropdown ms-3">
+                            <a href="#" class="navbar-btn-avatar nav-link" data-bs-toggle="dropdown">
+                                <Avatar User="UserService.User" Width="40" Height="40" Class="border border-2 m-auto" />
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute">
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
                                     <Authorized>
                                         <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>
@@ -55,17 +81,48 @@
                                 <li><a class="dropdown-item" href="/signout">Sign Out</a></li>
                             </ul>
                         </li>
-                    </ul>
-                </Authorized>
-                <NotAuthorized>
-                    <a href="/signin">
-                        <img src="/img/steam/buttons/sits_small.png" />
-                    </a>
-                </NotAuthorized>
-            </AuthorizeView>
+                    </Authorized>
+                    <NotAuthorized>
+                        <li class="nav-item ms-3">
+                            <a href="/signin">
+                                <img src="/img/steam/buttons/sits_small.png" />
+                            </a>
+                        </li>                            
+                    </NotAuthorized>
+                </AuthorizeView>
+            </ul>
         </div>
+
+
+        @*<div class="d-flex align-items-center">
+
+            <div>
+                <a href="/messages" class="position-relative">
+                  <i class="far fa-envelope fs-4"></i>
+                  <span class="position-absolute top-100 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
+                    10
+                  </span>
+                </a>
+            </div>
+
+            <div class="d-flex align-items-center" style="height: 40px;">
+                <div style="margin-bottom: 6px;">
+                    <a href="/cart" class="d-flex align-items-center text-black-50 ps-2 pe-2 align-middle">
+                        <div class="position-relative">
+                            <i class="bi bi-cart-fill fs-4"></i>
+                            @if (CartService.Carts != null && CartService.Carts.Sum(x => x.Items.Count) > 0)
+                            {
+                                <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="font-size: 9px; top: 100%; left: 100%;">
+                                    @CartService.Carts.Sum(x => x.Items.Count)
+                                </span>
+                            }
+                        </div>
+                    </a>
+                </div>                    
+            </div>
+            <div class="ms-3 d-flex align-items-center"  style="height: 40px;">
+                
+            </div>
+        </div>*@
     </div>
 </nav>
-
-@code {
-} 

@@ -1,12 +1,11 @@
 ﻿using Dapper;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
 using System.Threading.Tasks;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Models.Children;
+using Website.Shared.Models;
 
 namespace Website.Data.Repositories
 {
@@ -19,13 +18,13 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
-        public async Task<MUserProfile> GetUserProfileAsync(int userId)
+        public async Task<UserProfile> GetUserProfileAsync(int userId)
         {
             const string sql = "dbo.GetUserProfile";
 
-            MUserProfile user = null;
+            UserProfile user = null;
 
-            await connection.QueryAsync<MUserProfile, MProduct, MUserProfile>(sql, (u, p) => 
+            await connection.QueryAsync<UserProfile, MProduct, UserProfile>(sql, (u, p) => 
             { 
                 if (user == null)
                 {
@@ -48,6 +47,18 @@ namespace Website.Data.Repositories
         {
             const string sql = "SELECT AvatarImageId FROM dbo.Users WHERE Id = @userId;";
             return await connection.ExecuteScalarAsync<int>(sql, new { userId });
+        }
+
+        public async Task<MUser> GetUserAsync(int userId)
+        {
+            const string sql = "SELECT * FROM dbo.Users WHERE Id = @userId;";
+            return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { userId });
+        }
+
+        public async Task<T> GetUserAsync<T>(int userId) where T : UserInfo
+        {
+            const string sql = "SELECT * FROM dbo.Users WHERE Id = @userId;";
+            return await connection.QuerySingleOrDefaultAsync<T>(sql, new { userId });
         }
 
         public async Task<MUser> GetUserPublicAsync(int userId)
@@ -110,7 +121,8 @@ namespace Website.Data.Repositories
 
         public async Task UpdateSellerAsync(MUser user)
         {
-            const string sql = "UPDATE dbo.Users SET PayPalEmail = @PayPalEmail, TermsAndConditions = @TermsAndConditions " + 
+            const string sql = "UPDATE dbo.Users SET IsPayPalEnabled = @IsPayPalEnabled, PayPalAddress = @PayPalAddress, " +
+                "IsNanoEnabled = @IsNanoEnabled, NanoAddress = @NanoAddress, TermsAndConditions = @TermsAndConditions " + 
                 "WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, user);

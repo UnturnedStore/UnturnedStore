@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.User.OrdersPage
 {

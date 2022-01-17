@@ -11,6 +11,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Providers;
 using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.User.MessagePage
 {
@@ -79,7 +80,7 @@ namespace Website.Client.Pages.User.MessagePage
             await HttpClient.PatchAsync("api/messages/" + MessageId, null);            
         }
 
-        private MUser User(int userId)
+        private UserInfo User(int userId)
         {
             if (Message.FromUserId == userId)
                 return Message.FromUser;

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Data.Repositories
 {
@@ -49,7 +50,7 @@ namespace Website.Data.Repositories
         public async Task<bool> IsProductCustomerSellerAsync(int customerId, int userId)
         {
             const string sql = "SELECT COUNT(*) FROM dbo.ProductCustomers c JOIN dbo.Products p ON p.Id = c.ProductId " +
-                "WHERE c.Id = @productId AND p.SellerId = @userId;";
+                "WHERE c.Id = @customerId AND p.SellerId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { customerId, userId });
         }
 
@@ -67,7 +68,7 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MProduct>> GetProductsAsync(int userId)
         {
-            return await connection.QueryAsync<MProduct, MUser, MProduct>("dbo.GetProducts", (p, u) => 
+            return await connection.QueryAsync<MProduct, Seller, MProduct>("dbo.GetProducts", (p, u) => 
             {
                 p.Seller = u;
                 return p;
@@ -127,17 +128,17 @@ namespace Website.Data.Repositories
                 return null;
             }, product);
 
-            const string sql3 = "SELECT Id, Name, Role, SteamId, CreateDate FROM dbo.Users WHERE Id = @SellerId;";
-            product.Seller = await connection.QuerySingleAsync<MUser>(sql3, product);
+            const string sql3 = "SELECT * FROM dbo.Users WHERE Id = @SellerId;";
+            product.Seller = await connection.QuerySingleAsync<Seller>(sql3, product);
 
             if (userId != 0)
             {
                 const string sql4 = "SELECT * FROM dbo.ProductCustomers WHERE ProductId = @productId AND UserId = @userId;";
-                product.Customer = await connection.QuerySingleOrDefaultAsync<MUser>(sql4, new { productId, userId });
+                product.Customer = await connection.QuerySingleOrDefaultAsync<UserInfo>(sql4, new { productId, userId });
             }
 
-            const string sql5 = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
-            product.Reviews = (await connection.QueryAsync<MProductReview, MUser, MProductReview>(sql5, (r, u) =>
+            const string sql5 = "SELECT r.*, u.* FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
+            product.Reviews = (await connection.QueryAsync<MProductReview, UserInfo, MProductReview>(sql5, (r, u) =>
             {
                 r.User = u;
                 return r;
@@ -235,10 +236,10 @@ namespace Website.Data.Repositories
 
         public async Task<MProductReview> GetProductReviewAsync(int reviewId)
         {
-            const string sql = "SELECT r.*, u.Id, u.Name, u.Role FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId " +
+            const string sql = "SELECT r.*, u.* FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId " +
                 "WHERE r.Id = @reviewId;";
 
-            return (await connection.QueryAsync<MProductReview, MUser, MProductReview>(sql, (r, u) => 
+            return (await connection.QueryAsync<MProductReview, UserInfo, MProductReview>(sql, (r, u) => 
             {
                 r.User = u;
                 return r;
@@ -260,10 +261,10 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MProductCustomer>> GetMyProductsAsync(int userId)
         {
-            const string sql = "SELECT c.*, p.*, u.Id, u.Name, u.Role, u.SteamId, u.CreateDate FROM dbo.ProductCustomers c JOIN dbo.Products p on c.ProductId = p.Id " +
+            const string sql = "SELECT c.*, p.*, u.* FROM dbo.ProductCustomers c JOIN dbo.Products p on c.ProductId = p.Id " +
                 "JOIN dbo.Users u ON p.SellerId = u.Id WHERE c.UserId = @userId;";
 
-            return await connection.QueryAsync<MProductCustomer, MProduct, MUser, MProductCustomer>(sql, (c, p, u) => 
+            return await connection.QueryAsync<MProductCustomer, MProduct, Seller, MProductCustomer>(sql, (c, p, u) => 
             {
                 c.Product = p;
                 c.Product.Seller = u;

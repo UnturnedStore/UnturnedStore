@@ -10,7 +10,7 @@ using Website.Client.Extensions;
 using Website.Client.Pages.Home.ProductPage.Components;
 using Website.Client.Providers;
 using Website.Client.Services;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Client.Pages.Home.ProductPage

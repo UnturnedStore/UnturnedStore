@@ -15,6 +15,14 @@
 
     <Meta property="og:description" content="@User.Biography" />
 
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">Users</li>
+            <li class="breadcrumb-item active">@User.Name</li>
+        </ol>
+    </nav>
+
     <div class="row mt-5 mb-3">
         <div class="col-md-3">
             <UserCard User="User" />

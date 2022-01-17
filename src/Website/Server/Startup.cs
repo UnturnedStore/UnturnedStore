@@ -5,11 +5,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using RestoreMonarchy.PaymentGateway.Client;
 using SteamWebAPI2.Utilities;
 using System;
 using System.Data.SqlClient;
-using Website.Data.Repositories;
+using Website.Data.Extensions;
 using Website.Server.Helpers;
+using Website.Server.Options;
 using Website.Server.Services;
 
 namespace Website.Server
@@ -26,19 +29,16 @@ namespace Website.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient(x => new SqlConnection(Configuration.GetConnectionString("Default")));
-            services.AddTransient<UsersRepository>();
-            services.AddTransient<ImagesRepository>();
-            services.AddTransient<ProductsRepository>();
-            services.AddTransient<BranchesRepository>();
-            services.AddTransient<VersionsRepository>();
-            services.AddTransient<SellersRepository>();
-            services.AddTransient<OrdersRepository>();
-            services.AddTransient<MessagesRepository>();
-            services.AddTransient<AdminRepository>();
+            services.AddRepositories();
 
             services.AddTransient<OrderService>();
-            services.AddTransient<PayPalService>();
             services.AddTransient<DiscordService>();
+
+            // Add options
+            services.AddOptions();
+            services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.Key));
+
+            services.AddTransient<PaymentGatewayClient>((s) => new (s.GetRequiredService<IOptions<PaymentOptions>>().Value));
 
             services.AddTransient(x => new SteamWebInterfaceFactory(Configuration["SteamWebAPIKey"]));           
 
