@@ -1,0 +1,23 @@
+﻿@inherits NavTypeBase
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="list-group">
+            <div class="list-group-item fw-bold">@Title</div>
+            @foreach (NavItem item in Items)
+            {
+                <a href="javascript:void(0)" @onclick="() => ChangeNavItem(item)" class="list-group-item list-group-item-action @GetNavItemClass(item)">
+                    @item.Name
+                </a>
+            }
+        </div>
+    </div>
+    <div class="col-md-9 mb-3">
+        <div class="bg-light p-3 rounded">
+            @if (CurrentItem != null)
+            {
+                @CurrentItem.ChildContent
+            }
+        </div>        
+    </div>
+</div>

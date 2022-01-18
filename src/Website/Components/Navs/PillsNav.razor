@@ -1,0 +1,18 @@
+﻿@inherits NavTypeBase
+
+<ul class="nav nav-pills nav-fill mb-3">
+    @foreach (NavItem item in Items)
+    {
+        <li class="nav-item">
+            <a class="nav-link @GetNavItemClass(item)" @onclick="() => ChangeNavItem(item)" href="javascript:void(0)">
+                @item.Name
+            </a>
+        </li>
+    }
+</ul>
+@if (CurrentItem != null)
+{
+    <div>
+        @CurrentItem.ChildContent
+    </div>    
+}

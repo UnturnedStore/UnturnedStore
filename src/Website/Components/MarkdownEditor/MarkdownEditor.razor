@@ -1,0 +1,45 @@
+﻿@using System.Linq.Expressions
+ 
+<div id="markdownEditor">
+    <ul class="nav nav-tabs mb-3" id="editorTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link @(isWriteActive ? "active" : "")" id="editor-tab"
+               data-toggle="tab" href="#editor" role="tab"
+               aria-controls="editor" aria-selected="true" @onclick:preventDefault 
+               @onclick="() => HandleWriteClick()">Write</a>
+        </li>
+        <li class="nav-item @(isWriteActive ? "" : "active")" role="presentation">
+            <a class="nav-link" id="preview-tab" data-toggle="tab" href="#preview" role="tab"
+               aria-controls="preview" aria-selected="false" @onclick:preventDefault 
+               @onclick="() => HandlePreviewClick()">Preview</a>
+        </li>
+        @if (EnableToolbar)
+        {
+            <li class="nav-item ms-auto">
+                <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
+                        @onclick="() => HandleBoldClick()"><i class="fas fa-bold"></i></button>
+                <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
+                        @onclick="() => HandleItalicClick()"><i class="fas fa-italic"></i></button>
+                <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
+                        @onclick="() => HandleListClick()"><i class="fas fa-list"></i></button>
+            </li>
+        }
+    </ul>
+ 
+    <div class="tab-content" id="editorTabContent">
+        @if (isWriteActive)
+        {
+            <div class="tab-pane fade show active" id="editor" role="tabpanel"
+                 aria-labelledby="editor-tab">
+                <textarea id="@id" value="@Value" @oninput="HandleInput" class="@_fieldCssClasses form-control" 
+                    style="height: @heightString; resize: none;"></textarea>
+            </div>
+        }
+        else
+        {
+            <div class="tab-pane fade show active" id="editor" role="tabpanel" style="height: @heightString; overflow-y: scroll;">
+                @((MarkupString)_previewText)
+            </div>
+        }
+    </div>
+</div>

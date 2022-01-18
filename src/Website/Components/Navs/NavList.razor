@@ -1,0 +1,15 @@
+﻿@if (Items.Count() > 0 )
+{
+    @if (Type == NavType.ListGroup)
+    {
+        <ListGroupNav NavList="this" />
+    } else
+    {
+        <PillsNav NavList="this" />
+    }    
+}
+
+
+<CascadingValue Value="this" Name="NavList">
+    @ChildContent
+</CascadingValue>

@@ -1,0 +1,41 @@
+﻿<div class="@BackgroundClass() @Class p-2 rounded-3">
+    <small class="text-white">
+        @if (!string.IsNullOrEmpty(Icon))
+        {
+            <i class="@Icon"></i>
+        }
+        <span class="ms-1">
+            @if (ChildContent != null)
+            {
+                @ChildContent
+            }
+            else
+            {
+                @Text
+            }
+
+        </span>
+    </small>
+</div>
+
+@code {
+    [Parameter]
+    public string Background { get; set; }
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string Class { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public string BackgroundClass()
+    {
+        return Background == null ? "bg-primary" : $"bg-{Background}";
+    }
+}
