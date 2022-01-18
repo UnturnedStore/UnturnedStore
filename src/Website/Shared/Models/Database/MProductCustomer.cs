@@ -12,6 +12,7 @@ namespace Website.Shared.Models.Database
         [Required]
         [Range(1, int.MaxValue)]
         public int UserId { get; set; }
+        public Guid LicenseKey { get; set; }
         public DateTime CreateDate { get; set; }
 
         public UserInfo User { get; set; }

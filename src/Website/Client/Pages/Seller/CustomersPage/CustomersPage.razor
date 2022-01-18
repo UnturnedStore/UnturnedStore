@@ -1,64 +1,72 @@
 ﻿@page "/seller/customers"
 @using Website.Client.Pages.Seller.CustomersPage.Components
+@using Website.Components.DataTable
 
 <Title Value="@($"Customers Seller - Unturned Store")"></Title>
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
+        <li class="breadcrumb-item">Seller</li>
         <li class="breadcrumb-item active" aria-current="page">Customers</li>
     </ol>
 </nav>
 
 @if (Customers != null)
 {
-    <div class="mt-2 p-3 bg-light">
-        <div class="mb-2 d-flex">
-            <div>
-                <h6>All Customers</h6>
-            </div>
-            <div class="ms-auto">
-                <button class="btn btn-sm btn-primary" @onclick="ShowModalAsync">Add Customer</button>
-            </div>            
-        </div>
-        <table class="table table-striped mb-3">
-            <caption>@Customers.Count Total Customers</caption>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>User</th>
-                    <th>Product</th>
-                    <th>Create Date</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <Virtualize Items="OrderedCustomers" Context="customer">
-                    <tr>
-                        <td class="align-middle text-center"><i class="bi bi-person-fill"></i></td>
-                        <td class="align-middle">@customer.User.Name</td>
-                        <td class="align-middle">
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <img src="api/images/@customer.Product.ImageId" width="30" height="30" />
-                                </div>
-                                <div class="ms-2">
-                                    <a href="/seller/products/@customer.ProductId">@customer.Product.Name</a>
-                                </div>
-                            </div>
-
-                        </td>
-                        <td class="align-middle">@customer.CreateDate</td>
-                        <td class="align-middle">
-                            <button class="btn btn-outline-danger" @onclick="() => DeleteCustomerAsync(customer)"><i class="bi bi-trash-fill"></i></button>
-                        </td>
-                    </tr>
-                </Virtualize>
-            </tbody>
-        </table>
-
+    <div>
+        <DataTable TItem="MProductCustomer" Data="OrderedCustomers">
+            <DataTableTitle TItem="MProductCustomer" ValueFunc="@(x => $"Customers ({x.Items.Count()})")">
+                <div class="d-flex align-items-center">
+                    <div class="fs-5">
+                        Customers (@context.Items.Count())
+                    </div>
+                    <div class="ms-2">
+                        <button class="btn btn-sm btn-primary" @onclick="ShowModalAsync">
+                            Add Customer
+                        </button>
+                    </div>
+                </div>        
+            </DataTableTitle>
+            <DataTableColumn TItem="MProductCustomer" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" Context="customer" />
+            <DataTableColumn TItem="MProductCustomer" Name="User" Field="x => x.User.Name" IsSearchable="true" SearchType="ESearchType.Contains" Context="customer">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <img class="rounded-circle" src="@customer.User.AvatarUrl()" width="30" height="30" />
+                    </div>
+                    <div class="ms-2">
+                        <a href="/users/@customer.User.Id" class="text-decoration-none">
+                            @customer.User.Name
+                        </a>
+                    </div>
+                </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCustomer" Name="Product" Field="x => x.Product.Name" Context="customer" IsSearchable="true" SearchType="ESearchType.Contains">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <img src="api/images/@customer.Product.ImageId" width="30" height="30" />
+                    </div>
+                    <div class="ms-2">
+                        <a href="/seller/products/@customer.ProductId" class="text-decoration-none">
+                            @customer.Product.Name
+                        </a>
+                    </div>
+                </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCustomer" Name="" Context="customer" Field="x => string.Empty" IsSearchable="false">
+                <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteCustomerAsync(customer)">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </DataTableColumn>
+        </DataTable>
     </div>
-
+    
+    <ConfirmModal @ref="DeleteConfirmModal" Title="Delete customer?" TItem="MProductCustomer" ModalId="DeleteReviewConfirm" BtnClass="btn-outline-danger" BtnText="Delete" OnConfirm="DeleteCustomerAsync">
+        Are you sure you want to delete customer <span class="fw-bold">@DeleteConfirmModal.Item.Id</span>
+    </ConfirmModal>
     <AddCustomerModal Customers="Customers" @ref="Modal" OnCustomerAdded="AddCustomer" />
+} else 
+{
+    <Progressbar />
 }
 
 

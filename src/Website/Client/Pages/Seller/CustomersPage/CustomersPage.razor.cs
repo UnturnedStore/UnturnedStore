@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Pages.Seller.CustomersPage.Components;
+using Website.Components.Basic;
 using Website.Shared.Constants;
 using Website.Shared.Models.Database;
 
@@ -21,11 +22,17 @@ namespace Website.Client.Pages.Seller.CustomersPage
 
         private List<MProductCustomer> OrderedCustomers => Customers.OrderByDescending(x => x.CreateDate).ToList();
 
+        public ConfirmModal<MProductCustomer> DeleteConfirmModal { get; set; }
         public AddCustomerModal Modal { get; set; }
 
         protected override async  Task OnInitializedAsync()
         {
             Customers = await HttpClient.GetFromJsonAsync<List<MProductCustomer>>("api/seller/customers");
+        }
+
+        private async Task ShowDeleteCustomerAsync(MProductCustomer customer)
+        {
+            await DeleteConfirmModal.ShowAsync(customer);
         }
 
         private async Task DeleteCustomerAsync(MProductCustomer customer)

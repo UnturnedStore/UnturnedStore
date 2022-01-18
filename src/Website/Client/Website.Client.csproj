@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Components\Website.Components.csproj" />
     <ProjectReference Include="..\Shared\Website.Shared.csproj" />
   </ItemGroup>
 

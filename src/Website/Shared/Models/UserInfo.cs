@@ -11,5 +11,8 @@ namespace Website.Shared.Models
         public int? AvatarImageId { get; set; }
         public string Color { get; set; }
         public DateTime CreateDate { get; set; }
+
+        public string AvatarUrl() => AvatarImageId.HasValue ? 
+            $"api/images/{AvatarImageId}" : "/img/profiles/default_avatar.png";
     }
 }

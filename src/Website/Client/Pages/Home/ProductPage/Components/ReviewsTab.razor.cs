@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Client.Services;
-using Website.Client.Shared.Components;
+using Website.Components.Basic;
 using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.Home.ProductPage.Components
