@@ -13,56 +13,55 @@
                         <div class="mb-3 row">
                             <div class="dropdown col-md-6">
                                 <label class="form-label">Product</label>
-                                <input class="form-control" type="text" @bind="searchProduct" @bind:event="oninput" placeholder="Search product by Name" />
-                                <div class="dropdown-menu @(searchProduct.Length > 0 ? "show" : "")">
-                                    @foreach (var product in SearchedProducts)
-                                    {
-                                        <a class="dropdown-item" @onclick="() => ChangeProduct(product)" href="javascript:void(0)">
-                                            <img src="/api/images/@product.ImageId" width="30" height="30" /> @product.Name
-                                        </a>
-                                    }
+                                @if (Model.Product != null)
+                                {
+                                    <div class="d-flex aling-items-center border rounded boder-1 p-2" @onclick="ResetProduct" style="cursor: pointer;">
+                                        <div>
+                                            <img src="/api/images/@Model.Product.ImageId" width="30" height="30" />
+                                        </div>
+                                        <div class="ms-2">
+                                            @Model.Product.Name
+                                        </div>                                         
+                                    </div>
+                                } else
+                                {
+                                    <input class="form-control" type="text" @bind="searchProduct" @bind:event="oninput" placeholder="Search product by Name" />
+                                    <div class="dropdown-menu @(searchProduct.Length > 0 ? "show" : "")">
+                                        @foreach (var product in SearchedProducts)
+                                        {
+                                            <a class="dropdown-item" @onclick="() => ChangeProduct(product)" href="javascript:void(0)">
+                                                <img src="/api/images/@product.ImageId" width="30" height="30" /> @product.Name
+                                            </a>
+                                        }
+                                    </div>
+                                }
 
-                                </div>
                             </div>
 
                             <div class="dropdown col-md-6">
                                 <label class="form-label">User</label>
-                                <input class="form-control" type="text" @bind="searchUser" @bind:event="oninput" placeholder="Search user by SteamID or Name" />
-                                <div class="dropdown-menu @(searchUser.Length > 0 ? "show" : "")">
-                                    @foreach (var user in SearchedUsers)
-                                    {
-                                        <a class="dropdown-item" @onclick="() => ChangeUser(user)" href="javascript:void(0)">
-                                            @user.Name
-                                        </a>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3 mt-5 text-center d-flex justify-content-center">
-                            <div class="m-1">
-                                <span>Give </span>
-                            </div>
-                            <div class="m-1">
-                                @if (Model.Product != null)
-                                {
-                                    <span class="fw-bold"><img src="/api/images/@Model.Product.ImageId" width="30" height="30" /> @Model.Product.Name </span>
-                                } else
-                                {
-                                    <span class="fw-bold">product</span>
-                                }
-                            </div>
-                            <div class="m-1">
-                                <span> to </span>
-                            </div>
-                            <div class="m-1">
                                 @if (Model.User != null)
                                 {
-                                    <span class="fw-bold">@Model.User.Name</span>
+                                    <div class="d-flex aling-items-center border rounded boder-1 p-2" @onclick="ResetUser" style="cursor: pointer;">
+                                        <div>
+                                            <img src="@Model.User.AvatarUrl()" width="30" height="30" />
+                                        </div>
+                                        <div class="ms-2">
+                                            @Model.User.Name
+                                        </div>                                         
+                                    </div>
                                 } else
                                 {
-                                    <span class="fw-bold">user</span>
-                                }
+                                    <input class="form-control" type="text" @bind="searchUser" @bind:event="oninput" placeholder="Search user by SteamID or Name" />
+                                    <div class="dropdown-menu @(searchUser.Length > 0 ? "show" : "")">
+                                        @foreach (var user in SearchedUsers)
+                                        {
+                                            <a class="dropdown-item" @onclick="() => ChangeUser(user)" href="javascript:void(0)">
+                                                @user.Name
+                                            </a>
+                                        }
+                                    </div>
+                                }    
                             </div>
                         </div>
 

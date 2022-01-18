@@ -111,5 +111,15 @@ namespace Website.Client.Pages.Seller.CustomersPage.Components
             Model.UserId = user.Id;
             ResetSearchUser();
         }
+
+        private void ResetProduct()
+        {
+            Model.Product = null;
+        }
+
+        private void ResetUser()
+        {
+            Model.User = null;
+        }
     }
 }
