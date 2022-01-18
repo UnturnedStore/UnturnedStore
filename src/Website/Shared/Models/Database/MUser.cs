@@ -10,7 +10,7 @@ namespace Website.Shared.Models.Database
     public class MUser
     {
         public int Id { get; set; }
-        [StringLength(25)]
+        [StringLength(32, MinimumLength = 3)]
         public string Name { get; set; }
         public string Role { get; set; }
         public string SteamId { get; set; }
