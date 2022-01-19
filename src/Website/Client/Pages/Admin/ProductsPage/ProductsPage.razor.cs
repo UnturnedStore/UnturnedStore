@@ -20,21 +20,10 @@ namespace Website.Client.Pages.Admin.ProductsPage
         public NavigationManager NavigationManager { get; set; }
 
         public IEnumerable<MProduct> Products { get; set; }
-        private ICollection<MProduct> orderedProducts => Products.Where(x => string.IsNullOrEmpty(searchString)
-            || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-            || x.Seller.Name.Equals(searchString, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(x => x.CreateDate).ToList();
-
-        private string searchString = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
             Products = await HttpClient.GetFromJsonAsync<MProduct[]>("api/admin/products");
-        }
-
-        private void GoToProduct(MProduct product)
-        {
-            NavigationManager.NavigateTo("/seller/products/" + product.Id);
         }
     }
 }

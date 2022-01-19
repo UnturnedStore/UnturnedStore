@@ -19,9 +19,15 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
+        public async Task<IEnumerable<MUser>> GetUsersAsync()
+        {
+            const string sql = "SELECT * FROM dbo.Users;";
+            return await connection.QueryAsync<MUser>(sql);
+        }
+
         public async Task UpdateUserAsync(MUser user)
         {
-            const string sql = "UPDATE dbo.Users SET Role = @Role WHERE Id = @Id;";
+            const string sql = "UPDATE dbo.Users SET Role = @Role, IsVerifiedSeller = @IsVerifiedSeller WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, user);
         }
 

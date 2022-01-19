@@ -1,0 +1,22 @@
+﻿@if (Status == ProductStatus.New)
+{
+    <span class="text-muted text-uppercase">@Status</span>
+} else if (Status == ProductStatus.WaitingForApproval)
+{
+    <span class="text-secondary text-uppercase">Waiting for approval</span>
+} else if (Status == ProductStatus.Approved)
+{
+    <span class="text-success text-uppercase">@Status</span>
+} else if (Status == ProductStatus.Rejected)
+{
+    <span class="text-danger text-uppercase">@Status</span>
+} else if (Status == ProductStatus.Released)
+{
+    <span class="text-primary text-uppercase">@Status</span>
+}
+
+@code {
+    [Parameter]
+    public ProductStatus Status { get; set; }
+
+}

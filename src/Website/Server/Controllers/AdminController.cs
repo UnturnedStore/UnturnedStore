@@ -22,6 +22,12 @@ namespace Website.Server.Controllers
             this.adminRepository = adminRepository;
         }
 
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            return Ok(await adminRepository.GetUsersAsync());
+        }
+
         [HttpPut("users")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] MUser user)
         {

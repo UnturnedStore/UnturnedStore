@@ -2,6 +2,13 @@
     min-height: 200px;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
 
 @font-face {
     font-family: 'ApexMk3';

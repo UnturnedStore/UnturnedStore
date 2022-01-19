@@ -28,7 +28,7 @@ namespace Website.Client.Pages.Seller.UploadVersionPage
             BranchId = Product.Branches.FirstOrDefault()?.Id ?? 0
         };
 
-        private string selectedTemplate = "default";
+        private string selectedTemplate = "rocketplugin";
 
         public MVersion Model { get; set; }
 

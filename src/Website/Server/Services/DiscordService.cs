@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
 namespace Website.Server.Services
@@ -22,11 +23,12 @@ namespace Website.Server.Services
         private readonly MessagesRepository messagesRepository;
         private readonly UsersRepository usersRepository;
         private readonly ILogger<DiscordService> logger;
+        private readonly IBaseUrl baseUrl;
 
         private IConfigurationSection config => configuration.GetSection("Discord");
 
         public DiscordService(IConfiguration configuration, ProductsRepository productsRepository, BranchesRepository branchesRepository, MessagesRepository messagesRepository,
-            UsersRepository usersRepository, ILogger<DiscordService> logger)
+            UsersRepository usersRepository, ILogger<DiscordService> logger, IBaseUrl baseUrl)
         {
             this.configuration = configuration;
             this.productsRepository = productsRepository;
@@ -34,6 +36,7 @@ namespace Website.Server.Services
             this.messagesRepository = messagesRepository;
             this.usersRepository = usersRepository;
             this.logger = logger;
+            this.baseUrl = baseUrl;
         }
 
         private void SendEmbed(string discordWebhookUrl, Embed embed)
@@ -150,6 +153,39 @@ namespace Website.Server.Services
             }
 
             SendEmbed(order.Seller.DiscordWebhookUrl, eb.Build());
+        }
+
+        public void SendProductRelease(ProductInfo product)
+        {
+            string url = config["SendProductReleaseWebhookUrl"];
+            
+            if (string.IsNullOrEmpty(url))
+                return;
+
+            var eb = new EmbedBuilder();
+
+            eb.WithColor(Color.Blue);
+            eb.WithAuthor(product.Seller.Name, baseUrl.Get("/api/images/{0}", product.Seller.AvatarImageId), baseUrl.Get("/users/{0}", product.Seller.Id));
+            
+            eb.WithThumbnailUrl(baseUrl.Get("api/images/{0}", product.ImageId));
+            
+            eb.WithTitle(product.Name);
+            eb.WithUrl(baseUrl.Get("/products/{0}", product.Id));
+
+            eb.WithDescription(product.Description);
+            
+            eb.AddField("Category", product.Category);
+            eb.AddField("Price", product.GetPrice());
+
+            if (!string.IsNullOrEmpty(product.GithubUrl))
+            {
+                eb.AddField("GitHub", product.GithubUrl);
+            }
+
+            eb.WithFooter("Check it out!");
+            eb.WithCurrentTimestamp();
+
+            SendEmbed(url, eb.Build());
         }
     }
 }

@@ -1,20 +1,23 @@
-﻿    
+﻿@using Website.Components.Alerts
+
+<AlertBox ID="product-basicinfo" Group="productpage" />
+
 <EditForm Model="Product" OnValidSubmit="SubmitAsync">
     <div class="mb-3">
         <label class="form-label">Name</label>
-        <InputText class="form-control" @bind-Value="Product.Name" />
-        <div class="form-text">Name should be short up to 20 characters</div>
+        <InputText class="form-control" @bind-Value="Product.Name" style="max-width: 500px;" />
+        <div class="form-text">The name should be short, up to 20 characters</div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Description</label>
-        <InputText class="form-control" @bind-Value="Product.Description" />
+        <InputText class="form-control" @bind-Value="Product.Description" style="max-width: 800px;" />
         <div class="form-text">This is a short description of your product, for detailed information use tabs</div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Category</label>
-        <InputSelect class="form-control" @bind-Value="Product.Category">
+        <InputSelect class="form-control" @bind-Value="Product.Category" style="max-width: 500px;">
             @foreach (string category in ProductConstants.Categories)
             {
                 <option value="@category">@category</option>
@@ -24,20 +27,20 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label">Github Repo URL</label>
-        <InputText class="form-control" @bind-Value="Product.GithubUrl" />
-        <div class="form-text">Enables a Github link on product page</div>
+        <label class="form-label">GitHub Repo URL</label>
+        <InputText class="form-control" @bind-Value="Product.GithubUrl" style="max-width: 500px;" />
+        <div class="form-text">Enables a GitHub link on product page</div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Price</label>
-        <InputNumber class="form-control" @bind-Value="Product.Price" />
+        <input type="number" class="form-control" @bind="Product.Price" @bind:event="oninput" style="max-width: 150px;" />
         <div class="form-text">Price of your product in USD ($)</div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Image</label>
-        <InputFile class="form-control" OnChange="@OnInputFileChange" />
+        <InputFile class="form-control" OnChange="@OnInputFileChange" style="max-width: 500px;" />
         <div class="form-text">Image for your product, has to be .png</div>
     </div>
 
@@ -46,59 +49,46 @@
         <img class="mb-3" src="api/images/@Product.ImageId" width="250" height="250" />
     }
 
-    <div class="mb-3 form-check">
-        <InputCheckbox @bind-Value="Product.IsEnabled" class="form-check-input" id="productIsEnabledCheck" />
-        <label class="form-check-label" for="productIsEnabledCheck">Is Enabled</label>
+    <div class="mb-3 form-check form-switch">
+        <InputCheckbox @bind-Value="Product.IsLoaderEnabled" class="form-check-input" id="check-enableloader" disabled />
+        <label class="form-check-label" for="check-enableloader">                             
+            Use Loader
+        </label>
+        <div class="form-text">Determines whether your plugin uses UnturnedStore loader. You can't change it.</div>
     </div>
+
+    @if (Product.Status == ProductStatus.Released)
+    {
+        <div class="mb-3 form-check form-switch">                        
+            <label class="form-check-label">
+                <InputCheckbox @bind-Value="Product.IsEnabled" class="form-check-input" />
+                @(Product.IsEnabled ? "Enabled" : "Disabled")
+            </label>
+            <div class="form-text">When your product is disabled it cannot be purchased and can only be downloaded by existing customers.</div>
+        </div>
+    }
 
     <div class="mb-3">
         <DataAnnotationsValidator />
         <ValidationSummary />
     </div>
 
-    @if (isLoading)
+    @if (IsDisabled)
     {
-        <LoadingButton />
+        <div class="mb-3">
+            <div class="text-danger">Products that are using the loader can't be free!</div>
+        </div>
     }
-    else
-    {
-        <button type="submit" class="btn btn-primary">Update</button>
-    }
+
+    <div class="mb-3">
+        @if (isLoading)
+        {
+            <LoadingButton />
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary" disabled="@IsDisabled">Update</button>
+        }
+    </div>
+
 </EditForm>
-
-
-@code {
-
-    [Parameter]
-    public MProduct Product { get; set; }
-
-    [Inject]
-    public HttpClient HttpClient { get; set; }
-
-
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        var imageFile = e.File;
-
-        imageFile = await imageFile.RequestImageFileAsync("image/png", 500, 500);
-
-        var image = new MImage();
-
-        image.ContentType = imageFile.ContentType;
-        image.Name = imageFile.Name;
-        image.Content = new byte[imageFile.Size];
-        await imageFile.OpenReadStream(50 * 1024 * 1024).ReadAsync(image.Content);
-
-        var response = await HttpClient.PostAsJsonAsync("api/images", image);
-        Product.ImageId = int.Parse(await response.Content.ReadAsStringAsync());
-    }
-
-    private bool isLoading;
-
-    private async Task SubmitAsync()
-    {
-        isLoading = true;
-        await HttpClient.PutAsJsonAsync($"api/products", MProduct.FromProduct(Product));
-        isLoading = false;
-    }
-}

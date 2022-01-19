@@ -1,87 +1,155 @@
 ﻿@page "/seller/products/{ProductId:int}" 
 @using Website.Client.Pages.Seller.ProductPage.Components
+@using Website.Components.Alerts
+@using Website.Components.Navs
 
 <Title Value="@($"Product #{ProductId} Seller - Unturned Store")"></Title>
 
-<div class="d-flex align-items-center">
-    <div>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/seller/products">Products</a></li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    <span>@ProductId</span>
-                    @if (Product != null)
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Seller</li>
+        <li class="breadcrumb-item"><a href="/seller/products">Products</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+            @if (Product != null)
+            {
+                <span>@Product.Name</span>
+            } else
+            {
+                <span>@ProductId</span>
+            }
+            
+        </li>
+    </ol>
+</nav>
+
+<AlertBox ID="product-main" Group="productpage" />
+
+@if (Product != null)
+{
+    <div class="mt-2 mb-3">
+        <div class="d-md-flex align-items-center border p-3 rounded border-1 shadow-sm">
+            <div class="mb-md-0 mb-2">
+                <div class="d-flex align-items-center mb-1">
+                    <div>
+                        <img src="api/images/@Product.ImageId" width="36" height="36" class="rounded" />
+                    </div>
+                    <div class="ms-2 fs-4">
+                        @Product.Name
+                    </div>
+                </div>
+                <div class="dropdown-divider" style="min-width: 300px;"></div>
+                <div>
+                    <div>
+                        Current Status: <span class="fw-bold"><ProductStatusText Status="Product.Status" /></span>
+                    </div>
+                    <div class="text-muted">
+                        ID: <span class="fw-bold">@Product.Id</span>
+                    </div>
+                    @if (UserService.IsAdmin && UserService.UserId != Product.Seller.Id)
                     {
-                        <span>@string.Concat(" - ", Product.Name)</span>
+                        <div class="text-muted">
+                            Owner: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Seller.Id">@Product.Seller.Name</a>
+                        </div>
                     }
-                </li>
-            </ol>
-        </nav>
-    </div>
-    
-    <div class="ms-auto" style="margin-top: -20px;">
-        <a href="/products/@ProductId">View Public</a>
-    </div>
-</div>
-
-
-<div class="mt-2">
-    @if (Product != null)
-    {
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="basicinfo-tab" data-bs-toggle="tab" href="#basicinfo" role="tab">
-                    <i class="bi bi-info"></i> Basic Information
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="tabs-tab" data-bs-toggle="tab" href="#tabs" role="tab">
-                    <i class="bi bi-card-list"></i> Tabs
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="medias-tab" data-bs-toggle="tab" href="#medias" role="tab">
-                    <i class="bi bi-images"></i> Medias
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="branches-tab" data-bs-toggle="tab" href="#branches" role="tab">
-                    <i class="bi bi-gear-fill"></i> Branches
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="uploadversion-tab" href="/seller/products/@ProductId/uploadversion" role="tab">
-                    <i class="bi bi-cloud-upload-fill"></i> Upload Version
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content bg-light p-3">
-                <div class="tab-pane fade show active" id="basicinfo" role="tabpanel">
-                    <BasicInfoTab Product="Product" />
+                    @if (Product.Status == ProductStatus.Approved && Product.Admin != null)
+                    {
+                        <div class="text-muted">
+                            Approved by: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Admin.Id">@Product.Admin.Name</a>
+                        </div>
+                    }
+                    @if (Product.Status == ProductStatus.Rejected && Product.Admin != null)
+                    {
+                        <div class="text-muted">
+                            Rejected by: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Admin.Id">@Product.Admin.Name</a>
+                        </div>
+                    }
                 </div>
-                <div class="tab-pane fade" id="tabs" role="tabpanel">
+            </div>
+            <div class="ms-auto">
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="/products/@Product.Id" class="btn btn-primary" target="_blank">View product page</a>
+                    @if ((Product.Status == ProductStatus.New && Product.Price > 0) || Product.Status == ProductStatus.Rejected)
+                    {
+                        <button class="btn btn-success ms-md-2" @onclick="HandleSubmit">Submit for approval</button>
+                    } 
+                    @if ((Product.Status == ProductStatus.New && Product.Price == 0) || Product.Status == ProductStatus.Approved)
+                    {
+                        <button class="btn btn-success ms-md-2 fw-bold" @onclick="HandleRelease">Release</button>
+                    }
+                    @if (!UserService.IsAdmin && Product.Status == ProductStatus.WaitingForApproval)
+                    {
+                        <button class="btn btn-outline-warning ms-md-2 fw-bold" disabled>Waiting for approval</button>
+                    }
+                    @if (UserService.IsAdmin)
+                    {
+                        if (Product.Status == ProductStatus.WaitingForApproval)
+                        {
+                            <button class="btn btn-danger ms-md-2 fw-bold" @onclick="HandleReject">Reject</button>
+                            <button class="btn btn-success ms-md-2 fw-bold" @onclick="HandleApprove">Approve</button>
+                        }
+                    }
+                </div>                
+            </div>
+        </div>        
+    </div>
+
+    <div class="mb-3">
+        <div>
+            <NavList Type="NavType.Tabs">
+                <NavItem Name="Basic Information" Icon="fas fa-info" >
+                    <BasicInfoTab @bind-Product="Product" />
+                </NavItem>
+                <NavItem Name="Tabs" Icon="fas fa-list">
                     <TabsTab Product="Product" />
-                </div>
-                <div class="tab-pane fade" id="medias" role="tabpanel">
-                    <MediasTab Product="Product" />
-                </div>
-                <div class="tab-pane fade" id="branches" role="tabpanel">
+                </NavItem>
+                <NavItem Name="Media" Icon="far fa-images">
+                    <MediaTab Product="Product" />
+                </NavItem>
+                <NavItem Name="Branches" Icon="fas fa-code-branch">
                     <BranchesTab Product="Product" />
-                </div>
+                </NavItem>
+                <NavItem Name="Upload Version" Icon="fas fa-upload" URL="@($"/seller/products/{ProductId}/uploadversion")" />
+            </NavList>
+               
         </div>
-
-    }
-    else
+    </div>
+} else
+{
+    if (statusCode == System.Net.HttpStatusCode.BadRequest)
     {
-        if (statusCode == System.Net.HttpStatusCode.BadRequest)
-        {
-            <h4>You don't have access to this product</h4>
-        } else if (statusCode == System.Net.HttpStatusCode.NoContent)
-        {
-            <h4>Product not found</h4>
-        } else
-        {
-            <Progressbar />
-        }        
-    }
-</div>
+        <h4>You don't have access to this product</h4>
+    } else if (statusCode == System.Net.HttpStatusCode.NoContent)
+    {
+        <h4>Product not found</h4>
+    } else
+    {
+        <Progressbar />
+    }        
+}
+
+<ConfirmModal @ref="ConfirmRelease" TItem="ProductInfo" Title="Confirm release" BtnClass="btn btn-success" BtnText="Release" ModalId="ConfirmReleaseModal" OnConfirm="SubmitReleaseAsync">
+    <div>
+        Are you sure you want to release <span class="fw-bold">@Product.Name</span>?
+    </div>
+    <div>
+        When you will confirm it will:
+        <ul>
+            <li>Send a webhook to #product-releases channel on Discord</li>
+            <li>Automatically enable the product</li>
+            <li>The product will be visible on the list</li>
+            @if (Product.Price > 0)
+            {
+                <li>Users will be able to purchase this product</li>    
+            }            
+        </ul>
+    </div>
+</ConfirmModal>
+<ConfirmModal @ref="ConfirmSubmit" TItem="ProductInfo" Title="Confirm submit for approval" BtnClass="btn btn-success" BtnText="Submit" ModalId="ConfirmSubmitModal" OnConfirm="SubmitRequestAsync">
+    Are you sure you want to submit <span class="fw-bold">@Product.Name</span> for admin review?
+</ConfirmModal>
+<ConfirmModal @ref="ConfirmReject" TItem="ProductInfo" Title="Confirm reject" BtnClass="btn btn-danger" BtnText="Reject" ModalId="ConfirmRejectModal" OnConfirm="SubmitRejectAsync">
+    Are you sure you want to reject approval request for <span class="fw-bold">@Product.Name</span>?
+</ConfirmModal>
+<ConfirmModal @ref="ConfirmApprove" TItem="ProductInfo" Title="Confirm approve" BtnClass="btn btn-success" BtnText="Approve" ModalId="ConfirmApproveModal" OnConfirm="SubmitApproveAsync">
+    <div>Are you sure you want to reject approval request for <span class="fw-bold">@Product.Name</span>?</div>    
+</ConfirmModal>

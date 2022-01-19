@@ -6,9 +6,25 @@
             <div class="list-group-item fw-bold">@Title</div>
             @foreach (NavItem item in Items)
             {
-                <a href="javascript:void(0)" @onclick="() => ChangeNavItem(item)" class="list-group-item list-group-item-action @GetNavItemClass(item)">
-                    @item.Name
-                </a>
+                if (item.HasUrl)
+                {
+                    <a class="list-group-item list-group-item-action" href="@item.URL" target="@item.GetURLTarget()">
+                        @if (!string.IsNullOrEmpty(item.Icon))
+                        {
+                            <i class="@item.Icon me-2"></i> 
+                        }
+                        @item.Name
+                    </a>
+                } else
+                {
+                    <a href="javascript:void(0)" @onclick="() => ChangeNavItem(item)" class="list-group-item list-group-item-action @GetNavItemClass(item)">
+                        @if (!string.IsNullOrEmpty(item.Icon))
+                        {
+                            <i class="@item.Icon me-2"></i> 
+                        }
+                        @item.Name
+                    </a>
+                }
             }
         </div>
     </div>

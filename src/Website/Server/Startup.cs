@@ -33,6 +33,7 @@ namespace Website.Server
 
             services.AddTransient<OrderService>();
             services.AddTransient<DiscordService>();
+            services.AddTransient<IBaseUrl, BaseUrlService>();
 
             // Add options
             services.AddOptions();

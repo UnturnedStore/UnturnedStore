@@ -1,5 +1,8 @@
-﻿
-<div class="mb-5">
+﻿@using Website.Components.Alerts
+
+<AlertBox ID="product-branches" Group="productpage" />
+
+<div class="mb-3">
     <div class="d-flex align-items-center mb-1">
         <div>
             <label class="form-label">Select Branch</label>
@@ -19,11 +22,11 @@
 
 @if (Branch != null)
 {
-    <div class="mb-3">
-        <div class="mb-2 d-flex align-items-center">
-            <h5>Manage Branch @Branch.Name</h5>
+    <div class="mb-3 card">
+        <div class="card-header fs-5">
+            Overview
         </div>
-        <div class="mb-3 border border-1 border-secondary rounded-3 shadow-lg p-3">
+        <div class="card-body">
             <EditForm Model="@Branch" OnValidSubmit="SubmitAsync">
                 <div class="mb-3">
                     <label class="form-label">Name</label>
@@ -64,56 +67,55 @@
                 </div>
             </EditForm>
         </div>
+        
     </div>
+    
 
     @if (Branch.Versions != null)
     {
-        <div class="mb-5">
-            <div class="mb-2 d-flex align-items-center">
-                <h5>Versions</h5>
-                @*<div class="ms-auto">
-                    <button class="btn btn-sm btn-primary">Upload New Version</button>
-                </div>*@
+        <div class="card mb-3">
+            <div class="card-header fs-5">
+                Versions (@Versions.Count)
             </div>
-
-            <table class="table table-bordered">
-                <caption>Total @Versions.Count Versions</caption>
-                <thead>
-                    <tr>
-                        <th>Version</th>
-                        <th>File Name</th>
-                        <th>Downloads</th>
-                        <th>Create Date</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Virtualize Items="Versions" Context="version">
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0">
+                    <thead>
                         <tr>
-                            <td>@version.Name</td>
-                            <td>@version.FileName</td>
-                            <td>@version.DownloadsCount</td>
-                            <td>@version.CreateDate</td>
-                            <td>
-                                <a class="btn btn-sm btn-outline-primary" href="api/versions/download/@version.Id"><i class="bi bi-download"></i></a>
-                                <button class="btn btn-sm btn-outline-success" @onclick="() => EditVersionAsync(version)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePluginAsync(version)">
-                                    @if (version.IsEnabled)
-                                    {
-                                        <i class="bi bi-toggle-on"></i>
-                                    }
-                                    else
-                                    {
-                                        <i class="bi bi-toggle-off"></i>
-                                    }
-                                </button>
-                            </td>
+                            <th>Version</th>
+                            <th>File Name</th>
+                            <th>Downloads</th>
+                            <th>Create Date</th>
+                            <th>Options</th>
                         </tr>
-                    </Virtualize>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <Virtualize Items="Versions" Context="version">
+                            <tr>
+                                <td>@version.Name</td>
+                                <td>@version.FileName</td>
+                                <td>@version.DownloadsCount</td>
+                                <td>@version.CreateDate</td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-primary" href="api/versions/download/@version.Id"><i class="bi bi-download"></i></a>
+                                    <button class="btn btn-sm btn-outline-success" @onclick="() => EditVersionAsync(version)">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePluginAsync(version)">
+                                        @if (version.IsEnabled)
+                                        {
+                                            <i class="bi bi-toggle-on"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-toggle-off"></i>
+                                        }
+                                    </button>
+                                </td>
+                            </tr>
+                        </Virtualize>
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 }
@@ -122,80 +124,4 @@
 
 
 
-@code {
-    [Parameter]
-    public MProduct Product { get; set; }
 
-    [Inject]
-    public HttpClient HttpClient { get; set; }
-
-    public EditVersionModal EditVersionModal { get; set; }
-
-    public int SelectedBranchId { get; set; }
-
-    private MBranch createBranch;
-    private MBranch Branch
-    {
-        get
-        {
-            if (SelectedBranchId != 0)
-            {
-                return Product.Branches.FirstOrDefault(x => x.Id == SelectedBranchId);
-            }
-            else
-            {
-                return createBranch;
-            }
-        }
-    }
-
-    private List<MVersion> Versions => Branch.Versions.OrderByDescending(x => x.CreateDate).ToList();
-
-    protected override void OnParametersSet()
-    {
-        SelectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
-    }
-
-    public MVersion Plugin { get; set; }
-
-    private async Task TogglePluginAsync(MVersion plugin)
-    {
-        await HttpClient.PatchAsync($"api/versions/{plugin.Id}", null);
-        plugin.IsEnabled = !plugin.IsEnabled;
-    }
-
-    private void AddBranch()
-    {
-        createBranch = new MBranch()
-        {
-            ProductId = Product.Id
-
-        };
-        SelectedBranchId = 0;
-    }
-
-    private bool isLoading;
-    private async Task SubmitAsync()
-    {
-        isLoading = true;
-
-        if (Branch.Id == default)
-        {
-            var response = await HttpClient.PostAsJsonAsync("api/branches", Branch);
-            var branch = await response.Content.ReadFromJsonAsync<MBranch>();
-            Product.Branches.Add(branch);
-            SelectedBranchId = branch.Id;
-        }
-        else
-        {
-            await HttpClient.PutAsJsonAsync("api/branches", MBranch.FromBranch(Branch));
-        }
-
-        isLoading = false;
-    }
-
-    public async Task EditVersionAsync(MVersion version)
-    {
-        await EditVersionModal.ShowAsync(version, Branch.Name);
-    }
-}

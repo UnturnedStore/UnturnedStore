@@ -45,11 +45,11 @@ BEGIN
 	JOIN dbo.Users u ON p.SellerId = u.Id 
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
-	WHERE p.IsEnabled = 1
-	OR p.SellerId = @UserId
-	OR EXISTS (
-		SELECT * FROM dbo.ProductCustomers c 
-		WHERE c.ProductId = p.Id 
-		AND c.UserId = @UserId
-	);
+	WHERE
+		(p.Status = 4 AND p.IsEnabled = 1)		
+		OR EXISTS (
+			SELECT * FROM dbo.ProductCustomers c 
+			WHERE c.ProductId = p.Id 
+			AND c.UserId = @UserId
+		);
 END;

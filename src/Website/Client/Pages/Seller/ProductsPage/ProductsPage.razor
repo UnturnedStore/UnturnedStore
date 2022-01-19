@@ -1,46 +1,73 @@
 ﻿@page "/seller/products"
 @using Website.Client.Pages.Seller.ProductsPage.Components
+@using Website.Components.DataTable
 
 <Title Value="@($"Products Seller - Unturned Store")"></Title>
 
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
+        <li class="breadcrumb-item">Seller</li>
         <li class="breadcrumb-item active" aria-current="page">Products</li>
     </ol>
 </nav>
 
-<div class="mt-2 p-3 bg-light">
+<div class="mt-2">
     @if (Products != null)
     {
-        <table class="table table-hover mb-3">
-            <caption>@Products.Count Total Products</caption>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Price</th>
-                    <th>Branches</th>
-                    <th>Is Enabled</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var product in Products)
+        <DataTable TItem="MProduct" Data="Products.OrderByDescending(x => x.CreateDate)">
+            <DataTableTitle TItem="MProduct">
+                <div class="d-md-flex d-block align-items-center">
+                    <div class="fs-5">
+                        Your Products (@context.Items.Count())
+                    </div>
+                    <div class="ms-2">
+                        <button class="btn btn-sm btn-primary" @onclick="ShowModalAsync">
+                            Add Product
+                        </button>
+                    </div>
+                </div>        
+            </DataTableTitle>
+            <DataTableColumn TItem="MProduct" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" />
+            <DataTableColumn TItem="MProduct" Name="Name" Field="x => x.Name" IsSearchable="true" SearchType="ESearchType.Contains" Context="product">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <img src="/api/images/@product.ImageId" width="30" height="30" />
+                    </div>
+                    <div class="ms-2">
+                        <a href="/seller/products/@product.Id" class="text-decoration-none">
+                            @product.Name
+                        </a>
+                    </div>
+                </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProduct" Name="Price" Field="x => x.Price" Context="product" IsSearchable="false">
+                @if (product.Price == 0)
                 {
-                    <tr style="cursor: pointer;" @onclick="() => GoToProduct(product)">
-                        <td class="align-middle"><img src="/api/images/@product.ImageId" width="40" height="40" /></td>
-                        <td class="align-middle">@product.Name</td>
-                        <td class="align-middle">$@product.Price</td>
-                        <td class="align-middle">@product.Branches.Count</td>
-                        <td class="align-middle">@product.IsEnabled</td>
-                    </tr>
+                    <span>Free</span>
+                } else
+                {
+                    <span>@product.Price</span>
                 }
-            </tbody>
-        </table>
-
-        <div class="mb-3">
-            <button class="btn btn-primary" @onclick="ShowModalAsync">Add Product</button>
-        </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProduct" Name="Status" Field="x => x.Status" Context="product" IsSearchable="true" SearchType="ESearchType.Exact">
+                <ProductStatusText Status="product.Status" />
+            </DataTableColumn>
+            <DataTableColumn TItem="MProduct" Name="" Context="product" Field="x => string.Empty" IsSearchable="false">
+                <div class="d-flex">
+                    <div>
+                        <a class="btn btn-outline-success btn-sm" href="/seller/products/@product.Id">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </div>
+                    <div class="ms-2">
+                        <a class="btn btn-outline-primary btn-sm" href="/products/@product.Id" target="_blank">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </div>                    
+                </div>                
+            </DataTableColumn>
+        </DataTable>
 
     } else
     {

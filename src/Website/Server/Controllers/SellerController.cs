@@ -41,7 +41,7 @@ namespace Website.Server.Controllers
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(productId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
-            return Ok(await sellersRepository.GetProductAsync(productId));
+            return Ok(await sellersRepository.GetSellerProductAsync(productId));
         }
 
         [HttpGet("customers")]

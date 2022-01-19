@@ -1,0 +1,53 @@
+﻿<div class="modal fade" id="@ModalId" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @if (Model != null)
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title">Manage @User.Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>            
+                <div class="modal-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div>
+                            <img class="rounded-circle" src="/api/images/@User.AvatarImageId" width="60" height="60" />
+                        </div>
+                        <div class="ms-3 fs-5">
+                            @User.Name
+                        </div>
+                    </div>
+                    <ul>
+                        <li><a href="/users/@User.Id" target="_blank" class="text-decoration-none">Profile</a></li>
+                        <li><a href="@User.SteamProfileUrl" target="_blank" class="text-decoration-none">Steam</a></li>
+                    </ul>
+                    <div class="mb-3">
+                        <label class="form-text">Role</label>
+                        <select class="form-select" @bind="Model.Role" style="max-width: 500px;">
+                            <option value="@RoleConstants.DefaultRoleId">@RoleConstants.DefaultRoleId</option>
+                            <option value="@RoleConstants.SellerRoleId">@RoleConstants.SellerRoleId</option>
+                            <option value="@RoleConstants.AdminRoleId">@RoleConstants.AdminRoleId</option>
+                        </select>
+                    </div>
+                    @if (RoleConstants.IsSeller(Model.Role))
+                    {
+                        <div class="form-check form-switch mb-3">
+                          <input class="form-check-input" @bind="Model.IsVerifiedSeller" type="checkbox" id="verifiedseller-switch">
+                          <label class="form-check-label" for="verifiedseller-switch">Verified Seller</label>
+                        </div>
+                    }                    
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    @if (isLoading)
+                    {
+                        <LoadingButton />
+                    } else
+                    {
+                        <button type="button" class="btn btn-primary" @onclick="SaveChangesAsync">Save changes</button>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

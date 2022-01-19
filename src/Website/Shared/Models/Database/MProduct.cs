@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+using Website.Shared.Enums;
 
 namespace Website.Shared.Models.Database
 {
@@ -26,6 +23,10 @@ namespace Website.Shared.Models.Database
         [Required]
         public string Category { get; set; }
         public int SellerId { get; set; }
+        public int? AdminId { get; set; }
+        public ProductStatus Status { get; set; }
+        public DateTime StatusUpdateDate { get; set; }
+        public bool IsLoaderEnabled { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime LastUpdate { get; set; }
         public DateTime CreateDate { get; set; }
@@ -41,7 +42,6 @@ namespace Website.Shared.Models.Database
         public List<MProductMedia> Medias { get; set; }
         public List<MProductReview> Reviews { get; set; }
         public List<MBranch> Branches { get; set; }
-        
 
         public string GetDescription()
         {
@@ -50,22 +50,6 @@ namespace Website.Shared.Models.Database
             return Description;
         }
 
-        public static MProduct FromProduct(MProduct product)
-        {
-            return new MProduct()
-            {
-                Id = product.Id,
-                Price = product.Price,
-                Description = product.Description,
-                Category = product.Category,
-                GithubUrl = product.GithubUrl,
-                Name = product.Name,
-                ImageId = product.ImageId,
-                IsEnabled = product.IsEnabled,
-                LastUpdate = product.LastUpdate,
-                SellerId = product.SellerId,
-                CreateDate = product.CreateDate
-            };
-        }
+        
     }
 }

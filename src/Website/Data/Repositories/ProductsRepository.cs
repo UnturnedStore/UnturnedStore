@@ -7,7 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Website.Shared.Models;
-using Website.Shared.Models.Database;
+using Website.Shared.Models.Database;   
+using Website.Shared.Params;
 
 namespace Website.Data.Repositories
 {
@@ -18,6 +19,38 @@ namespace Website.Data.Repositories
         public ProductsRepository(SqlConnection connection)
         {
             this.connection = connection;
+        }
+
+        public async Task SetProductEnabledAsync(int productId, bool isEnabled)
+        {
+            const string sql = "UPDATE dbo.Products SET IsEnabled = @isEnabled WHERE Id = @productId;";
+            await connection.ExecuteAsync(sql, new { productId, isEnabled });
+        }
+
+        public async Task<ProductInfo> GetProductInfoAsync(int productId)
+        {
+            const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON u.Id = p.SellerId WHERE p.Id = @productId;";
+            return (await connection.QueryAsync<ProductInfo, Seller, ProductInfo>(sql, (p, u) =>
+            {
+                p.Seller = u;
+                return p;
+            }, new { productId })).FirstOrDefault();
+        }
+
+        public async Task<PrivateProduct> GetPrivateProductAsync(int productId)
+        {
+            const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON u.Id = p.SellerId WHERE p.Id = @productId;";
+            return (await connection.QueryAsync<PrivateProduct, Seller, PrivateProduct>(sql, (p, u) =>
+            {
+                p.Seller = u;
+                return p;
+            }, new { productId })).FirstOrDefault();
+        }
+
+        public async Task UpdateStatusAsync(ChangeProductStatusParams @params)
+        {
+            const string sql = "UPDATE dbo.Products SET Status = @Status, StatusUpdateDate = SYSDATETIME(), AdminId = @AdminId WHERE Id = @ProductId;";
+            await connection.ExecuteAsync(sql, @params);
         }
 
         public async Task<bool> CanReviewProductAsync(int productId, int userId)
@@ -150,10 +183,12 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> AddProductAsync(MProduct product)
         {
-            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled) " +
+            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
+                "Status, IsLoaderEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.GithubUrl, INSERTED.Price, " +
-                "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.LastUpdate, INSERTED.CreateDate " +
-                "VALUES (@Name, @Description, @Category, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled);";
+                "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.Status, INSERTED.IsLoaderEnabled, " +
+                "INSERTED.LastUpdate, INSERTED.CreateDate " +
+                "VALUES (@Name, @Description, @Category, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
             product = await connection.QuerySingleAsync<MProduct>(sql, product);
 
             const string sql1 = "INSERT INTO dbo.Branches (ProductId, Name, Description) " +

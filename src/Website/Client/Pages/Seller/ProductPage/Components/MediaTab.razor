@@ -1,0 +1,47 @@
+﻿
+<div class="mb-3">
+    <div class="input-group mb-2">
+        <label class="input-group-text"><i class="fab fa-youtube"></i></label>
+        <input type="text" class="form-control" placeholder="Youtube Video URL" @bind="YoutubeUrl" />
+        <button class="btn btn-primary" @onclick="AddYoutubeUrl" disabled="@string.IsNullOrEmpty(YoutubeUrl)">Add Youtube Url</button>
+    </div>
+    <h6>OR</h6>
+    <div class="input-group mb-2">
+        <label class="input-group-text"><i class="far fa-image"></i></label>
+        <InputFile accept="image/*" class="form-control" OnChange="@OnInputFileChange" />
+        <label class="input-group-text">Select Image File</label>
+    </div>
+</div>
+
+<ul class="list-group">
+    @foreach (var media in Product.Media)
+    {
+        <li class="list-group-item d-flex align-items-center">
+            @if (media.ImageId != default)
+            {
+                <div class="me-2">
+                    <i class="far fa-image"></i>
+                </div>
+                <div>
+                    <img src="api/images/@media.ImageId" style="max-height: 60px;" />
+                </div>
+            }
+            else
+            {
+                <div class="me-2">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div>
+                    <a href="@media.YoutubeUrl" target="_blank">@media.YoutubeUrl</a>
+                </div>
+            }
+            <div class="ms-auto">
+                <button class="btn btn-danger" @onclick="() => DeleteAsync(media)">Delete</button>
+            </div>
+        </li>
+    }
+</ul>
+
+
+
+

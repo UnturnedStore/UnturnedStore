@@ -68,6 +68,7 @@ namespace Website.Shared.Models.Database
                 TermsAndConditions = user.TermsAndConditions,
                 Biography = user.Biography,
                 DiscordWebhookUrl = user.DiscordWebhookUrl,
+                IsVerifiedSeller = user.IsVerifiedSeller,
                 CreateDate = user.CreateDate
             };
         }

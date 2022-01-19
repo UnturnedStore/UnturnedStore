@@ -1,16 +1,12 @@
-using BlazorTable;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Website.Client.Providers;
 using Website.Client.Services;
+using Website.Components.Extensions;
 
 namespace Website.Client
 {
@@ -30,7 +26,7 @@ namespace Website.Client
             builder.Services.AddTransient<StorageService>();
             builder.Services.AddTransient<ZIPService>();
             builder.Services.AddScoped<UserService>();
-            builder.Services.AddBlazorTable();
+            builder.Services.AddComponentsAndServices();
 
             WebAssemblyHost host = builder.Build();
             await host.Services.GetRequiredService<CartService>().ReloadCartAsync();

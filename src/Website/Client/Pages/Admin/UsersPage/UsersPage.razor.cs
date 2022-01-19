@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Website.Shared.Constants;
 using Website.Shared.Models.Database;
 using Website.Shared.Models;
+using Website.Client.Pages.Admin.UsersPage.Components;
 
 namespace Website.Client.Pages.Admin.UsersPage
 {
@@ -18,26 +19,20 @@ namespace Website.Client.Pages.Admin.UsersPage
         [Inject]
         public HttpClient HttpClient { get; set; }
 
-        public IEnumerable<UserInfo> Users { get; set; }
-        private ICollection<UserInfo> orderedUsers => Users.Where(x => string.IsNullOrEmpty(searchString) 
-            || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) 
-            || x.SteamId == searchString)
-            .OrderByDescending(x => x.CreateDate).ToList();
+        public IEnumerable<MUser> Users { get; set; }
 
-        private string searchString = string.Empty;
 
-        private List<UserInfo> loadingUsers = new List<UserInfo>();
+        public UserModal UserModal { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            Users = await HttpClient.GetFromJsonAsync<UserInfo[]>("api/users");
+            Users = await HttpClient.GetFromJsonAsync<MUser[]>("api/admin/users");
         }
 
-        private async Task UpdateUserRoleAsync(UserInfo user)
+        private async Task ShowUserAsync(MUser user)
         {
-            loadingUsers.Add(user);
-            await HttpClient.PutAsJsonAsync("api/admin/users", user);
-            loadingUsers.Remove(user);
+            await UserModal.ShowUserAsync(user);
+            StateHasChanged();
         }
     }
 }

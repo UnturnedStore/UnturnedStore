@@ -22,7 +22,7 @@ namespace Website.Data.Repositories
         public async Task<IEnumerable<MOrder>> GetOrdersAsync(int sellerId)
         {
             const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.BuyerId = u.Id " +
-                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id WHERE o.SellerId = @sellerId AND Status = 'Completed';";
+                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id WHERE o.SellerId = @sellerId AND o.Status = 'Completed';";
 
             List<MOrder> orders = new List<MOrder>();
             await connection.QueryAsync<MOrder, UserInfo, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
@@ -85,16 +85,22 @@ namespace Website.Data.Repositories
             return products;
         }
 
-        public async Task<MProduct> GetProductAsync(int productId)
+        public async Task<SellerProduct> GetSellerProductAsync(int productId)
         {
-            const string sql = "SELECT p.*, t.* FROM dbo.Products p LEFT JOIN dbo.ProductTabs t ON p.Id = t.ProductId WHERE p.Id = @productId;";
+            const string sql = "SELECT p.*, s.*, a.*, t.* FROM dbo.Products p " +
+                "JOIN dbo.Users s ON s.Id = p.SellerId " +
+                "LEFT JOIN dbo.Users a ON a.Id = p.AdminId " +
+                "LEFT JOIN dbo.ProductTabs t ON p.Id = t.ProductId " +
+                "WHERE p.Id = @productId;";
 
-            MProduct product = null;
-            await connection.QueryAsync<MProduct, MProductTab, MProduct>(sql, (p, t) =>
+            SellerProduct product = null;
+            await connection.QueryAsync<SellerProduct, Seller, UserInfo, MProductTab, SellerProduct>(sql, (p, s, a, t) =>
             {
                 if (product == null)
                 {
                     product = p;
+                    p.Seller = s;
+                    p.Admin = a;
                     product.Tabs = new List<MProductTab>();
                 }
 
@@ -108,7 +114,7 @@ namespace Website.Data.Repositories
                 return product;
 
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
-            product.Medias = (await connection.QueryAsync<MProductMedia>(sql1, product)).ToList();
+            product.Media = (await connection.QueryAsync<MProductMedia>(sql1, product)).ToList();
 
             const string sql2 = "SELECT b.*, v.Id, v.BranchId, v.Name, v.FileName, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate " +
                 "FROM dbo.Branches b LEFT JOIN dbo.Versions v ON v.BranchId = b.Id WHERE b.ProductId = @Id;";
