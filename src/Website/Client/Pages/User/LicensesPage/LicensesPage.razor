@@ -36,10 +36,10 @@
                     <span>@customer.LicenseKey</span>
                 } else
                 {
-                    <a href="javascript:void(0)" @onclick="() => ShowLicense(customer.Id)" style="text-decoration-none">
+                    <a class="text-decoration-none" href="javascript:void(0)" @onclick="() => ShowLicense(customer.Id)">
                         Show License Key
                     </a>
-                }
+                }                
             </DataTableColumn>
         </DataTable>
     </div>
