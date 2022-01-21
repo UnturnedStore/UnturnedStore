@@ -48,6 +48,7 @@ namespace Website.Server.Controllers
             }
 
             Response.Headers.Add("PluginVersion", result.Version.Name);
+            Response.Headers.Add("Changelog", result.Version.Changelog);
             return File(result.Version.Content, result.Version.ContentType, result.Version.FileName);
         }
     }
