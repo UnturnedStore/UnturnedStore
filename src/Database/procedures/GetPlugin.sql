@@ -3,13 +3,17 @@
 	@ProductName NVARCHAR(50),
 	@BranchName NVARCHAR(255),
 	@VersionName NVARCHAR(255),
+	@ServerName NVARCHAR(255),
+	@Host NVARCHAR(255),
+	@Port INT,
 	@ErrorMessage NVARCHAR(MAX) OUTPUT
 AS
 BEGIN
 	SET NOCOUNT ON;
+	DECLARE @customerId AS INT;
 	DECLARE @productId AS INT;
 
-	SELECT @productId = ProductId FROM dbo.ProductCustomers WHERE LicenseKey = @LicenseKey;
+	SELECT @customerId = Id, @productId = ProductId FROM dbo.ProductCustomers WHERE LicenseKey = @LicenseKey;
 
 	IF @productId IS NULL
 	BEGIN
@@ -51,6 +55,17 @@ BEGIN
 	BEGIN
 		SET @ErrorMessage = 'Version not found';
 		RETURN 4;
+	END
+
+	IF EXISTS (SELECT * FROM dbo.CustomerServers WHERE Host = @Host AND Port = @Port)
+	BEGIN
+		UPDATE dbo.CustomerServers SET ServerName = @ServerName, TimesLoaded = TimesLoaded + 1, UpdateDate = SYSDATETIME()
+		WHERE Host = @Host AND Port = @Port;
+	END
+	ELSE
+	BEGIN
+		INSERT INTO dbo.CustomerServers (CustomerId, ServerName, Host, Port) 
+		VALUES (@customerId, @ServerName, @Host, @Port);
 	END
 
 	SELECT * FROM dbo.Versions WHERE Id = @versionId;

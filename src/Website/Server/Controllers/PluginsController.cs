@@ -21,6 +21,25 @@ namespace Website.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> PostPluginAsync([FromBody] GetPluginParams @params)
         {
+            if (@params.ServerInfo == null)
+            {
+                return BadRequest(new GetPluginResult() 
+                { 
+                    ErrorMessage = "ServerInfo is required",
+                    ReturnCode = 101
+                });
+            }
+
+            if (@params.ServerInfo.Port > 65535)
+            {
+                return BadRequest(new GetPluginResult()
+                {
+                    ErrorMessage = "Invalid server port",
+                    ReturnCode = 102
+                });
+            }
+
+            @params.ServerInfo.Host = Request.HttpContext.Connection.RemoteIpAddress.ToString();
             GetPluginResult result = await loaderRepository.GetPluginAsync(@params);
 
             if (result.ReturnCode != 0)
@@ -28,6 +47,7 @@ namespace Website.Server.Controllers
                 return BadRequest(result);
             }
 
+            Response.Headers.Add("PluginVersion", result.Version.Name);
             return File(result.Version.Content, result.Version.ContentType, result.Version.FileName);
         }
     }

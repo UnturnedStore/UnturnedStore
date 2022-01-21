@@ -31,6 +31,9 @@ namespace Website.Data.Repositories
             p.Add(name: "@ProductName", value: @params.ProductName, dbType: DbType.String, size: 255, direction: ParameterDirection.Input);
             p.Add(name: "@BranchName", value: @params.BranchName, dbType: DbType.String, size: 255, direction: ParameterDirection.Input);
             p.Add(name: "@VersionName", value: @params.VersionName, dbType: DbType.String, size: 255, direction: ParameterDirection.Input);
+            p.Add(name: "@ServerName", value: @params.ServerInfo.Name, dbType: DbType.String, size: 255, direction: ParameterDirection.Input);
+            p.Add(name: "@Host", value: @params.ServerInfo.Host, dbType: DbType.String, size: 255, direction: ParameterDirection.Input);
+            p.Add(name: "@Port", value: @params.ServerInfo.Port, dbType: DbType.Int32, direction: ParameterDirection.Input);
             p.Add(name: "@ErrorMessage", dbType: DbType.String, direction: ParameterDirection.Output, size: 4000);
             p.Add(name: "@RetVal", dbType: DbType.Int32, direction: ParameterDirection.ReturnValue);
 
