@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
-using Website.Shared.Models.Database;
 using Website.Shared.Params;
 using Website.Shared.Results;
 
@@ -45,8 +49,21 @@ namespace Website.Server.Controllers
             if (result.ReturnCode != 0)
             {
                 return BadRequest(result);
-            }
+            }            
 
+            using Aes aes = Aes.Create();
+            aes.GenerateKey();
+            aes.GenerateIV();
+
+            using MemoryStream ms = new();
+            using CryptoStream cryptoStream = new(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
+            await cryptoStream.WriteAsync(result.Version.Content, 0, result.Version.Content.Length);
+            await cryptoStream.FlushFinalBlockAsync();
+
+            result.Version.Content = ms.ToArray();
+
+            Response.Headers.Add("DecryptKey", BitConverter.ToString(aes.Key));
+            Response.Headers.Add("DecryptIV", BitConverter.ToString(aes.IV));
             Response.Headers.Add("PluginVersion", result.Version.Name);
             Response.Headers.Add("Changelog", result.Version.Changelog);
             return File(result.Version.Content, result.Version.ContentType, result.Version.FileName);
