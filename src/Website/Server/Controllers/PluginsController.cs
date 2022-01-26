@@ -49,11 +49,15 @@ namespace Website.Server.Controllers
             if (result.ReturnCode != 0)
             {
                 return BadRequest(result);
-            }            
+            }
+
+            byte[] salt = { 82, 122, 43, 30, 47, 97, 4, 124, 31, 63, 108, 69, 83, 86, 125, 88, 98, 77, 111, 79, 71, 73, 100, 106, 8, 20, 95, 27, 38, 32, 61, 88 };
+            var pdb = new Rfc2898DeriveBytes("The_Key", salt);
 
             using Aes aes = Aes.Create();
-            aes.GenerateKey();
-            aes.GenerateIV();
+
+            aes.Key = pdb.GetBytes(32);
+            aes.IV = pdb.GetBytes(16);
 
             using MemoryStream ms = new();
             using CryptoStream cryptoStream = new(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
