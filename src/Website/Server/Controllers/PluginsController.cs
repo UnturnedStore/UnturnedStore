@@ -55,8 +55,8 @@ namespace Website.Server.Controllers
                 return BadRequest(result);            
             }
 
-            byte[] key = ConversionHelper.HexadecimalToBytes(configuration.GetSection("PluginEncryption")["Key"]);
-            byte[] iv = ConversionHelper.HexadecimalToBytes(configuration.GetSection("PluginEncryption")["IV"]);
+            byte[] key = Convert.FromBase64String(configuration.GetSection("PluginEncryption")["Key"]);
+            byte[] iv = Convert.FromBase64String(configuration.GetSection("PluginEncryption")["IV"]);
 
             using Aes aes = Aes.Create();
 
