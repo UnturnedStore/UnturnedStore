@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Security.Cryptography;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Text.Unicode;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
+using Website.Server.Helpers;
 using Website.Shared.Params;
 using Website.Shared.Results;
 
@@ -16,10 +18,12 @@ namespace Website.Server.Controllers
     public class PluginsController : ControllerBase
     {
         private readonly PluginsRepository loaderRepository;
+        private readonly IConfiguration configuration;
 
-        public PluginsController(PluginsRepository loaderRepository)
+        public PluginsController(PluginsRepository loaderRepository, IConfiguration configuration)
         {
             this.loaderRepository = loaderRepository;
+            this.configuration = configuration;
         }
 
         [HttpPost]
@@ -51,8 +55,8 @@ namespace Website.Server.Controllers
                 return BadRequest(result);            
             }
 
-            byte[] key = new byte[] { 82, 122, 43, 30, 47, 97, 4, 124, 31, 63, 108, 69, 83, 86, 125, 88, 98, 77, 111, 79, 71, 73, 100, 106, 8, 20, 95, 27, 38, 32, 61, 88 };
-            byte[] iv = new byte[] { 23, 25, 122, 23, 12, 23, 65, 88, 45, 76, 54, 22, 12, 23, 42, 56 };
+            byte[] key = ConversionHelper.HexadecimalToBytes(configuration.GetSection("PluginEncryption")["Key"]);
+            byte[] iv = ConversionHelper.HexadecimalToBytes(configuration.GetSection("PluginEncryption")["IV"]);
 
             using Aes aes = Aes.Create();
 
@@ -66,8 +70,6 @@ namespace Website.Server.Controllers
 
             result.Version.Content = ms.ToArray();
 
-            Response.Headers.Add("DecryptKey", BitConverter.ToString(aes.Key));
-            Response.Headers.Add("DecryptIV", BitConverter.ToString(aes.IV));
             Response.Headers.Add("PluginVersion", result.Version.Name);
             Response.Headers.Add("Changelog", result.Version.Changelog);
             return File(result.Version.Content, result.Version.ContentType, result.Version.FileName);
