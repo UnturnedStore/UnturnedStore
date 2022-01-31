@@ -12,6 +12,9 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         [Parameter]
         public MProduct Product { get; set; }
 
+        [Parameter]
+        public EventCallback<MProduct> ProductChanged { get; set; }
+
         [Inject]
         public HttpClient HttpClient { get; set; }
 
@@ -35,6 +38,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         {
             isLoading = true;
             await HttpClient.PutAsJsonAsync($"api/products", MProduct.FromProduct(Product));
+            await ProductChanged.InvokeAsync(Product);
             isLoading = false;
         }
     }
