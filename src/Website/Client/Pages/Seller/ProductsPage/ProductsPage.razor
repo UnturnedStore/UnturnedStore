@@ -15,7 +15,7 @@
 <div class="mt-2">
     @if (Products != null)
     {
-        <DataTable TItem="MProduct">
+        <DataTable TItem="MProduct" Data="Products.OrderByDescending(x => x.CreateDate)">
             <DataTableTitle TItem="MProduct">
                 <div class="d-flex align-items-center">
                     <div class="fs-5">
