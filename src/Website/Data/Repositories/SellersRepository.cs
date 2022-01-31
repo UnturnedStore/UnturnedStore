@@ -22,7 +22,7 @@ namespace Website.Data.Repositories
         public async Task<IEnumerable<MOrder>> GetOrdersAsync(int sellerId)
         {
             const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.BuyerId = u.Id " +
-                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id WHERE o.SellerId = @sellerId AND Status = 'Completed';";
+                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id WHERE o.SellerId = @sellerId AND o.Status = 'Completed';";
 
             List<MOrder> orders = new List<MOrder>();
             await connection.QueryAsync<MOrder, UserInfo, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
