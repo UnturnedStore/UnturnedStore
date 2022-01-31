@@ -150,10 +150,12 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> AddProductAsync(MProduct product)
         {
-            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled) " +
+            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
+                "Status, IsLoaderEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.GithubUrl, INSERTED.Price, " +
-                "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.LastUpdate, INSERTED.CreateDate " +
-                "VALUES (@Name, @Description, @Category, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled);";
+                "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.Status, INSERTED.IsLoaderEnabled, " +
+                "INSERTED.LastUpdate, INSERTED.CreateDate " +
+                "VALUES (@Name, @Description, @Category, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
             product = await connection.QuerySingleAsync<MProduct>(sql, product);
 
             const string sql1 = "INSERT INTO dbo.Branches (ProductId, Name, Description) " +

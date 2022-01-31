@@ -1,4 +1,4 @@
-﻿    
+﻿   
 <EditForm Model="Product" OnValidSubmit="SubmitAsync">
     <div class="mb-3">
         <label class="form-label">Name</label>
@@ -31,7 +31,7 @@
 
     <div class="mb-3">
         <label class="form-label">Price</label>
-        <InputNumber class="form-control" @bind-Value="Product.Price" />
+        <input type="number" class="form-control" @bind="Product.Price" @bind:event="oninput" />
         <div class="form-text">Price of your product in USD ($)</div>
     </div>
 
@@ -47,14 +47,35 @@
     }
 
     <div class="mb-3 form-check">
-        <InputCheckbox @bind-Value="Product.IsEnabled" class="form-check-input" id="productIsEnabledCheck" />
-        <label class="form-check-label" for="productIsEnabledCheck">Is Enabled</label>
+        <InputCheckbox @bind-Value="Product.IsLoaderEnabled" class="form-check-input" id="check-enableloader" disabled />
+        <label class="form-check-label" for="check-enableloader">                             
+            Use Loader
+        </label>
+        <div class="form-text">Determines whether your plugin uses UnturnedStore loader. You can't change it.</div>
     </div>
+
+    @if (Product.Status == ProductStatus.Released)
+    {
+        <div class="mb-3 form-check form-switch">                        
+            <label class="form-check-label">
+                <InputCheckbox @bind-Value="Product.IsEnabled" class="form-check-input" />
+                @(Product.IsEnabled ? "Enabled" : "Disabled")
+            </label>
+            <div class="form-text">When you're product is disabled it cannot be purchased and can only be downloaded by existing customers.</div>
+        </div>
+    }
 
     <div class="mb-3">
         <DataAnnotationsValidator />
         <ValidationSummary />
     </div>
+
+    @if (Product.Price == 0)
+    {
+        <div class="mb-3">
+            <div class="text-danger">Product that is using loader can't be free</div>
+        </div>
+    }
 
     @if (isLoading)
     {
@@ -62,43 +83,6 @@
     }
     else
     {
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary" disabled="@IsDisabled">Update</button>
     }
 </EditForm>
-
-
-@code {
-
-    [Parameter]
-    public MProduct Product { get; set; }
-
-    [Inject]
-    public HttpClient HttpClient { get; set; }
-
-
-    private async Task OnInputFileChange(InputFileChangeEventArgs e)
-    {
-        var imageFile = e.File;
-
-        imageFile = await imageFile.RequestImageFileAsync("image/png", 500, 500);
-
-        var image = new MImage();
-
-        image.ContentType = imageFile.ContentType;
-        image.Name = imageFile.Name;
-        image.Content = new byte[imageFile.Size];
-        await imageFile.OpenReadStream(50 * 1024 * 1024).ReadAsync(image.Content);
-
-        var response = await HttpClient.PostAsJsonAsync("api/images", image);
-        Product.ImageId = int.Parse(await response.Content.ReadAsStringAsync());
-    }
-
-    private bool isLoading;
-
-    private async Task SubmitAsync()
-    {
-        isLoading = true;
-        await HttpClient.PutAsJsonAsync($"api/products", MProduct.FromProduct(Product));
-        isLoading = false;
-    }
-}
