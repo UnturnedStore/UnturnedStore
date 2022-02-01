@@ -43,11 +43,18 @@
             <div class="ms-auto">
                 <div class="d-grid gap-2 d-md-block">
                     <a href="/products/@Product.Id" class="btn btn-primary" target="_blank">View product page</a>
-                    
-                    @if (Product.Status == ProductStatus.New && Product.Price > 0)
+                    @if ((Product.Status == ProductStatus.New && Product.Price > 0) || Product.Status == ProductStatus.Rejected)
                     {
                         <button class="btn btn-success ms-md-2">Submit for approval</button>
+                    } 
+                    @if ((Product.Status == ProductStatus.New && Product.Price == 0) || Product.Status == ProductStatus.Approved)
+                    {
+                        <button class="btn btn-success ms-md-2 fw-bold">Release</button>
                     }
+                    @if (Product.Status == ProductStatus.WaitingForApproval)
+                    {
+                        <button class="btn btn-outline-warning ms-md-2 fw-bold" disabled>Waiting for approval</button>
+                    }   
                 </div>                
             </div>
         </div>
