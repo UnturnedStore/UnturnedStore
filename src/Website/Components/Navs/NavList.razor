@@ -3,7 +3,11 @@
     @if (Type == NavType.ListGroup)
     {
         <ListGroupNav NavList="this" />
-    } else
+    } else if (Type == NavType.Tabs)
+    {
+        <TabsNav NavList="this" />
+    }
+    else
     {
         <PillsNav NavList="this" />
     }    

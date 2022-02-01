@@ -9,6 +9,7 @@ namespace Website.Components.Navs
     public enum NavType
     {
         Pills,
-        ListGroup        
+        ListGroup,
+        Tabs
     }
 }

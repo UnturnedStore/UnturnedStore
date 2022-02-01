@@ -19,100 +19,101 @@
 
 @if (Branch != null)
 {
-    <div class="mb-3">
-        <div class="mb-2">
-            <h5>Edit @Branch.Name</h5>
+    <div class="mb-3 card">
+        <div class="card-header fs-5">
+            Overview
         </div>
-        <EditForm Model="@Branch" OnValidSubmit="SubmitAsync">
-            <div class="mb-3">
-                <label class="form-label">Name</label>
-                <InputText class="form-control" @bind-Value="Branch.Name" />
-            </div>
+        <div class="card-body">
+            <EditForm Model="@Branch" OnValidSubmit="SubmitAsync">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <InputText class="form-control" @bind-Value="Branch.Name" />
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Description</label>
-                <InputText class="form-control" @bind-Value="Branch.Description" />
-            </div>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <InputText class="form-control" @bind-Value="Branch.Description" />
+                </div>
 
-            <div class="mb-3 form-check">
-                <InputCheckbox @bind-Value="Branch.IsEnabled" class="form-check-input" id="branchIsEnabledCheck" />
-                <label class="form-check-label" for="branchIsEnabledCheck">Is Enabled</label>
-            </div>
+                <div class="mb-3 form-check">
+                    <InputCheckbox @bind-Value="Branch.IsEnabled" class="form-check-input" id="branchIsEnabledCheck" />
+                    <label class="form-check-label" for="branchIsEnabledCheck">Is Enabled</label>
+                </div>
 
-            <DataAnnotationsValidator />
-            <ValidationSummary />
+                <DataAnnotationsValidator />
+                <ValidationSummary />
 
-            <div class="mb-3">
-                <div class="float-right">
-                    @if (isLoading)
-                    {
-                        <LoadingButton />
-                    }
-                    else
-                    {
-                        @if (Branch.Id == default)
+                <div class="mb-3">
+                    <div class="float-right">
+                        @if (isLoading)
                         {
-                            <button type="submit" class="btn btn-primary">Add</button>
+                            <LoadingButton />
                         }
                         else
                         {
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            @if (Branch.Id == default)
+                            {
+                                <button type="submit" class="btn btn-primary">Add</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary">Update</button>
+                            }
                         }
-                    }
+                    </div>
                 </div>
-            </div>
-        </EditForm>
+            </EditForm>
+        </div>
+        
     </div>
     
 
     @if (Branch.Versions != null)
     {
-        <div class="mb-3">
-            <div class="mb-2 d-flex align-items-center">
-                <h5>Versions</h5>
-                @*<div class="ms-auto">
-                    <button class="btn btn-sm btn-primary">Upload New Version</button>
-                </div>*@
+        <div class="mb-3 card">
+            <div class="card-header fs-5">
+                Versions
             </div>
-
-            <table class="table table-bordered">
-                <caption>Total @Versions.Count Versions</caption>
-                <thead>
-                    <tr>
-                        <th>Version</th>
-                        <th>File Name</th>
-                        <th>Downloads</th>
-                        <th>Create Date</th>
-                        <th>Options</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Virtualize Items="Versions" Context="version">
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <caption>Total @Versions.Count Versions</caption>
+                    <thead>
                         <tr>
-                            <td>@version.Name</td>
-                            <td>@version.FileName</td>
-                            <td>@version.DownloadsCount</td>
-                            <td>@version.CreateDate</td>
-                            <td>
-                                <a class="btn btn-sm btn-outline-primary" href="api/versions/download/@version.Id"><i class="bi bi-download"></i></a>
-                                <button class="btn btn-sm btn-outline-success" @onclick="() => EditVersionAsync(version)">
-                                    <i class="bi bi-pencil-square"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePluginAsync(version)">
-                                    @if (version.IsEnabled)
-                                    {
-                                        <i class="bi bi-toggle-on"></i>
-                                    }
-                                    else
-                                    {
-                                        <i class="bi bi-toggle-off"></i>
-                                    }
-                                </button>
-                            </td>
+                            <th>Version</th>
+                            <th>File Name</th>
+                            <th>Downloads</th>
+                            <th>Create Date</th>
+                            <th>Options</th>
                         </tr>
-                    </Virtualize>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <Virtualize Items="Versions" Context="version">
+                            <tr>
+                                <td>@version.Name</td>
+                                <td>@version.FileName</td>
+                                <td>@version.DownloadsCount</td>
+                                <td>@version.CreateDate</td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-primary" href="api/versions/download/@version.Id"><i class="bi bi-download"></i></a>
+                                    <button class="btn btn-sm btn-outline-success" @onclick="() => EditVersionAsync(version)">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" @onclick="() => TogglePluginAsync(version)">
+                                        @if (version.IsEnabled)
+                                        {
+                                            <i class="bi bi-toggle-on"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-toggle-off"></i>
+                                        }
+                                    </button>
+                                </td>
+                            </tr>
+                        </Virtualize>
+                    </tbody>
+                </table>
+            </div>
         </div>
     }
 }
