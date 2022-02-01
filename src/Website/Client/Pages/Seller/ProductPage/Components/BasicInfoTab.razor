@@ -3,7 +3,7 @@
     <div class="mb-3">
         <label class="form-label">Name</label>
         <InputText class="form-control" @bind-Value="Product.Name" />
-        <div class="form-text">Name should be short up to 20 characters</div>
+        <div class="form-text">The name should be short, up to 20 characters</div>
     </div>
 
     <div class="mb-3">
@@ -46,7 +46,7 @@
         <img class="mb-3" src="api/images/@Product.ImageId" width="250" height="250" />
     }
 
-    <div class="mb-3 form-check">
+    <div class="mb-3 form-check form-switch">
         <InputCheckbox @bind-Value="Product.IsLoaderEnabled" class="form-check-input" id="check-enableloader" disabled />
         <label class="form-check-label" for="check-enableloader">                             
             Use Loader
@@ -61,7 +61,7 @@
                 <InputCheckbox @bind-Value="Product.IsEnabled" class="form-check-input" />
                 @(Product.IsEnabled ? "Enabled" : "Disabled")
             </label>
-            <div class="form-text">When you're product is disabled it cannot be purchased and can only be downloaded by existing customers.</div>
+            <div class="form-text">When your product is disabled it cannot be purchased and can only be downloaded by existing customers.</div>
         </div>
     }
 
@@ -70,10 +70,10 @@
         <ValidationSummary />
     </div>
 
-    @if (IsDisabled)
+    @if (Product.Price == 0 && Product.IsLoaderEnabled)
     {
         <div class="mb-3">
-            <div class="text-danger">Product that is using loader can't be free</div>
+            <div class="text-danger">Products that are using the loader can't be free!</div>
         </div>
     }
 
