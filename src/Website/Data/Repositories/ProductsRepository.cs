@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
+using Website.Shared.Params;
 
 namespace Website.Data.Repositories
 {
@@ -18,6 +19,32 @@ namespace Website.Data.Repositories
         public ProductsRepository(SqlConnection connection)
         {
             this.connection = connection;
+        }
+
+        public async Task<ProductInfo> GetProductInfoAsync(int productId)
+        {
+            const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON u.Id = p.SellerId WHERE p.Id = @productId;";
+            return (await connection.QueryAsync<ProductInfo, Seller, ProductInfo>(sql, (p, u) =>
+            {
+                p.Seller = u;
+                return p;
+            }, new { productId })).FirstOrDefault();
+        }
+
+        public async Task<PrivateProduct> GetPrivateProductAsync(int productId)
+        {
+            const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON u.Id = p.SellerId WHERE p.Id = @productId;";
+            return (await connection.QueryAsync<PrivateProduct, Seller, PrivateProduct>(sql, (p, u) =>
+            {
+                p.Seller = u;
+                return p;
+            }, new { productId })).FirstOrDefault();
+        }
+
+        public async Task UpdateStatusAsync(ChangeProductStatusParams @params)
+        {
+            const string sql = "UPDATE dbo.Products SET Status = @Status, StatusUpdateDate = SYSDATETIME(), AdminId = @AdminId WHERE Id = @ProductId;";
+            await connection.ExecuteAsync(sql, @params);
         }
 
         public async Task<bool> CanReviewProductAsync(int productId, int userId)

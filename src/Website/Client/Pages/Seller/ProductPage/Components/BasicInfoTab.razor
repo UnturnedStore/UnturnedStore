@@ -70,7 +70,7 @@
         <ValidationSummary />
     </div>
 
-    @if (Product.Price == 0)
+    @if (IsDisabled)
     {
         <div class="mb-3">
             <div class="text-danger">Product that is using loader can't be free</div>

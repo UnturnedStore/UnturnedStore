@@ -7,7 +7,10 @@ using Website.Data.Repositories;
 using Website.Server.Services;
 using Website.Shared.Constants;
 using Website.Shared.Enums;
+using Website.Shared.Extensions;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
+using Website.Shared.Params;
 
 namespace Website.Server.Controllers
 {
@@ -22,6 +25,51 @@ namespace Website.Server.Controllers
         {
             this.productsRepository = productsRepository;
             this.discordService = discordService;
+        }
+
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
+        [HttpPost("status")]
+        public async Task<IActionResult> PostProductStatusAsync([FromBody] ChangeProductStatusParams @params)
+        {
+            PrivateProduct product = await productsRepository.GetPrivateProductAsync(@params.ProductId);
+
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && product.Seller.Id != User.Id())
+            {
+                return Unauthorized();
+            }
+
+            if (product.Status == ProductStatus.Released)
+            {
+                return BadRequest();
+            }
+
+            if (@params.Status == ProductStatus.WaitingForApproval)
+            {
+                if (product.Status != ProductStatus.New || product.Price == 0)
+                {
+                    return BadRequest();
+                }
+            }
+
+            if (@params.Status == ProductStatus.Rejected || @params.Status == ProductStatus.Approved)
+            {
+                if (product.Status != ProductStatus.WaitingForApproval || !User.IsInRole(RoleConstants.AdminRoleId))
+                {
+                    return BadRequest();
+                }
+                @params.AdminId = User.Id();
+            }
+
+            if (@params.Status == ProductStatus.Released)
+            {
+                if ((!product.Seller.IsVerifiedSeller && product.Status != ProductStatus.Approved))
+                {
+                    return BadRequest();
+                }
+            }
+
+            await productsRepository.UpdateStatusAsync(@params);
+            return Ok();
         }
 
         [HttpGet]
