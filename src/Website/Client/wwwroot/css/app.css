@@ -1,5 +1,33 @@
-﻿.ql-editor {
-    min-height: 200px;
+﻿.editor-link {
+    border-radius: 0 !important;
+    color: black;
+    font-weight: 600;
+}
+
+
+.editor-link-preview.active {
+    background-color: #f8f8f8 !important;
+}
+
+
+
+.editor-textarea {
+    border-color: #dee2e6 !important;
+    border-radius: 0 !important;
+}
+
+.editor-textarea:focus {
+    border-color: #dee2e6 !important;
+    box-shadow: none !important;
+    outline: 0 none !important;    
+}
+
+.editor-preview {
+    border: 1px solid #ced4da;
+    padding: .375rem .75rem;
+    overflow-y: auto;
+    background-color: #f8f8f8 !important;
+    border-radius: 0 !important;
 }
 
 .cursor-pointer {

@@ -1,17 +1,21 @@
 ﻿@using System.Linq.Expressions
  
-<div id="markdownEditor">
-    <ul class="nav nav-tabs mb-3" id="editorTabs" role="tablist">
+<div id="markdownEditor" class="border border-1">
+    <ul class="nav nav-tabs border-bottom border-1" id="editorTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <a class="nav-link @(isWriteActive ? "active" : "")" id="editor-tab"
+            <a class="editor-link nav-link @(isWriteActive ? "active" : "")" id="editor-tab"
                data-toggle="tab" href="#editor" role="tab"
                aria-controls="editor" aria-selected="true" @onclick:preventDefault 
-               @onclick="() => HandleWriteClick()">Markdown</a>
+               @onclick="() => HandleWriteClick()">
+               Markdown
+           </a>
         </li>
-        <li class="nav-item @(isWriteActive ? "" : "active")" role="presentation">
-            <a class="nav-link" id="preview-tab" data-toggle="tab" href="#preview" role="tab"
+        <li class="nav-item" role="presentation">
+            <a class="editor-link nav-link editor-link-preview @(isWriteActive ? "" : "active")" id="preview-tab" data-toggle="tab" href="#preview" role="tab"
                aria-controls="preview" aria-selected="false" @onclick:preventDefault 
-               @onclick="() => HandlePreviewClick()">Preview</a>
+               @onclick="() => HandlePreviewClick()">
+               Preview
+           </a>
         </li>
         @if (EnableToolbar)
         {
@@ -26,20 +30,27 @@
         }
     </ul>
  
-    <div class="tab-content" id="editorTabContent">
+    <div class="tab-content">
         @if (isWriteActive)
         {
-            <div class="tab-pane fade show active" id="editor" role="tabpanel"
-                 aria-labelledby="editor-tab">
-                <textarea id="@id" value="@Value" @oninput="HandleInput" class="@_fieldCssClasses form-control" 
+            <div class="tab-pane fade show active" id="editor" role="tabpanel" aria-labelledby="editor-tab">
+                <textarea id="@id" value="@Value" @oninput="HandleInput" class="@_fieldCssClasses form-control editor-textarea" 
                     style="height: @heightString; resize: none;"></textarea>
             </div>
         }
         else
         {
-            <div class="tab-pane fade show active" id="editor" role="tabpanel" style="height: @heightString; overflow-y: scroll;">
-                @((MarkupString)_previewText)
+            <div class="tab-pane fade show active editor-preview" role="tabpanel" style="height: @heightString;">
+                @((MarkupString)_previewText)                
             </div>
         }
+    </div>
+    <div class="bg-light p-2 small text-muted d-flex align-items-center">
+        <div>
+            Learn about markdown <a class="text-decoration-none" target="_blank" href="https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax">here</a>
+        </div>
+        <div class="ms-auto">
+            <i class="fab fa-markdown"></i>
+        </div>        
     </div>
 </div>
