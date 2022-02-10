@@ -1,9 +1,6 @@
-﻿using Blazored.TextEditor;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -25,17 +22,11 @@ namespace Website.Client.Pages.User.SettingsPage.Components
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        private BlazoredTextEditor editor;
-
         private async Task SubmitAsync()
         {
             IsLoading = true;
             await IsLoadingChanged.InvokeAsync(IsLoading);
             var user = MUser.FromUser(User);
-
-            user.Biography = await editor.GetHTML();
-            if (user.Biography == "<p><br></p>")
-                user.Biography = null;
 
             if (avatarPreview != null)
             {

@@ -1,15 +1,8 @@
-﻿using Blazored.TextEditor;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Website.Client.Providers;
 using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.User.SettingsPage

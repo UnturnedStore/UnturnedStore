@@ -1,9 +1,6 @@
-﻿using Blazored.TextEditor;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -29,14 +26,18 @@ namespace Website.Client.Pages.User.CreateMessagePage
 
         protected override async Task OnParametersSetAsync()
         {
-            Message = defaultMessage;
+            SetDefault();
             var response = await HttpClient.GetAsync("api/users/" + UserId);
             statusCode = response.StatusCode;
             if (statusCode == HttpStatusCode.OK)
                 User = await response.Content.ReadFromJsonAsync<MUser>();
         }
 
-        private BlazoredTextEditor editor;
+        private void SetDefault()
+        {
+            Message = defaultMessage;
+            Reply = defaultReply;
+        }
 
         public MMessage Message { get; set; }
         private MMessage defaultMessage => new MMessage()
@@ -44,29 +45,33 @@ namespace Website.Client.Pages.User.CreateMessagePage
             Replies = new List<MMessageReply>(),
             ToUserId = UserId
         };
+        public MMessageReply Reply { get; set; }
+        private MMessageReply defaultReply => new MMessageReply()
+        {
+            Content = null
+        };
 
         private bool isLoading = false;
         private string message = null;
         public async Task SubmitAsync()
         {
-            string content = await editor.GetHTML();
-            if (content == "<p><br></p>")
+            if (string.IsNullOrEmpty(Reply.Content))
             {
                 message = "You cannot send empty message";
                 return;
-            }
+            }                
+
             message = null;
-
             isLoading = true;
-            Message.Replies.Add(new MMessageReply()
-            {
-                Content = await editor.GetHTML()
-            });
 
-            var response = await HttpClient.PostAsJsonAsync("api/messages", Message);
-            var msg = await response.Content.ReadFromJsonAsync<MMessage>();
-            Message = defaultMessage;
+            Message.Replies.Add(Reply);
+
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/messages", Message);
+            MMessage msg = await response.Content.ReadFromJsonAsync<MMessage>();
+            
+            SetDefault();
             NavigationManager.NavigateTo($"/messages/{msg.Id}");
+
             isLoading = false;
         }
     }

@@ -8,6 +8,7 @@ using Website.Client.Services;
 using Website.Shared.Constants;
 using Website.Shared.Models.Database;
 using Website.Shared.Models.Children;
+using Website.Components.Helpers;
 
 namespace Website.Client.Pages.Home.UserPage
 {
@@ -34,6 +35,7 @@ namespace Website.Client.Pages.Home.UserPage
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 User = await response.Content.ReadFromJsonAsync<UserProfile>();
+                User.Biography = MarkdownHelper.ParseToHtml(User.Biography);
             }
         }
         

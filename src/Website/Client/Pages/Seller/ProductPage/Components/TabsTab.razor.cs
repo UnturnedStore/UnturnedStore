@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using System.Net.Http;
 using System.Net.Http.Json;
 using Microsoft.JSInterop;
-using Blazored.TextEditor;
 using Website.Shared.Models.Database;
 using Website.Shared.Models;
 
@@ -22,8 +21,6 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
 
         private MProductTab Tab { get; set; }
 
-        private BlazoredTextEditor editor;
-        private string htmlString => Tab.Content;
         private void EditTab(MProductTab tab)
         {
             Tab = tab;
@@ -49,7 +46,6 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         private async Task SubmitAsync()
         {
             isLoading = true;
-            Tab.Content = await editor.GetHTML();
             if (Tab.Id == default)
             {
                 Tab.ProductId = Product.Id;

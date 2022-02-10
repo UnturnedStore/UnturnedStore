@@ -1,4 +1,6 @@
 ﻿@page "/messages/{MessageId:int}"
+@using Website.Components.Helpers
+@using Website.Components.MarkdownEditor
 
 <Title Value="@string.Join(" - ", $"Message #{MessageId}", "Unturned Store")"></Title>
 
@@ -45,7 +47,7 @@
                 </div>
                 <div class="card-body">
                     <div>
-                        @(new MarkupString(reply.Content))
+                        @(new MarkupString(MarkdownHelper.ParseToHtml(reply.Content)))
                     </div>
                     <div class="text-muted">
                         @reply.CreateDate
@@ -65,35 +67,7 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <BlazoredTextEditor @ref="editor" DebugLevel="error">
-                            <ToolbarContent>
-                                <select class="ql-header">
-                                    <option selected=""></option>
-                                    <option value="1"></option>
-                                    <option value="2"></option>
-                                    <option value="3"></option>
-                                    <option value="4"></option>
-                                    <option value="5"></option>
-                                </select>
-                                <span class="ql-formats">
-                                    <button class="ql-bold"></button>
-                                    <button class="ql-italic"></button>
-                                    <button class="ql-underline"></button>
-                                    <button class="ql-strike"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <select class="ql-color"></select>
-                                    <select class="ql-background"></select>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-list" value="ordered"></button>
-                                    <button class="ql-list" value="bullet"></button>
-                                </span>
-                                <span class="ql-formats">
-                                    <button class="ql-code-block"></button>
-                                </span>
-                            </ToolbarContent>
-                        </BlazoredTextEditor>
+                        <MarkdownEditor @bind-Value="Reply.Content" EnableToolbar="false" />
                     </div>
 
                     <div class="mb-3 d-flex align-content-center">

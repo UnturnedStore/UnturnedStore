@@ -1,4 +1,5 @@
-﻿
+﻿@using Website.Components.MarkdownEditor
+
 <div class="mb-3">
     <h4>Seller Settings</h4>
 </div>
@@ -44,43 +45,9 @@
         }
     </div>
 
-
-
-
     <div class="mb-3">
         <label class="form-label">Terms & Conditions</label>
-        <BlazoredTextEditor @ref="editor" DebugLevel="error">
-            <ToolbarContent>
-                <select class="ql-header">
-                    <option selected=""></option>
-                    <option value="1"></option>
-                    <option value="2"></option>
-                    <option value="3"></option>
-                    <option value="4"></option>
-                    <option value="5"></option>
-                </select>
-                <span class="ql-formats">
-                    <button class="ql-bold"></button>
-                    <button class="ql-italic"></button>
-                    <button class="ql-underline"></button>
-                    <button class="ql-strike"></button>
-                </span>
-                <span class="ql-formats">
-                    <select class="ql-color"></select>
-                    <select class="ql-background"></select>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" value="ordered"></button>
-                    <button class="ql-list" value="bullet"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-code-block"></button>
-                </span>
-            </ToolbarContent>
-            <EditorContent>
-                @(new MarkupString(User.TermsAndConditions))
-            </EditorContent>
-        </BlazoredTextEditor>
+        <MarkdownEditor @bind-Value="User.TermsAndConditions" EnableToolbar="false" />
         <div class="form-text">Terms & Conditions of purchasing your products</div>
     </div>
 
