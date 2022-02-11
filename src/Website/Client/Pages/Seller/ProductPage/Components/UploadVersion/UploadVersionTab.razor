@@ -1,0 +1,73 @@
+﻿@using Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Inputs
+@using Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modals
+@using Website.Components.Alerts
+
+
+
+<div class="mb-3">
+    <AlertBox Group="uploadversiontab" ID="uploadversiontab-main" />
+
+    <EditForm Model="Version" OnValidSubmit="SubmitAsync">
+        <div class="mb-3">
+            <label class="form-label">Version Number</label>
+            <InputText class="form-control" @bind-Value="Version.Name" placeholder="1.0.0" style="max-width: 500px;" required />
+            <div class="form-text">Keep this short and in a certain style, preferred: Major.Minor.Patch</div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Branch</label>
+            <InputSelect class="form-select" @bind-Value="Version.BranchId">
+                @foreach (var branch in Product.Branches)
+                {
+                    <option value="@branch.Id">@branch.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Changelog</label>
+            <InputTextArea class="form-control" @bind-Value="Version.Changelog" required />
+        </div>
+
+                
+        <div class="mb-3">
+            
+            <VersionZipFileInput @bind-Version="Version" IsDisabled="@Product.IsLoaderEnabled" />
+
+            @if (Product.IsLoaderEnabled)
+            {
+                <div class="text-muted fw-bold mb-2">
+                    Because your product uses loader, you must plugin template form!
+                </div>
+            }
+            <div>
+                <button class="btn btn-dark btn-sm" type="button" @onclick="() => PluginModal.ShowAsync()">
+                    Show Plugin Template Form
+                </button>
+            </div>
+        </div>
+
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3 d-flex">
+            <div class="ms-auto">
+                @if (isLoading)
+                {
+                    <LoadingButton />
+                }
+                else
+                {
+                    <button class="btn btn-primary" type="submit" disabled="@IsDisabled">
+                        Upload New Version
+                    </button>
+                }
+            </div>
+            
+        </div>
+    </EditForm>
+</div>
+
+
+<PluginUploadModal @ref="PluginModal" @bind-Version="Version" OnZipArchive="StateHasChanged"  />

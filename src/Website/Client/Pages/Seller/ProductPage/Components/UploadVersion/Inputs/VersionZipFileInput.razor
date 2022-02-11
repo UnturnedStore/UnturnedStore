@@ -1,0 +1,23 @@
+﻿<div class="mb-1">
+    <label class="form-label">ZIP Archive file</label>
+    <InputFile id="zip-archive-input" class="form-control" OnChange="OnFileChange" accept=".zip" disabled="@IsDisabled" />
+    
+
+    
+    @if (Version.Content != null)
+    {
+        <ul class="list-group mt-2 border border-1">
+            <li class="list-group-item d-flex align-items-baseline fs-5">
+                <div>
+                    <i class="fas fa-file-archive"></i>
+                </div>
+                <div class="ms-2">
+                    @Version.FileName
+                </div>
+            </li>
+        </ul>
+    }
+
+    <div class="form-text">The .zip file containing the plugin and libraries</div>
+
+</div>

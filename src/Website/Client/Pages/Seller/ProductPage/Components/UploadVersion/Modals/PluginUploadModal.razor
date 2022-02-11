@@ -1,0 +1,81 @@
+﻿@using Website.Components.Alerts
+<div class="modal fade" id="@nameof(PluginUploadModal)" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Plugin & Libraries</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" disabled="@isZipping"></button>
+            </div>
+            <div class="modal-body">
+                <AlertBox Group="pluginuploadmodal" ID="pluginuploadmodal-main" />
+
+                <div class="mb-3">
+                    <label class="form-label">Plugin Assembly</label>
+                    <InputFile class="form-control" OnChange="OnPluginFileChange" type="file" accept=".dll" disabled="@isZipping" />
+                    <div class="form-text">The .dll file of your plugin assembly</div>
+
+                    <div class="mt-2">
+                        <ul class="list-group">
+                            @if (Plugin != null)
+                            {
+                                <li class="list-group-item d-flex align-items-baseline">
+                                    <div>
+                                        <i class="fas fa-file-code"></i>
+                                    </div>
+                                    <div class="ms-2">
+                                        @Plugin.Name
+                                    </div>                           
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Libraries</label>
+                    <InputFile class="form-control" OnChange="OnPluginLibraryFileChange" accept=".dll" multiple disabled="@isZipping" />
+                    <div class="form-text">The .dll files of your libraries required for plugin to work</div>
+                
+                    <div class="mt-2">
+                        <ul class="list-group">
+                            @foreach (var library in Libraries)
+                            {
+                                <li class="list-group-item d-flex align-items-baseline">
+                                    <div>
+                                        <i class="fas fa-file"></i>
+                                    </div>
+                                    <div class="ms-2">
+                                        @library.Name
+                                    </div>
+                                    <button class="ms-auto btn btn-sm btn-outline-danger" type="button" @onclick="() => Libraries.Remove(library)" disabled="@isZipping">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                @if (isZipping)
+                {
+                    <button class="btn btn-primary" type="button" disabled>
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Zipping plugin and libraries...
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-primary" type="button" @onclick="ZipPluginAsync" disabled="@isDisabled">
+                        ZIP Archive
+                    </button>
+                }
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+

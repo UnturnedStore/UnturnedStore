@@ -1,5 +1,6 @@
 ﻿@page "/seller/products/{ProductId:int}" 
 @using Website.Client.Pages.Seller.ProductPage.Components
+@using Website.Client.Pages.Seller.ProductPage.Components.UploadVersion
 @using Website.Components.Alerts
 @using Website.Components.Navs
 
@@ -16,8 +17,7 @@
             } else
             {
                 <span>@ProductId</span>
-            }
-            
+            }            
         </li>
     </ol>
 </nav>
@@ -97,18 +97,30 @@
         <div>
             <NavList Type="NavType.Tabs">
                 <NavItem Name="Basic Information" Icon="fas fa-info" >
-                    <BasicInfoTab @bind-Product="Product" />
+                    <div class="px-md-3">
+                        <BasicInfoTab @bind-Product="Product" />
+                    </div>                    
                 </NavItem>
                 <NavItem Name="Tabs" Icon="fas fa-list">
-                    <TabsTab Product="Product" />
+                    <div class="px-md-3">
+                        <TabsTab Product="Product" />
+                    </div>                    
                 </NavItem>
                 <NavItem Name="Media" Icon="far fa-images">
-                    <MediaTab Product="Product" />
+                    <div class="px-md-3">
+                        <MediaTab Product="Product" />
+                    </div>                    
                 </NavItem>
                 <NavItem Name="Branches" Icon="fas fa-code-branch">
-                    <BranchesTab Product="Product" />
+                    <div class="px-md-3">
+                        <BranchesTab Product="Product" />
+                    </div>                    
                 </NavItem>
-                <NavItem Name="Upload Version" Icon="fas fa-upload" URL="@($"/seller/products/{ProductId}/uploadversion")" />
+                <NavItem Name="Upload Version" Icon="fas fa-upload">
+                    <div class="px-md-3">
+                        <UploadVersionTab Product="Product" />
+                    </div>                    
+                </NavItem>
             </NavList>
                
         </div>
