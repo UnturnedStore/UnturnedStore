@@ -9,6 +9,18 @@
 
     <EditForm Model="Version" OnValidSubmit="SubmitAsync">
         <div class="mb-3">
+            Latest Version: 
+            @if (latestVersion != null)
+            {
+                <span class="fw-bold">@latestVersion.Name</span> <span class="text-muted small">(@latestVersion.CreateDate)</span>
+            } else
+            {
+                <span>not found</span>
+            }
+        </div>
+        <div class="dropdown-divider"></div>
+
+        <div class="mb-3">
             <label class="form-label">Version Number</label>
             <InputText class="form-control" @bind-Value="Version.Name" placeholder="1.0.0" style="max-width: 500px;" required />
             <div class="form-text">Keep this short and in a certain style, preferred: Major.Minor.Patch</div>

@@ -29,6 +29,9 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion
             BranchId = Product.Branches.FirstOrDefault()?.Id ?? 0
         };
 
+        private MBranch currentBranch => Product.Branches.First(x => x.Id == Version.BranchId);
+        private MVersion latestVersion => currentBranch.Versions.OrderByDescending(x => x.CreateDate).FirstOrDefault();
+
         protected override void OnInitialized()
         {
             Version = defaultVersion;
@@ -45,12 +48,11 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion
             var response = await HttpClient.PostAsJsonAsync("api/versions", Version);
 
             var version = await response.Content.ReadFromJsonAsync<MVersion>();
-            var branch = Product.Branches.First(x => x.Id == version.BranchId);
 
-            branch.Versions.Add(version);
+            currentBranch.Versions.Add(version);
 
             AlertService.ShowAlert("uploadversiontab-main",
-                $"Successfully uploaded new version <strong>{branch.Name}</strong> <strong>{Version.Name}</strong>!", AlertType.Success);
+                $"Successfully uploaded new version <strong>{currentBranch.Name}</strong> <strong>{Version.Name}</strong>!", AlertType.Success);
 
             Version = defaultVersion;
             isLoading = false;            
