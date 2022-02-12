@@ -30,6 +30,9 @@ namespace Website.Components.MarkdownEditor
         [Parameter]
         public string id { get; set; }
 
+        [Parameter]
+        public bool DisableHtml { get; set; } = true;
+
         [CascadingParameter]
         private EditContext CascadedEditContext { get; set; }
 
@@ -60,14 +63,14 @@ namespace Website.Components.MarkdownEditor
         {
             await ValueChanged.InvokeAsync(args.Value.ToString());
 
-            _previewText = MarkdownHelper.ParseToHtml(args.Value.ToString());
+            _previewText = MarkdownHelper.ParseToHtml(args.Value.ToString(), DisableHtml);
 
             CascadedEditContext?.NotifyFieldChanged(_fieldIdentifier);            
         }
 
         private void UpdatePreview()
         {
-            _previewText = MarkdownHelper.ParseToHtml(Value.ToString());
+            _previewText = MarkdownHelper.ParseToHtml(Value.ToString(), DisableHtml);
         }
 
         private void HandleBoldClick()
