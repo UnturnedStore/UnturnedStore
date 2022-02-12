@@ -2,12 +2,14 @@
 using Markdig.Parsers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Components.Helpers;
 
 namespace Website.Components.MarkdownEditor
 {
@@ -58,14 +60,14 @@ namespace Website.Components.MarkdownEditor
         {
             await ValueChanged.InvokeAsync(args.Value.ToString());
 
-            _previewText = Markdown.ToHtml(args.Value.ToString());
+            _previewText = MarkdownHelper.ParseToHtml(args.Value.ToString());
 
             CascadedEditContext?.NotifyFieldChanged(_fieldIdentifier);            
         }
 
         private void UpdatePreview()
         {
-            _previewText = Markdown.ToHtml(Value.ToString());
+            _previewText = MarkdownHelper.ParseToHtml(Value.ToString());
         }
 
         private void HandleBoldClick()

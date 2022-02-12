@@ -14,6 +14,7 @@ namespace Website.Components.Helpers
             MarkdownPipeline pipeline = new MarkdownPipelineBuilder()
                     .UseEmojiAndSmiley()
                     .UseAdvancedExtensions()
+                    .DisableHtml()
                     .Build();
 
             return Markdown.ToHtml(markdown, pipeline);
