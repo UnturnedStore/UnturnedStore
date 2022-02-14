@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Website.Client.Services;
 using Website.Shared.Models.Database;
 
-namespace Website.Client.Pages.Home.IndexPage
+namespace Website.Client.Pages.Home.ProductsPage
 {
-    public partial class Index
+    public partial class ProductsPage
     {
         [Inject]
         public HttpClient HttpClient { get; set; }
@@ -23,11 +23,13 @@ namespace Website.Client.Pages.Home.IndexPage
 
         private IEnumerable<MProduct> SearchedProducts => Products
             .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
-            .Where(x => string.IsNullOrEmpty(searchString) 
+            .Where(x => string.IsNullOrEmpty(searchString)
             || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-            || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+            || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || x.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase));
 
-        private IEnumerable<MProduct> OrderedProducts {
+        private IEnumerable<MProduct> OrderedProducts
+        {
             get
             {
                 switch (orderBy)
@@ -66,10 +68,12 @@ namespace Website.Client.Pages.Home.IndexPage
             if (searchCategory == "Rocket Plugin")
             {
                 return "fas fa-rocket";
-            } else if (searchCategory == "OpenMod Plugin")
+            }
+            else if (searchCategory == "OpenMod Plugin")
             {
                 return "fas fa-plug";
-            } else
+            }
+            else
             {
                 return "far fa-folder";
             }
@@ -79,7 +83,7 @@ namespace Website.Client.Pages.Home.IndexPage
         {
             Products = await HttpClient.GetFromJsonAsync<MProduct[]>("api/products");
         }
-            
+
         private EOrderBy orderBy = EOrderBy.Newest;
 
         public enum EOrderBy

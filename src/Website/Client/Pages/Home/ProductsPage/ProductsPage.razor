@@ -1,0 +1,58 @@
+﻿@page "/products"
+@using Website.Client.Shared.Components.Products
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active">Products</li>
+    </ol>
+</nav>
+
+<div class="mb-3">
+    <h4>List of products</h4>
+    <div class="dropdown-divider"></div>
+</div>
+
+@if (Products != null)
+{
+    <div class="row">
+        <div class="col-md-3 mb-md-0 mb-3">
+            <div class="mb-2 text-muted">
+                Results count: @OrderedProducts.Count()
+            </div>
+            <div class="mb-2">
+                <label class="form-label text-muted small mb-1">Order by</label>
+                <select class="form-select" @bind="orderBy">
+                    <option value="@EOrderBy.Newest">Newest</option>
+                    <option value="@EOrderBy.MostDownloads">Most Downloads</option>
+                    <option value="@EOrderBy.BestRated">Best Rated</option>
+                    <option value="@EOrderBy.PriceAsc">Price Ascending</option>
+                    <option value="@EOrderBy.PriceDesc">Price Descending</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label text-muted small mb-1">Category</label>
+                <select class="form-select" @bind="searchCategory">
+                    <option value="@string.Empty">Any</option>
+                    <option value="Rocket Plugin">Rocket Plugin</option>
+                    <option value="OpenMod Plugin">OpenMod Plugin</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" class="form-control" placeholder=" Search by Name or Author" @bind="searchString" @bind:event="oninput" />
+            </div>            
+            @foreach (MProduct product in OrderedProducts)
+            {
+                <ProductItem Product="product" />
+            }
+        </div>
+    </div>
+    
+} else
+{
+    <Progressbar />
+}
+

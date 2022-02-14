@@ -1,0 +1,35 @@
+﻿<div class="p-3 d-flex align-items-center border border-1 my-2">
+    <div>
+        <img src="/api/images/@Product.ImageId" style="max-width: 90px;" />
+    </div>
+    <div class="ms-3 h-100">
+        <div>
+            <a class="text-decoration-none fs-5" href="/products/@Product.Id">@Product.Name</a> 
+            <div class="d-md-inline d-block">
+                by <a class="text-decoration-none fw-bold text-muted" href="/users/@Product.SellerId">@Product.Seller.Name</a>
+                @if (Product.Seller.IsVerifiedSeller)
+                {
+                    <i class="bi bi-patch-check-fill text-success ms-1" title="Verified Seller"></i>
+                }
+            </div>
+            
+        </div>
+        <div>
+            <ProductRating Product="Product" />
+        </div>
+        <div class="d-none d-md-block" style="font-size: 14px;">
+            @Product.GetDescription()
+        </div>
+    </div>
+    <div class="ms-auto text-end">
+        <div class="text-nowrap">
+            <div class="">
+                <span class="fs-5">@Product.GetPrice()</span>
+            </div>
+            <div class="d-md-block d-none">
+                <span><i class="bi bi-download"></i> @Product.TotalDownloadsCount</span>
+            </div>
+        </div>
+    </div>
+
+</div>

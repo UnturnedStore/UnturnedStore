@@ -50,6 +50,12 @@ namespace Website.Shared.Models.Database
             return Description;
         }
 
+        public string GetPrice()
+        {
+            if (Price == 0)
+                return "Free";
+            return $"${Price.ToString("N2")}";
+        }
         
     }
 }
