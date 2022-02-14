@@ -35,7 +35,7 @@ namespace Website.Client.Pages.Home.ProductsPage
                 switch (orderBy)
                 {
                     case EOrderBy.MostDownloads:
-                        return SearchedProducts.OrderByDescending(x => x.TotalDownloadsCount);
+                        return SearchedProducts.OrderByDescending(x => x.TotalDownloadsCount + x.ServersCount);
                     case EOrderBy.BestRated:
                         return SearchedProducts.OrderByDescending(x => x.AverageRating).ThenByDescending(x => x.RatingsCount);
                     case EOrderBy.PriceAsc:

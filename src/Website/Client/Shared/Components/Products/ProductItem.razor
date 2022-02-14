@@ -15,8 +15,29 @@
                 }
             </div>            
         </div>
-        <div>
-            <ProductRating Product="Product" />
+        <div class="d-flex align-items-end">
+            <div>
+                <ProductRating Product="Product" />
+            </div>
+            
+            @if (Product.Category == "Rocket Plugin")
+            {
+                <div class="small ms-1 text-muted" title="Rocket Plugin">
+                    <i class="fas fa-rocket"></i>
+                </div>
+            }
+            @if (Product.Category == "OpenMod Plugin")
+            {
+                <div class="small ms-1 text-muted" title="OpenMod Plugin">
+                    <i class="fas fa-plug"></i>
+                </div>
+            }
+            @if (Product.IsLoaderEnabled)
+            {
+                <div class="small ms-2 text-black-50" title="Loader Required">
+                    <i class="fas fa-cloud-download-alt"></i>
+                </div>
+            }
         </div>
         <div class="d-none d-md-block" style="font-size: 14px;">
             @Product.GetDescription()
@@ -27,8 +48,15 @@
             <div class="">
                 <span class="fs-5">@Product.GetPrice()</span>
             </div>
-            <div class="d-md-block d-none">
-                <span><i class="bi bi-download"></i> @Product.TotalDownloadsCount</span>
+            <div class="d-md-block d-none text-muted small">
+                @if (Product.IsLoaderEnabled)
+                {
+                    <span><i class="fas fa-server"></i> @Product.ServersCount</span>
+                } else
+                {
+                    <span><i class="fas fa-download"></i> @Product.TotalDownloadsCount</span>
+                }
+
             </div>
         </div>
     </div>

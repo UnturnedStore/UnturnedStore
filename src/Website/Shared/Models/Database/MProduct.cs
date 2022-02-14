@@ -34,6 +34,7 @@ namespace Website.Shared.Models.Database
         public int TotalDownloadsCount { get; set; }
         public byte AverageRating { get; set; }
         public int RatingsCount { get; set; }
+        public int ServersCount { get; set; }
 
         public Seller Seller { get; set; }
         public UserInfo Customer { get; set; }

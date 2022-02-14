@@ -75,7 +75,6 @@
     <Build Include="procedures\GetProducts.sql" />
     <Build Include="procedures\GetUserProducts.sql" />
     <Build Include="procedures\GetUserProfile.sql" />
-    <Build Include="procedures\GetPlugin.sql" />
     <Build Include="tables\CustomerServers.sql" />
     <Build Include="procedures\GetHomeStatistics.sql" />
   </ItemGroup>

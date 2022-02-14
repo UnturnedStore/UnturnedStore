@@ -18,7 +18,16 @@ BEGIN
 		FROM dbo.Products p 
 		LEFT JOIN dbo.ProductReviews r ON p.Id = r.ProductId 
 		GROUP BY ProductId
+	),
+	CTE_ProductServers AS (
+		SELECT
+			ProductId,
+			ServersCount = COUNT(*)
+		FROM dbo.CustomerServers cs 
+		JOIN dbo.ProductCustomers c ON c.Id = cs.CustomerId
+		GROUP BY ProductId
 	)
+
 	SELECT 
 		p.Id,
 		p.Name,
@@ -29,6 +38,7 @@ BEGIN
 		p.Price,
 		p.SellerId,
 		p.IsEnabled,
+		p.IsLoaderEnabled,
 		p.LastUpdate,
 		p.CreateDate,
 		TotalDownloadsCount = ISNULL(d.TotalDownloadsCount, 0), 
@@ -45,6 +55,7 @@ BEGIN
 	JOIN dbo.Users u ON p.SellerId = u.Id 
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
+	LEFT JOIN CTE_ProductServers s ON s.ProductId = p.Id
 	WHERE
 		(p.Status = 4 AND p.IsEnabled = 1)		
 		OR EXISTS (
