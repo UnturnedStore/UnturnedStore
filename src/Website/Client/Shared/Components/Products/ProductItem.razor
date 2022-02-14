@@ -1,6 +1,8 @@
 ﻿<div class="p-3 d-flex align-items-center border border-1 my-2">
     <div>
-        <img src="/api/images/@Product.ImageId" style="max-width: 90px;" />
+        <a href="/products/@Product.Id">
+            <img src="/api/images/@Product.ImageId" style="max-width: 90px;" />
+        </a>        
     </div>
     <div class="ms-3 h-100">
         <div>
@@ -11,8 +13,7 @@
                 {
                     <i class="bi bi-patch-check-fill text-success ms-1" title="Verified Seller"></i>
                 }
-            </div>
-            
+            </div>            
         </div>
         <div>
             <ProductRating Product="Product" />

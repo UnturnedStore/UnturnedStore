@@ -16,7 +16,6 @@ namespace Website.Data.Extensions
             services.AddScoped<OrdersRepository>();
             services.AddScoped<MessagesRepository>();
             services.AddScoped<AdminRepository>();
-            services.AddScoped<PluginsRepository>();
         }
     }
 }
