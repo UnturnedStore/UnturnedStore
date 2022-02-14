@@ -63,7 +63,7 @@ namespace Website.Server.Controllers
 
             if (@params.Status == ProductStatus.Released)
             {
-                if ((!product.Seller.IsVerifiedSeller && product.Status != ProductStatus.Approved))
+                if (product.Price > 0 && !product.Seller.IsVerifiedSeller && product.Status != ProductStatus.Approved)
                 {
                     return BadRequest();
                 }

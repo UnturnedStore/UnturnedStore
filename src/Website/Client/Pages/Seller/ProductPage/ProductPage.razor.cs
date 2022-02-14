@@ -115,7 +115,7 @@ namespace Website.Client.Pages.Seller.ProductPage
                 return true;
             } else
             {
-                AlertService.ShowAlert("product-main", $"An error occurated", AlertType.Danger);
+                AlertService.ShowAlert("product-main", $"An error occurated {response.StatusCode}", AlertType.Danger);
             }
             return false;
         }
