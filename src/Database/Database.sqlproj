@@ -77,6 +77,7 @@
     <Build Include="procedures\GetUserProfile.sql" />
     <Build Include="procedures\GetPlugin.sql" />
     <Build Include="tables\CustomerServers.sql" />
+    <Build Include="procedures\GetHomeStatistics.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

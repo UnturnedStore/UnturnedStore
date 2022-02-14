@@ -18,46 +18,45 @@
     <div style="margin-top: -30px;">
         <h4 class="fw-bold unturned-font">Unturned Store</h4>
         <h6 class="text-muted">Marketplace of products for Unturned</h6>
+        <div class="fs-5">
+            <a class="text-decoration-none" href="/products">
+                <i class="fas fa-store"></i> List of Products
+            </a>
+        </div>
     </div>
     
 </div>
 
-@if (Products != null)
+@if (Statistics != null)
 {
-    <div class="mb-3 mt-5 d-flex align-items-center justify-content-center">
-        <div class="input-group" style="max-width: 600px;">
-            <span class="input-group-text">Search Product</span>
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle-split align-middle text-center" data-bs-toggle="dropdown" aria-expanded="false" style="width: 35px;">
-                <i class="@GetCategoryIcon()"></i>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item @Active(string.Empty)" @onclick="() => ChangeCategory(string.Empty)" href="javascript:void(0)">Any</a></li>
-                <li><a class="dropdown-item @Active("Rocket Plugin")" @onclick="@(() => ChangeCategory("Rocket Plugin"))" href="javascript:void(0)">Rocket Plugin</a></li>
-                <li><a class="dropdown-item @Active("OpenMod Plugin")" @onclick="@(() => ChangeCategory("OpenMod Plugin"))" href="javascript:void(0)">OpenMod Plugin</a></li>
-            </ul>
-            <input type="text" class="form-control" placeholder="Name or Author" @bind="searchString" @bind:event="oninput" />
-
+    <div class="mb-3 row">
+        <div class="col-md-4 mb-2">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title">@Statistics.ProductsCount</h5>
+                    <p class="card-text text-muted">Products</p>
+                </div>
+            </div>
         </div>
-        <div class="ms-1">
-            <select class="form-select" @bind="orderBy">
-                <option value="@EOrderBy.Newest">Newest</option>
-                <option value="@EOrderBy.MostDownloads">Most Downloads</option>
-                <option value="@EOrderBy.BestRated">Best Rated</option>
-                <option value="@EOrderBy.PriceAsc">Price Ascending</option>
-                <option value="@EOrderBy.PriceDesc">Price Descending</option>
-            </select>
+        <div class="col-md-4 mb-2">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title">@Statistics.UsersCount</h5>
+                    <p class="card-text text-muted">Users</p>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="mb-3">
-        <div class="row row-cols-1 row-cols-sm-2 justify-content-center">
-            @foreach (var product in OrderedProducts)
-            {
-                <ProductCard Product="product" Seller="product.Seller" />
-            }
+        <div class="col-md-4 mb-2">
+            <div class="card shadow-sm text-center">
+                <div class="card-body">
+                    <h5 class="card-title">@Statistics.SalesCount</h5>
+                    <p class="card-text text-muted">Sales</p>
+                </div>
+            </div>
         </div>
     </div>
-}
-else
+    
+} else
 {
     <Progressbar />
 }
