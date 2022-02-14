@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
+using Website.Shared.Extensions;
 
 namespace Website.Server.Controllers
 {
@@ -28,9 +29,16 @@ namespace Website.Server.Controllers
         }
 
         [HttpGet("statistics")]
-        public async Task<IActionResult> Statistics()
+        public async Task<IActionResult> GetStatisticsAsync()
         {
-            return Ok(await homeRepository.GetStatisticsAsync());
+            return Ok(await homeRepository.GetHomeStatisticsAsync());
+        }
+
+        [HttpGet("promoted")]
+        public async Task<IActionResult> GetPromotedAsync()
+        {
+            User.TryGetId(out int userId);
+            return Ok(await homeRepository.GetPromotedProductsAsync(userId));
         }
     }
 }

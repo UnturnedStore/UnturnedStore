@@ -27,8 +27,12 @@
     
 </div>
 
-@if (Statistics != null)
+@if (Statistics != null && Products != null)
 {
+    <div class="mb-3">
+        <h4>Live Statistics</h4>
+    </div>
+
     <div class="mb-3 row">
         <div class="col-md-4 mb-2">
             <div class="card shadow-sm text-center">
@@ -54,6 +58,25 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div>
+        <div class="mb-3 d-flex align-items-center">
+            <div>
+                <h4>Promoted products</h4>
+            </div>            
+            <div class="ms-auto">
+                <a href="/products" class="text-decoration-none">All products</a>
+            </div>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-sm-2 justify-content-center mb-2">
+            @foreach (var product in Products)
+            {
+                <ProductCard Product="product" Seller="product.Seller" />
+            }
+        </div>
+        
     </div>
     
 } else

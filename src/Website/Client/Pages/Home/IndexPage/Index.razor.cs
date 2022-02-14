@@ -16,11 +16,13 @@ namespace Website.Client.Pages.Home.IndexPage
         [Inject]
         public HttpClient HttpClient { get; set; }
 
-        public StatisticsResult Statistics { get; set; }
+        public HomeStatisticsResult Statistics { get; set; }
+        public IEnumerable<MProduct> Products { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            Statistics = await HttpClient.GetFromJsonAsync<StatisticsResult>("api/home/statistics");
+            Statistics = await HttpClient.GetFromJsonAsync<HomeStatisticsResult>("api/home/statistics");
+            Products = await HttpClient.GetFromJsonAsync<MProduct[]>("api/home/promoted");
         }
     }
 }

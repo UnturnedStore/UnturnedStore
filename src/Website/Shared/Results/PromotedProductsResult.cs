@@ -7,10 +7,8 @@ using Website.Shared.Models.Database;
 
 namespace Website.Shared.Results
 {
-    public class StatisticsResult
+    public class PromotedProductsResult
     {
-        public int SalesCount { get; set; }
-        public int UsersCount { get; set; }
-        public int ProductsCount { get; set; }
+        public List<MProduct> Products { get; set; }
     }
 }

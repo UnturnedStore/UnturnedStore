@@ -6,6 +6,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Shared.Models;
+using Website.Shared.Models.Database;
 using Website.Shared.Results;
 
 namespace Website.Data.Repositories
@@ -19,10 +21,20 @@ namespace Website.Data.Repositories
             this.connection = connection;
         }
 
-        public async Task<StatisticsResult> GetStatisticsAsync()
+        public async Task<HomeStatisticsResult> GetHomeStatisticsAsync()
         {
             const string sql = "dbo.GetHomeStatistics";
-            return await connection.QuerySingleOrDefaultAsync<StatisticsResult>(sql, commandType: CommandType.StoredProcedure);
+            return await connection.QuerySingleOrDefaultAsync<HomeStatisticsResult>(sql, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<IEnumerable<MProduct>> GetPromotedProductsAsync(int userId)
+        {
+            const string sql = "dbo.GetPromotedProducts";
+            return await connection.QueryAsync<MProduct, Seller, MProduct>(sql, (p, u) =>
+            {
+                p.Seller = u;
+                return p;
+            }, new { UserId = userId }, commandType: CommandType.StoredProcedure);
         }
     }
 }

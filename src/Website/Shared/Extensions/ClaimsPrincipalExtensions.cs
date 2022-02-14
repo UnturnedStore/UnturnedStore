@@ -13,5 +13,17 @@ namespace Website.Shared.Extensions
         {
             return int.Parse(principal.Identity.Name);
         }
+
+        public static bool TryGetId(this ClaimsPrincipal principal, out int userId)
+        {
+            userId = 0;
+
+            if (!string.IsNullOrEmpty(principal.Identity?.Name ?? null))
+            {
+                int.TryParse(principal.Identity.Name, out userId);
+                return true;
+            }
+            return false;
+        }
     }
 }
