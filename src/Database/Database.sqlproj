@@ -78,6 +78,7 @@
     <Build Include="tables\CustomerServers.sql" />
     <Build Include="procedures\GetHomeStatistics.sql" />
     <Build Include="procedures\GetPromotedProducts.sql" />
+    <Build Include="procedures\GetProduct.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

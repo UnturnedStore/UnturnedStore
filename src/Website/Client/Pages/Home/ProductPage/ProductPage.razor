@@ -1,5 +1,6 @@
 @page "/products/{ProductId:int}"
 @using Website.Client.Pages.Home.ProductPage.Components
+@using Website.Client.Shared.Components.Badges
 @using Website.Client.Shared.Components.Products
 
 <Meta property="og:image" content="@string.Concat("/api/products/", ProductId, "/image")" />
@@ -121,9 +122,36 @@
                     <img src="/api/images/@Product.ImageId" width="150" height="150" />
                     <h4 class="mt-2">@Product.Name</h4>
                     <ul class="list-unstyled">
-                        <li>Author: <a class="text-decoration-none" href="/users/@Product.Seller.Id">@Product.Seller.Name</a></li>
-                        <li><ProductPrice Product="Product" /></li>
-                        <li>Downloads: @(Product.Branches.Sum(x => x.Versions.Sum(x => x.DownloadsCount)))</li>
+                        <li class="fw-bold">
+                            @if (Product.Category == "Rocket Plugin")
+                            {
+                                <span><i class="fas fa-rocket"></i> Rocket Plugin</span>   
+                            } else if (Product.Category == "OpenMod Plugin")
+                            {
+                                <span><i class="fas fa-plug"></i> OpenMod Plugin</span>
+                            } else
+                            {
+                                <span>@Product.Category</span>    
+                            }
+                            
+                        </li>
+                        <li>
+                            Author: <a class="text-decoration-none" href="/users/@Product.Seller.Id">@Product.Seller.Name</a><VerifiedSellerBadge Seller="Product.Seller" />
+                        </li>                        
+                        
+                        <li><ProductRating Product="Product" /></li>                        
+                        
+                        @if (Product.IsLoaderEnabled)
+                        {
+                            <li class="small">Servers: @(Product.ServersCount)</li>
+                        } else
+                        {
+                            <li class="small">Downloads: @(Product.TotalDownloadsCount)</li>    
+                        }
+
+                        
+                        <li class="fs-5"><ProductPrice Product="Product" /></li>
+
                         @if (!string.IsNullOrEmpty(Product.GithubUrl))
                         {
                             <li><a href="@Product.GithubUrl" target="_blank" class="text-decoration-none"><i class="bi bi-github"></i> GitHub</a></li>

@@ -115,25 +115,19 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> GetProductAsync(int productId, int userId)
         {
-            const string sql = "SELECT p.*, t.* FROM dbo.Products p LEFT JOIN dbo.ProductTabs t ON p.Id = t.ProductId WHERE p.Id = @productId;";
-            
-            MProduct product = null;
-            await connection.QueryAsync<MProduct, MProductTab, MProduct>(sql, (p, t) => 
-            { 
-                if (product == null)
-                {
-                    product = p;
-                    product.Tabs = new List<MProductTab>();
-                }
+            const string sql = "dbo.GetProduct";
 
-                if (t != null)
-                    product.Tabs.Add(t);
-
-                return null;
-            }, new { productId });
+            MProduct product = (await connection.QueryAsync<MProduct, Seller, MProduct>(sql, (p, s) => 
+            {
+                p.Seller = s;
+                return p;
+            }, new { ProductId = productId }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
 
             if (product == null)
                 return null;
+
+            const string sql0 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id;";
+            product.Tabs = (await connection.QueryAsync<MProductTab>(sql0, product)).ToList();
 
             const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
             product.Medias = (await connection.QueryAsync<MProductMedia>(sql1, product)).ToList();
@@ -161,9 +155,6 @@ namespace Website.Data.Repositories
                 return null;
             }, product);
 
-            const string sql3 = "SELECT * FROM dbo.Users WHERE Id = @SellerId;";
-            product.Seller = await connection.QuerySingleAsync<Seller>(sql3, product);
-
             if (userId != 0)
             {
                 const string sql4 = "SELECT * FROM dbo.ProductCustomers WHERE ProductId = @productId AND UserId = @userId;";
@@ -176,7 +167,6 @@ namespace Website.Data.Repositories
                 r.User = u;
                 return r;
             }, new { productId })).ToList();
-
 
             return product;
         }

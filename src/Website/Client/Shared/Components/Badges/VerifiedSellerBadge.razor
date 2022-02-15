@@ -1,0 +1,11 @@
+﻿@if (Seller.IsVerifiedSeller)
+{
+    <i class="bi bi-patch-check-fill text-success ms-1" title="Verified Seller"></i>
+}
+
+@code {
+    [Parameter]
+    public Seller Seller { get; set; }
+}
+
+

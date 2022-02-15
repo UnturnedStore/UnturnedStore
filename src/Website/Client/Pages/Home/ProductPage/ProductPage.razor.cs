@@ -68,6 +68,13 @@ namespace Website.Client.Pages.Home.ProductPage
                 {
                     tab.Content = MarkdownHelper.ParseToHtml(tab.Content, false);
                 }
+
+                Product.RatingsCount = Product.Reviews.Count;
+                if (Product.RatingsCount > 0)
+                {
+                    Product.AverageRating = (byte)(Product.Reviews.Sum(x => x.Rating) / Product.Reviews.Count);
+                }
+                
             }
 
             await CartService.ReloadCartAsync();
