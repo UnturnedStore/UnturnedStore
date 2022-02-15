@@ -30,7 +30,13 @@
         <div class="d-flex align-items-center mt-auto">
             <div>
                 <small class="text-muted">
-                    <span><i class="bi bi-download"></i> @Product.TotalDownloadsCount</span>
+                    @if (Product.IsLoaderEnabled)
+                    {
+                        <span><i class="fas fa-server"></i> @Product.ServersCount</span>
+                    } else
+                    {
+                        <span><i class="fas fa-download"></i> @Product.TotalDownloadsCount</span>
+                    }
                 </small>
             </div>
             <div class="text-muted ms-auto">

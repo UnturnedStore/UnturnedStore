@@ -105,7 +105,7 @@ namespace Website.Server.Controllers
                 return NoContent();
             }
 
-            if (!product.IsEnabled && product.SellerId != userId && product.Customer == null)
+            if (!product.IsEnabled && product.SellerId != userId && product.Customer == null && !User.IsInRole(RoleConstants.AdminRoleId))
                 return BadRequest();
             else
                 return Ok(product);
