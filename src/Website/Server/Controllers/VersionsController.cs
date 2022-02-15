@@ -62,7 +62,7 @@ namespace Website.Server.Controllers
         }
 
         [HttpGet("download/{versionId}")]
-        public async Task<IActionResult> DownloadVersionAsync(int versionId)
+        public async Task<IActionResult> DownloadVersionAsync(int versionId, [FromQuery] bool shouldCount = true)
         {
             int userId = 0;
             if (User.Identity?.IsAuthenticated ?? false)
@@ -75,13 +75,22 @@ namespace Website.Server.Controllers
             }
 
             var version = await versionsRepository.GetVersionAsync(versionId, isOwner);
-            if (!isOwner && !User.IsInRole(RoleConstants.AdminRoleId) && (!version.Branch.Product.IsEnabled || version.Branch.Product.Price > 0))
+            if (!isOwner || !User.IsInRole(RoleConstants.AdminRoleId))
             {
-                if (!await versionsRepository.IsVersionCustomerAsync(versionId, userId))
-                    return Unauthorized();
+                if (version.Branch.Product.IsLoaderEnabled)
+                {
+                    return BadRequest();
+                }
+
+                if (!version.Branch.Product.IsEnabled || version.Branch.Product.Price > 0)
+                {
+                    if (!await versionsRepository.IsVersionCustomerAsync(versionId, userId))
+                        return Unauthorized();
+                }                
             }
 
-            await versionsRepository.IncrementDownloadsCount(versionId);
+            if (shouldCount)
+                await versionsRepository.IncrementDownloadsCount(versionId);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" + 
                 string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));

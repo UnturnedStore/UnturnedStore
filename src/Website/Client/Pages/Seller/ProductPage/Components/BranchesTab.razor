@@ -96,7 +96,7 @@
                                 <td>@version.DownloadsCount</td>
                                 <td>@version.CreateDate</td>
                                 <td>
-                                    <a class="btn btn-sm btn-outline-primary" href="api/versions/download/@version.Id"><i class="bi bi-download"></i></a>
+                                    <a class="btn btn-sm btn-outline-primary" href="api/versions/download/@version.Id?shouldCount=false" target="_blank"><i class="bi bi-download"></i></a>
                                     <button class="btn btn-sm btn-outline-success" @onclick="() => EditVersionAsync(version)">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>

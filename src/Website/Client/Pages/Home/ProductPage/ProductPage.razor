@@ -197,11 +197,27 @@
                             }
                             @if (IsCustomer)
                             {
-                                <form class="d-grid gap-2" method="get" action="api/versions/download/@LatestVersion.Id">
-                                    <button class="btn btn-primary" type="submit">
-                                        <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestVersion.Name)
+                                if (Product.IsLoaderEnabled)
+                                {
+                                    <button class="btn btn-info">
+                                        <i class="fas fa-code"></i> Show Configuration
                                     </button>
-                                </form>
+                                }
+
+                                if (Product.IsLoaderEnabled)
+                                {
+                                    <a class="btn btn-primary" href="/loader">
+                                        <i class="bi bi-download"></i> Download Loader
+                                    </a>
+                                } 
+                                else {
+                                    <form class="d-grid gap-2" method="get" action="api/versions/download/@LatestVersion.Id">
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="bi bi-download"></i> Download Latest @DefaultBranch.Name (@LatestVersion.Name)
+                                        </button>
+                                    </form>
+                                }
+                                
                             }
 
                             @if (!IsCustomer && IsInCart)
