@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Services;
+using Website.Components.Helpers;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
@@ -33,6 +34,7 @@ namespace Website.Client.Pages.User.CheckoutPage
             
             if (OrderParams != null)
             {
+                OrderParams.Seller.TermsAndConditions = MarkdownHelper.ParseToHtml(OrderParams.Seller.TermsAndConditions, false);
                 PaymentMethods = await HttpClient.GetFromJsonAsync<string[]>($"api/payments/{SellerId}");
                 if (string.IsNullOrEmpty(OrderParams.PaymentMethod))
                 {
