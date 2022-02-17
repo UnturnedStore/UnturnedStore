@@ -10,39 +10,45 @@
 
 @if (Customers != null) 
 {
-    <div>
-        <DataTable TItem="MProductCustomer" Data="OrderedCustomers">
-            <DataTableTitle TItem="MProductCustomer" ValueFunc="@(x => $"Purchases ({x.Items.Count()})")">
-                <div class="fs-5">
-                    Your purchases (@context.Items.Count())
-                </div>        
-            </DataTableTitle>
-            <DataTableColumn TItem="MProductCustomer" Name="Customer ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" Context="customer" />
-            <DataTableColumn TItem="MProductCustomer" Name="Product" Field="x => x.Product.Name" Context="customer" IsSearchable="true" SearchType="ESearchType.Contains">
-                <div class="d-flex align-items-center">
-                    <div>
-                        <img src="api/images/@customer.Product.ImageId" width="30" height="30" />
+    @if (Customers.Any())
+    {
+        <div>
+            <DataTable TItem="MProductCustomer" Data="OrderedCustomers">
+                <DataTableTitle TItem="MProductCustomer" ValueFunc="@(x => $"Purchases ({x.Items.Count()})")">
+                    <div class="fs-5">
+                        Your license keys (@context.Items.Count())
+                    </div>        
+                </DataTableTitle>
+                <DataTableColumn TItem="MProductCustomer" Name="Customer ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" Context="customer" />
+                <DataTableColumn TItem="MProductCustomer" Name="Product" Field="x => x.Product.Name" Context="customer" IsSearchable="true" SearchType="ESearchType.Contains">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <img src="api/images/@customer.Product.ImageId" width="30" height="30" />
+                        </div>
+                        <div class="ms-2">
+                            <a href="/products/@customer.ProductId" class="text-decoration-none">
+                                @customer.Product.Name
+                            </a>
+                        </div>
                     </div>
-                    <div class="ms-2">
-                        <a href="/products/@customer.ProductId" class="text-decoration-none">
-                            @customer.Product.Name
+                </DataTableColumn>
+                <DataTableColumn TItem="MProductCustomer" Name="License Key" Context="customer" Field="x => string.Empty" IsSearchable="false">
+                    @if (showLicenses.Contains(customer.Id))
+                    {
+                        <span>@customer.LicenseKey</span>
+                    } else
+                    {
+                        <a class="text-decoration-none" href="javascript:void(0)" @onclick="() => ShowLicense(customer.Id)">
+                            Show License Key
                         </a>
-                    </div>
-                </div>
-            </DataTableColumn>
-            <DataTableColumn TItem="MProductCustomer" Name="License Key" Context="customer" Field="x => string.Empty" IsSearchable="false">
-                @if (showLicenses.Contains(customer.Id))
-                {
-                    <span>@customer.LicenseKey</span>
-                } else
-                {
-                    <a class="text-decoration-none" href="javascript:void(0)" @onclick="() => ShowLicense(customer.Id)">
-                        Show License Key
-                    </a>
-                }                
-            </DataTableColumn>
-        </DataTable>
-    </div>
+                    }
+                </DataTableColumn>
+            </DataTable>
+        </div>
+    } else
+    {
+        <StatementText>You don't have any plugins that use loader</StatementText>
+    }
 } else 
 {
     <Progressbar />

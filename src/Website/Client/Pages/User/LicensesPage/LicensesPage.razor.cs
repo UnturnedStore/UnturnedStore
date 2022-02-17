@@ -10,7 +10,7 @@ using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.User.LicensesPage
 {
-    [Authorize(Roles = RoleConstants.AdminRoleId)]
+    [Authorize]
     public partial class LicensesPage
     {
         [Inject]
@@ -24,6 +24,7 @@ namespace Website.Client.Pages.User.LicensesPage
         protected override async Task OnInitializedAsync()
         {
             Customers = await HttpClient.GetFromJsonAsync<List<MProductCustomer>>("api/products/my");
+            Customers = Customers.Where(x => x.Product.IsLoaderEnabled);
         }
 
         public void ShowLicense(int customerId)

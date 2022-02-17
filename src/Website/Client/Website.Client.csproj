@@ -27,8 +27,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Shared\Components\Versions\" />
-  </ItemGroup>
-
 </Project>
