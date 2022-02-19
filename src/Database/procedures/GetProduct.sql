@@ -5,9 +5,9 @@ BEGIN
 
 	SELECT 
 		p.*,
-		s.*,
-		(SELECT SUM(DownloadsCount) FROM dbo.Versions) AS TotalDownloadsCount,
-		(SELECT COUNT(*) FROM dbo.CustomerServers cs JOIN dbo.ProductCustomers pc ON pc.Id = cs.CustomerId WHERE pc.ProductId = @ProductId) AS ServersCount
+		(SELECT SUM(v.DownloadsCount) FROM dbo.Versions v LEFT JOIN dbo.Branches b ON b.Id = v.BranchId WHERE b.ProductId = @ProductId) AS TotalDownloadsCount,
+		(SELECT COUNT(*) FROM dbo.CustomerServers cs JOIN dbo.ProductCustomers pc ON pc.Id = cs.CustomerId WHERE pc.ProductId = @ProductId) AS ServersCount,
+		s.*		
 	FROM 
 		dbo.Products p
 	JOIN
