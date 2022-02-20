@@ -32,7 +32,7 @@
                 <i class="@GetCategoryIcon()"></i>
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item @Active(string.Empty)" @onclick="() => ChangeCategory(string.Empty)" href="javascript:void(0)">Any</a></li>
+                <li><a class="dropdown-item @Active(string.Empty)" @onclick="() => ChangeCategory(string.Empty)" href="javascript:void(0)">All</a></li>
                 @foreach (string category in ProductCategoryConstants.Categories)
                 {
                     <li><a class="dropdown-item @Active(category)" @onclick="@(() => ChangeCategory(category))" href="javascript:void(0)">@category</a></li>
