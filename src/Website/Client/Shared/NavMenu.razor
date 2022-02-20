@@ -41,16 +41,21 @@
             </ul>
 
             <ul class="navbar-nav ms-auto fs-4 align-items-center navbar--right">
-                <li class="nav-item ms-2">
-                    <a href="/messages" class="nav-link position-relative">
-                        <i class="far fa-envelope"></i>
-                    </a>                
-                </li>
-                <li class="nav-item ms-2">
-                    <a href="javascript:void(0)" class="nav-link position-relative">
-                        <i class="far fa-bell"></i>
-                    </a>
-                </li>
+                <AuthorizeView>
+                    <Authorized>
+                        <li class="nav-item ms-2">
+                            <a href="/messages" class="nav-link position-relative">
+                                <i class="far fa-envelope"></i>
+                            </a>                
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a href="javascript:void(0)" class="nav-link position-relative">
+                                <i class="far fa-bell"></i>
+                            </a>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+                
                 <li class="nav-item ms-2">
                     <a href="/cart" class="nav-link position-relative">
                         <i class="fas fa-shopping-cart"></i>
