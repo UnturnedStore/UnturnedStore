@@ -33,9 +33,11 @@
             <div class="mb-2">
                 <label class="form-label text-muted small mb-1">Category</label>
                 <select class="form-select" @bind="searchCategory">
-                    <option value="@string.Empty">Any</option>
-                    <option value="Rocket Plugin">Rocket Plugin</option>
-                    <option value="OpenMod Plugin">OpenMod Plugin</option>
+                    <option value="@string.Empty">All</option>
+                    @foreach (string category in ProductCategoryConstants.Categories)
+                    {
+                        <option value="@category">@category</option>
+                    }
                 </select>
             </div>
         </div>

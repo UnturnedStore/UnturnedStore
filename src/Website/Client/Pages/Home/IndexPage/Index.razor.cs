@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Services;
+using Website.Shared.Constants;
 using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.Home.IndexPage
@@ -65,18 +66,7 @@ namespace Website.Client.Pages.Home.IndexPage
 
         private string GetCategoryIcon()
         {
-            if (searchCategory == "Rocket Plugin")
-            {
-                return "fas fa-rocket";
-            }
-            else if (searchCategory == "OpenMod Plugin")
-            {
-                return "fas fa-plug";
-            }
-            else
-            {
-                return "far fa-folder";
-            }
+            return ProductCategoryConstants.GetCategoryIcon(searchCategory);
         }
 
         protected override async Task OnInitializedAsync()

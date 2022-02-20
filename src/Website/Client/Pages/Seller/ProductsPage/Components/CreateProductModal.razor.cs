@@ -21,7 +21,7 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
         [Parameter]
         public EventCallback<MProduct> OnSubmitAsync { get; set; }
 
-        public MProduct Model { get; set; } = new MProduct() { Category = ProductConstants.DefaultCategory };
+        public MProduct Model { get; set; } = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
         public async Task ShowAsync()
         {
             await JSRuntime.ShowModalStaticAsync(nameof(CreateProductModal));
@@ -34,7 +34,7 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
             await OnSubmitAsync.InvokeAsync(Model);
             isLoading = false;
             await JSRuntime.HideModalAsync(nameof(CreateProductModal));
-            Model = new MProduct() { Category = ProductConstants.DefaultCategory };
+            Model = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
         }
 
         private void OnPriceInput(ChangeEventArgs args)

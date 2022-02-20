@@ -18,16 +18,10 @@
                 <ProductRating Product="Product" />
             </div>
             
-            @if (Product.Category == "Rocket Plugin")
+            @if (!string.IsNullOrEmpty(Product.Category))
             {
-                <div class="small ms-1 text-muted" title="Rocket Plugin">
-                    <i class="fas fa-rocket"></i>
-                </div>
-            }
-            @if (Product.Category == "OpenMod Plugin")
-            {
-                <div class="small ms-1 text-muted" title="OpenMod Plugin">
-                    <i class="fas fa-plug"></i>
+                <div class="small ms-1 text-muted" title="@Product.Category">
+                    <i class="@ProductCategoryConstants.GetCategoryIcon(Product.Category)"></i>
                 </div>
             }
             @if (Product.IsLoaderEnabled)
