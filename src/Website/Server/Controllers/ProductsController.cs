@@ -50,6 +50,8 @@ namespace Website.Server.Controllers
                 {
                     return BadRequest();
                 }
+                
+                discordService.SendApproveRequestNotification(product);
             }
 
             if (@params.Status == ProductStatus.Rejected || @params.Status == ProductStatus.Approved)

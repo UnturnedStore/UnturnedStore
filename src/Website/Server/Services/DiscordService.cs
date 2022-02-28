@@ -187,5 +187,27 @@ namespace Website.Server.Services
 
             SendEmbed(url, eb.Build());
         }
+
+        public void SendApproveRequestNotification(ProductInfo product)
+        {
+            string url = config["AdminNotificationsWebhookUrl"];
+
+            if (string.IsNullOrEmpty(url))
+                return;
+
+            EmbedBuilder eb = new();
+
+            eb.WithColor(Color.Blue);
+            eb.WithAuthor(product.Seller.Name, baseUrl.Get("/api/images/{0}", product.Seller.AvatarImageId), baseUrl.Get("/users/{0}", product.Seller.Id));
+
+            eb.WithTitle(product.Name);
+            eb.WithUrl(baseUrl.Get("/products/{0}", product.Id));
+
+            eb.WithDescription($"{product.Seller.Name} has just submitted his {product.Name} plugin for approval");
+
+            eb.WithCurrentTimestamp();
+
+            SendEmbed(url, eb.Build());
+        }
     }
 }
