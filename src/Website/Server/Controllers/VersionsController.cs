@@ -75,7 +75,7 @@ namespace Website.Server.Controllers
             }
 
             var version = await versionsRepository.GetVersionAsync(versionId, isOwner);
-            if (!isOwner || !User.IsInRole(RoleConstants.AdminRoleId))
+            if (!isOwner && !User.IsInRole(RoleConstants.AdminRoleId))
             {
                 if (version.Branch.Product.IsLoaderEnabled)
                 {
