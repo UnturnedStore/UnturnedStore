@@ -25,6 +25,11 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetImageAsync(int imageId)
         {
             var img = await imagesRepository.GetImageAsync(imageId);
+            if (img == null)
+            {
+                return NotFound();
+            }
+
             Response.Headers.Add("Content-Disposition", "inline; filename=" + img.Name);
             return File(img.Content, img.ContentType);
         }

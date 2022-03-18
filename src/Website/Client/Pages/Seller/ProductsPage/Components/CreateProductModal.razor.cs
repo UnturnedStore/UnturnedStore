@@ -7,6 +7,8 @@ using Microsoft.JSInterop;
 using Website.Client.Extensions;
 using Website.Shared.Models.Database;
 using Website.Shared.Constants;
+using Website.Components.Alerts;
+using System.Net;
 
 namespace Website.Client.Pages.Seller.ProductsPage.Components
 {
@@ -17,9 +19,11 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
 
         [Inject]
         public HttpClient HttpClient { get; set; }
+        [Inject]
+        public AlertService AlertService { get; set; }
 
         [Parameter]
-        public EventCallback<MProduct> OnSubmitAsync { get; set; }
+        public EventCallback<MProduct> OnProductAdded { get; set; }
 
         public MProduct Model { get; set; } = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
         public async Task ShowAsync()
@@ -31,10 +35,31 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
         public async Task SubmitAsync()
         {
             isLoading = true;
-            await OnSubmitAsync.InvokeAsync(Model);
+
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/products", Model);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                if (response.StatusCode == HttpStatusCode.Conflict)
+                {
+                    AlertService.ShowAlert("products-modal-create", $"There's already a product with this name", AlertType.Danger);
+                } else
+                {
+                    AlertService.ShowAlert("products-modal-create", $"An error occurated <strong>{response.StatusCode}</strong>", AlertType.Danger);
+                }
+            } else
+            {
+                MProduct product = await response.Content.ReadFromJsonAsync<MProduct>();
+                await OnProductAdded.InvokeAsync(product);
+
+                AlertService.ShowAlert("products-main", $"Successfully created new product <strong>{product.Name}</strong>!", AlertType.Success);
+                
+                await JSRuntime.HideModalAsync(nameof(CreateProductModal));
+                Model = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
+                StateHasChanged();
+            }
+
             isLoading = false;
-            await JSRuntime.HideModalAsync(nameof(CreateProductModal));
-            Model = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
         }
 
         private void OnPriceInput(ChangeEventArgs args)
@@ -53,17 +78,34 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
 
         private async Task OnInputFileChange(InputFileChangeEventArgs e)
         {
-            var imageFile = e.File;
+            IBrowserFile imageFile = e.File;
+
+            if (e.File.ContentType != "image/png")
+            {
+                AlertService.ShowAlert("products-modal-image", "Product image must be in <strong>png</strong> format!", AlertType.Danger);
+                return;
+            }
+
             imageFile = await imageFile.RequestImageFileAsync("image/png", 500, 500);
-            var image = new MImage
+            MImage image = new MImage
             {
                 ContentType = imageFile.ContentType,
                 Name = imageFile.Name,
                 Content = new byte[imageFile.Size]
             };
+
             await imageFile.OpenReadStream(50 * 1024 * 1024).ReadAsync(image.Content);
-            var response = await HttpClient.PostAsJsonAsync("api/images", image);
-            Model.ImageId = int.Parse(await response.Content.ReadAsStringAsync());
+            
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/images", image);
+            
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                AlertService.ShowAlert("products-modal-image", $"An error occurated <strong>{response.StatusCode}</strong>", AlertType.Danger);
+                return;
+            }
+
+            string imageIdStr = await response.Content.ReadAsStringAsync();
+            Model.ImageId = int.Parse(imageIdStr);
         }
     }
 }

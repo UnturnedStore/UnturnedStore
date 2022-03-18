@@ -17,6 +17,7 @@ namespace Website.Shared.Models.Database
         [MaxLength(255)]
         public string GithubUrl { get; set; }
         [Required]
+        [Range(1, int.MaxValue)]
         public int ImageId { get; set; }
         [Range(0, 1000)]
         public decimal Price { get; set; }

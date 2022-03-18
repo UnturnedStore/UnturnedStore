@@ -1,4 +1,8 @@
-﻿<div class="modal fade" id="@nameof(CreateProductModal)" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+﻿@using Website.Components.Alerts
+
+
+
+<div class="modal fade" id="@nameof(CreateProductModal)" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <EditForm Model="Model" OnValidSubmit="SubmitAsync">
@@ -45,7 +49,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">Image</label>
-                        <InputFile class="form-control" OnChange="@OnInputFileChange" required />
+                        <InputFile class="form-control" OnChange="@OnInputFileChange" accept="image/png" required />
                         <div class="form-text">Image for your product, has to be .png</div>
                     </div>
 
@@ -53,6 +57,8 @@
                     {
                         <img class="mb-3" src="api/images/@Model.ImageId" width="250" height="250" />
                     }
+
+                    <AlertBox ID="products-modal-image" Group="productspage" />
 
                     <div class="mb-3 form-check">
                         <InputCheckbox @bind-Value="Model.IsLoaderEnabled" class="form-check-input" disabled="@(Model.Price == 0)" id="check-enableloader" />
@@ -69,6 +75,12 @@
                     <DataAnnotationsValidator />
                     <ValidationSummary />
                 </div>
+
+                <div class="mx-2">
+                    <AlertBox ID="products-modal-create" Group="productspage" />
+                </div>
+                
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
