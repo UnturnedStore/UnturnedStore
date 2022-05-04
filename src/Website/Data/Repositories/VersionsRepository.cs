@@ -22,7 +22,7 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { versionId, userId });
         }
 
-        public async Task<bool> IsVersionOwnerAsync(int versionId, int userId)
+        public async Task<bool> IsVersionSellerAsync(int versionId, int userId)
         {
             const string sql = "SELECT COUNT(*) FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id " +
                 "JOIN dbo.Products p ON p.Id = b.ProductId WHERE v.Id = @versionId AND p.SellerId = @userId;";
@@ -54,7 +54,7 @@ namespace Website.Data.Repositories
 
         public async Task<MVersion> GetVersionAsync(int versionId, bool isSeller)
         {
-            string sql = "SELECT v.*, b.Id, b.Name, p.Id, p.Name, p.Price, p.IsEnabled, p.IsLoaderEnabled FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id " +
+            string sql = "SELECT v.*, b.*, p.* FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id " +
                 "JOIN dbo.Products p ON p.Id = b.ProductId WHERE v.Id = @versionId ";
 
             if (!isSeller)
@@ -75,6 +75,36 @@ namespace Website.Data.Repositories
                 return null;
             }, new { versionId });
             
+            return version;
+        }
+
+        public async Task<MVersion> GetLatestVersionAsync(int productId)
+        {
+            string sql = "SELECT TOP 1 v.*, b.*, p.* " + 
+                "FROM dbo.Versions v " + 
+                "JOIN dbo.Branches b ON v.BranchId = b.Id " + 
+                "JOIN dbo.Products p ON p.Id = b.ProductId " + 
+                "WHERE p.Id = @productId AND b.IsEnabled = 1 AND v.IsEnabled = 1 " +
+                "ORDER BY b.CreateDate ASC, v.CreateDate DESC;";
+
+            return await QueryVersionAsync(sql, new { productId });
+        }
+
+        private async Task<MVersion> QueryVersionAsync(string sql, object param)
+        {
+            MVersion version = null;
+            await connection.QueryAsync<MVersion, MBranch, MProduct, MVersion>(sql, (v, b, p) =>
+            {
+                if (version == null)
+                {
+                    version = v;
+                    version.Branch = b;
+                    version.Branch.Product = p;
+                }
+
+                return null;
+            }, param);
+
             return version;
         }
 

@@ -54,7 +54,7 @@ namespace Website.Server.Controllers
         [HttpPatch("{versionId}")]
         public async Task<IActionResult> PatchVersionAsync(int versionId)
         {
-            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await versionsRepository.IsVersionOwnerAsync(versionId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await versionsRepository.IsVersionSellerAsync(versionId, int.Parse(User.Identity.Name)))
                 return BadRequest();
 
             await versionsRepository.ToggleVersionAsync(versionId);
@@ -68,14 +68,14 @@ namespace Website.Server.Controllers
             if (User.Identity?.IsAuthenticated ?? false)
                 userId = int.Parse(User.Identity.Name);
 
-            bool isOwner = false;
+            bool isSeller = false;
             if (userId != 0)
             {
-                isOwner = await versionsRepository.IsVersionOwnerAsync(versionId, userId);
+                isSeller = await versionsRepository.IsVersionSellerAsync(versionId, userId);
             }
 
-            var version = await versionsRepository.GetVersionAsync(versionId, isOwner);
-            if (!isOwner && !User.IsInRole(RoleConstants.AdminRoleId))
+            MVersion version = await versionsRepository.GetVersionAsync(versionId, isSeller);
+            if (!isSeller && !User.IsInRole(RoleConstants.AdminRoleId))
             {
                 if (version.Branch.Product.IsLoaderEnabled)
                 {
@@ -93,6 +93,34 @@ namespace Website.Server.Controllers
                 await versionsRepository.IncrementDownloadsCount(versionId);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" + 
+                string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
+            return File(version.Content, version.ContentType);
+        }
+
+        [HttpGet("download/latest/{productId}")]
+        public async Task<IActionResult> DownloadLatestVersionAsync(int productId)
+        {
+            int userId = 0;
+            if (User.Identity?.IsAuthenticated ?? false)
+                userId = int.Parse(User.Identity.Name);
+
+            MVersion version = await versionsRepository.GetLatestVersionAsync(productId);
+            if (version == null)
+            {
+                // Product doesn't have any versions or not exist
+                return NotFound();
+            }
+
+            if (version.Branch.Product.Price > 0)
+            {
+                bool isSeller = version.Branch.Product.SellerId == userId;
+                if (!isSeller && !await versionsRepository.IsVersionCustomerAsync(version.Id, userId))
+                {
+                    return Unauthorized();
+                }                    
+            }
+
+            Response.Headers.Add("Content-Disposition", "inline; filename=" +
                 string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
             return File(version.Content, version.ContentType);
         }
