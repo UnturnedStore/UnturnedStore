@@ -1,0 +1,17 @@
+version: '3.7'
+services:
+    deploy-mssql:
+        image: deploy-mssql:${BRANCH_NAME}
+        container_name: mssql-deploy-${BRANCH_NAME}
+        build:
+            context: ./
+            args:
+                - CONNECTION_STRING=${CONNECTION_STRING}
+        networks:
+            unturnedstore:
+                ipv4_address: ${DEPLOY_IP}
+        
+networks:
+    unturnedstore:
+        name: unturned-store
+        external: true
