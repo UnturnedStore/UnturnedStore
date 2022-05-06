@@ -44,17 +44,17 @@
                 
         <div class="mb-3">
             
-            <VersionZipFileInput @bind-Version="Version" IsDisabled="@Product.IsLoaderEnabled" />
+            <VersionZipFileInput @bind-Version="Version" IsDisabled="@Product.IsRocketPlugin" />
 
-            @if (Product.IsLoaderEnabled)
+            @if (Product.IsRocketPlugin)
             {
                 <div class="text-muted fw-bold mb-2">
-                    Because your product uses loader, you must use plugin template form!
+                    You must use template form to archive your plugin files
                 </div>
             }
             <div>
                 <button class="btn btn-dark btn-sm" type="button" @onclick="() => PluginModal.ShowAsync()">
-                    Show Plugin Template Form
+                    Show Rocket Plugin Template Form
                 </button>
             </div>
         </div>

@@ -98,7 +98,7 @@ namespace Website.Server.Controllers
         }
 
         [HttpGet("download/latest/{productId}")]
-        public async Task<IActionResult> DownloadLatestVersionAsync(int productId)
+        public async Task<IActionResult> DownloadLatestVersionAsync(int productId, [FromQuery] bool shouldCount = true)
         {
             int userId = 0;
             if (User.Identity?.IsAuthenticated ?? false)
@@ -119,6 +119,9 @@ namespace Website.Server.Controllers
                     return Unauthorized();
                 }                    
             }
+
+            if (shouldCount)
+                await versionsRepository.IncrementDownloadsCount(version.Id);
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" +
                 string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));

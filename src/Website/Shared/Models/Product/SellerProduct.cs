@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Website.Shared.Constants;
 using Website.Shared.Models.Database;
 
 namespace Website.Shared.Models
@@ -32,5 +33,7 @@ namespace Website.Shared.Models
                 CreateDate = CreateDate
             };
         }
+
+        public bool IsRocketPlugin => Category == ProductCategoryConstants.RocketPlugin;
     }
 }
