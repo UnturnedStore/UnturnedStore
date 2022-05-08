@@ -66,7 +66,7 @@ namespace Website.Client.Pages.Home.ProductPage
 
                 foreach (MProductTab tab in Product.Tabs)
                 {
-                    tab.Content = MarkdownHelper.ParseToHtml(tab.Content, false);
+                    tab.Content = MarkdownHelper.ParseToHtml(tab.Content);
                 }
 
                 Product.RatingsCount = Product.Reviews.Count;
