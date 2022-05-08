@@ -34,7 +34,7 @@ namespace Website.Client.Pages.User.CheckoutPage
             
             if (OrderParams != null)
             {
-                OrderParams.Seller.TermsAndConditions = MarkdownHelper.ParseToHtml(OrderParams.Seller.TermsAndConditions, false);
+                OrderParams.Seller.TermsAndConditions = MarkdownHelper.ParseToHtml(OrderParams.Seller.TermsAndConditions);
                 PaymentMethods = await HttpClient.GetFromJsonAsync<string[]>($"api/payments/{SellerId}");
                 if (string.IsNullOrEmpty(OrderParams.PaymentMethod))
                 {
