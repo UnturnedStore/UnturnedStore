@@ -99,7 +99,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modal
             
             Version.Content = await ZIPService.ZipAsync(new Dictionary<string, IEnumerable<IBrowserFile>>() 
             {
-                { "/",  new IBrowserFile[]{ Plugin } }, 
+                { "Plugins",  new IBrowserFile[]{ Plugin } }, 
                 { "Libraries", Libraries }
             });
 
