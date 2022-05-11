@@ -1,15 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using RestoreMonarchy.PaymentGateway.Client;
+using RestoreMonarchy.PaymentGateway.Client.Models;
 using System;
 using System.Threading.Tasks;
-using RestoreMonarchy.PaymentGateway.Client.Models;
 using Website.Data.Repositories;
-using Website.Server.Options;
 using Website.Shared.Constants;
+using Website.Shared.Models;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
-using Website.Shared.Models;
 
 namespace Website.Server.Services
 {
@@ -20,8 +18,6 @@ namespace Website.Server.Services
         private readonly UsersRepository usersRepository;
         private readonly ILogger<OrderService> logger;
         private readonly DiscordService discordService;
-
-        public PaymentGatewayClient PaymentGatewayClient { get; }
 
         public OrderService(OrdersRepository ordersRepository, ProductsRepository productsRepository, UsersRepository usersRepository, 
             ILogger<OrderService> logger, DiscordService discordService, PaymentGatewayClient paymentGatewayClient)
@@ -35,13 +31,14 @@ namespace Website.Server.Services
             PaymentGatewayClient = paymentGatewayClient;
         }
 
-        public async Task UpdateOrderAsync(Guid paymentId)
-        {
-            MOrder order = await ordersRepository.GetOrderAsync(paymentId);
+        public PaymentGatewayClient PaymentGatewayClient { get; }
 
+        public async Task UpdateOrderAsync(Guid paymentGuid)
+        {
+            MOrder order = await ordersRepository.GetOrderAsync(paymentGuid);
             if (order == null)
             {
-                logger.LogWarning("Order for payment id {0} not found", paymentId);
+                logger.LogWarning("Order for payment id {0} not found", paymentGuid);
                 return;
             }
 
@@ -55,12 +52,12 @@ namespace Website.Server.Services
             order.LastUpdate = DateTime.Now;
             await ordersRepository.UpdateOrderAsync(order);
 
-            foreach (MOrderItem item in order.Items)
+            foreach (MOrderItem orderItem in order.Items)
             {
                 await productsRepository.AddProductCustomerAsync(new MProductCustomer()
                 {
                     UserId = order.BuyerId,
-                    ProductId = item.ProductId
+                    ProductId = orderItem.ProductId
                 });
             }
 
@@ -76,28 +73,31 @@ namespace Website.Server.Services
             order.Currency = "USD";
             order.PaymentMethod = orderParams.PaymentMethod;
             order.PaymentReceiver = order.GetReceiver(order.PaymentMethod);
-            
 
-            foreach (var itemParams in orderParams.Items)
+            foreach (OrderItemParams orderItemParams in orderParams.Items)
             {
-                MOrderItem item = MOrderItem.FromParams(itemParams);
-
-                item.Product = await productsRepository.GetProductAsync(item.ProductId, order.BuyerId);
-
-                if (item.Product == null)
+                MOrderItem orderItem = MOrderItem.FromParams(orderItemParams);
+                orderItem.Product = await productsRepository.GetProductAsync(orderItem.ProductId, order.BuyerId);
+                if (orderItem.Product == null)
+                {
                     return null;
+                }
 
-                if (order.SellerId != item.Product.SellerId)
+                if (order.SellerId != orderItem.Product.SellerId)
+                {
                     return null;
+                }
 
-                if (item.Product.Customer != null)
+                if (orderItem.Product.Customer != null)
+                {
                     return null;
+                }
 
-                item.ProductName = item.Product.Name;
-                item.Price = item.Product.Price;
+                orderItem.ProductName = orderItem.Product.Name;
+                orderItem.Price = orderItem.Product.Price;
 
-                order.TotalPrice += item.Price;
-                order.Items.Add(item);
+                order.TotalPrice += orderItem.Price;
+                order.Items.Add(orderItem);
             }
 
             Payment payment = Payment.Create(order.PaymentMethod, string.Empty, 

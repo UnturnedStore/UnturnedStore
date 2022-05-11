@@ -6,7 +6,6 @@ using SteamWebAPI2.Interfaces;
 using SteamWebAPI2.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
