@@ -88,3 +88,8 @@ i {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.carousel-control-next, .carousel-control-prev{
+    top: calc(50% - 1rem)!important;
+    bottom: unset!important;
+}
