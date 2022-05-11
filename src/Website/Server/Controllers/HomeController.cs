@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Extensions;
@@ -18,8 +16,8 @@ namespace Website.Server.Controllers
 
         public HomeController(IConfiguration configuration, HomeRepository homeRepository)
         {
-            this.configuration = configuration;
-            this.homeRepository = homeRepository;
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.homeRepository = homeRepository ?? throw new ArgumentNullException(nameof(homeRepository));
         }
 
         [HttpGet("~/discord")]
@@ -37,8 +35,12 @@ namespace Website.Server.Controllers
         [HttpGet("promoted")]
         public async Task<IActionResult> GetPromotedAsync()
         {
-            User.TryGetId(out int userId);
-            return Ok(await homeRepository.GetPromotedProductsAsync(userId));
+            if (User.TryGetId(out int userId))
+            {
+                return Ok(await homeRepository.GetPromotedProductsAsync(userId));
+            }
+
+            return NotFound();
         }
     }
 }
