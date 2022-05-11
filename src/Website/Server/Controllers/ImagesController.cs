@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Models.Database;
@@ -18,20 +15,20 @@ namespace Website.Server.Controllers
 
         public ImagesController(ImagesRepository imagesRepository)
         {
-            this.imagesRepository = imagesRepository;
+            this.imagesRepository = imagesRepository ?? throw new ArgumentNullException(nameof(imagesRepository));
         }
 
         [HttpGet("{imageId}")]
         public async Task<IActionResult> GetImageAsync(int imageId)
         {
-            var img = await imagesRepository.GetImageAsync(imageId);
-            if (img == null)
+            MImage image = await imagesRepository.GetImageAsync(imageId);
+            if (image == null)
             {
                 return NotFound();
             }
 
-            Response.Headers.Add("Content-Disposition", "inline; filename=" + img.Name);
-            return File(img.Content, img.ContentType);
+            Response.Headers.Add("Content-Disposition", "inline; filename=" + image.Name);
+            return File(image.Content, image.ContentType);
         }
 
         [Authorize]

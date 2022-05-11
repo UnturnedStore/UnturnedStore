@@ -21,8 +21,8 @@ namespace Website.Server.Controllers
 
         public OrdersController(OrdersRepository ordersRepository, OrderService orderService)
         {
-            this.ordersRepository = ordersRepository;
-            this.orderService = orderService;
+            this.ordersRepository = ordersRepository ?? throw new ArgumentNullException(nameof(ordersRepository));
+            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         }
 
         [Authorize]
@@ -34,7 +34,9 @@ namespace Website.Server.Controllers
 
             MOrder order = await orderService.CreateOrderAsync(orderParams);
             if (order == null)
+            {
                 return BadRequest();
+            }
 
             return Ok(order);
         }
@@ -51,12 +53,15 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PayOrderAsync(int orderId)
         {
             MOrder order = await ordersRepository.GetOrderAsync(orderId);
-
             if (order == null)
+            {
                 return NotFound();
+            }
 
             if (order.BuyerId != User.Id())
+            {
                 return BadRequest();
+            }
 
             return Redirect(orderService.PaymentGatewayClient.BuildPayUrl(order.PaymentId));
         }
@@ -65,7 +70,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> NotifyAsync()
         {
             if (!orderService.PaymentGatewayClient.ValdiateNotifyRequest(Request))
+            {
                 return Forbid();
+            }
 
             string requestBody;
             using (StreamReader reader = new(Request.Body, Encoding.ASCII))
@@ -73,10 +80,12 @@ namespace Website.Server.Controllers
                 requestBody = await reader.ReadToEndAsync();
             }
 
-            if (!Guid.TryParse(requestBody, out Guid paymentId))
+            if (!Guid.TryParse(requestBody, out Guid paymentGuid))
+            {
                 return BadRequest();
+            }
 
-            await orderService.UpdateOrderAsync(paymentId);
+            await orderService.UpdateOrderAsync(paymentGuid);
             return Ok();
         }
     }

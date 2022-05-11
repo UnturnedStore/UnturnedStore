@@ -43,7 +43,7 @@ namespace Website.Server
 
             services.AddTransient(x => new SteamWebInterfaceFactory(Configuration["SteamWebAPIKey"]));           
 
-            services.AddAuthentication(options => { options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme; })
+            services.AddAuthentication(options => options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = "/signin";

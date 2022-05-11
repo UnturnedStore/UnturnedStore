@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Constants;
@@ -19,7 +17,7 @@ namespace Website.Server.Controllers
 
         public AdminController(AdminRepository adminRepository)
         {
-            this.adminRepository = adminRepository;
+            this.adminRepository = adminRepository ?? throw new ArgumentNullException(nameof(adminRepository));
         }
 
         [HttpGet("users")]
