@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.IO;
+using System.Text;
 
 namespace Website.Server.Services
 {
@@ -6,7 +8,7 @@ namespace Website.Server.Services
     {
         public BaseUrlService(IConfiguration configuration)
         {
-            BaseUrl = configuration["BaseUrl"].TrimEnd('/');
+            BaseUrl = configuration["BaseUrl"].TrimEnd(Path.AltDirectorySeparatorChar);
         }
 
         public string BaseUrl { get; }
@@ -14,8 +16,12 @@ namespace Website.Server.Services
         public string Get(string relativeUrl, params object[] args)
         {
             relativeUrl = string.Format(relativeUrl, args);
-            relativeUrl = relativeUrl.TrimStart('/');
-            return BaseUrl + "/" + relativeUrl;
+            relativeUrl = relativeUrl.TrimStart(Path.AltDirectorySeparatorChar);
+            return new StringBuilder()
+                .Append(BaseUrl)
+                .Append(Path.AltDirectorySeparatorChar)
+                .Append(relativeUrl)
+                .ToString();
         }
     }
 }

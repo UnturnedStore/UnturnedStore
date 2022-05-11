@@ -10,6 +10,7 @@ using RestoreMonarchy.PaymentGateway.Client;
 using SteamWebAPI2.Utilities;
 using System;
 using System.Data.SqlClient;
+using System.IO;
 using Website.Data.Extensions;
 using Website.Server.Helpers;
 using Website.Server.Options;
@@ -35,7 +36,6 @@ namespace Website.Server
             services.AddTransient<DiscordService>();
             services.AddTransient<IBaseUrl, BaseUrlService>();
 
-            // Add options
             services.AddOptions();
             services.Configure<PaymentOptions>(Configuration.GetSection(PaymentOptions.Key));
 
@@ -48,7 +48,7 @@ namespace Website.Server
                 {
                     options.LoginPath = "/signin";
                     options.LogoutPath = "/signout";
-                    options.AccessDeniedPath = "/";
+                    options.AccessDeniedPath = Path.AltDirectorySeparatorChar.ToString();
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
                     options.Events.OnSignedIn = ValidationHelper.SignIn;
                     options.Events.OnValidatePrincipal = ValidationHelper.Validate;
@@ -69,9 +69,9 @@ namespace Website.Server
             services.AddRazorPages();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
         {
-            if (env.IsDevelopment())
+            if (environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();

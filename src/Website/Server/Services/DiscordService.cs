@@ -1,13 +1,9 @@
 ﻿using Discord;
-using Discord.Rest;
 using Discord.Webhook;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Models;
@@ -25,8 +21,6 @@ namespace Website.Server.Services
         private readonly ILogger<DiscordService> logger;
         private readonly IBaseUrl baseUrl;
 
-        private IConfigurationSection config => configuration.GetSection("Discord");
-
         public DiscordService(IConfiguration configuration, ProductsRepository productsRepository, BranchesRepository branchesRepository, MessagesRepository messagesRepository,
             UsersRepository usersRepository, ILogger<DiscordService> logger, IBaseUrl baseUrl)
         {
@@ -39,175 +33,214 @@ namespace Website.Server.Services
             this.baseUrl = baseUrl;
         }
 
+        private IConfigurationSection config => configuration.GetSection("Discord");
+
         private void SendEmbed(string discordWebhookUrl, Embed embed)
         {
             Task.Run(async () =>
             {
                 try
                 {
-                    using (var client = new DiscordWebhookClient(discordWebhookUrl))
+                    using (DiscordWebhookClient client = new DiscordWebhookClient(discordWebhookUrl))
                     {
-                        await client.SendMessageAsync(embeds: new Embed[] { embed });
+                        await client.SendMessageAsync(embeds: new Embed[] 
+                        { 
+                            embed
+                        });
                     }
-                } catch (Exception e)
+                } 
+                catch (Exception e)
                 {
                     logger.LogError(e, "An exception occurated when sending discord webhook");
                 }                
             });
         }
 
-        public async Task SendReviewAsync(MProductReview review, string baseUrl)
+        public async Task SendReviewAsync(MProductReview productReview, string baseUrl)
         {
-            var product = await productsRepository.GetProductAsync(review.ProductId, 0);
+            MProduct product = await productsRepository.GetProductAsync(productReview.ProductId, 0);
 
-            var eb = new EmbedBuilder();
+            string iconUrl = new StringBuilder()
+                .Append(baseUrl)
+                .Append("/api/images/")
+                .Append(product.ImageId)
+                .ToString();
 
-            eb.WithColor(Color.Blue);
-            eb.WithAuthor(product.Name, baseUrl + "/api/images/" + product.ImageId, baseUrl + "/products/" + product.Id);
-            eb.WithFooter(review.User.Name);
-            eb.WithCurrentTimestamp();
+            string url = new StringBuilder()
+                 .Append(baseUrl)
+                 .Append("/products/")
+                 .Append(product.Id)
+                 .ToString();
 
-            string stars = "";
-            for (int i = 1; i <= review.Rating; i++)
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithColor(Color.Blue);
+            embedBuilder.WithAuthor(product.Name, iconUrl, url);
+            embedBuilder.WithFooter(productReview.User.Name);
+            embedBuilder.WithCurrentTimestamp();
+
+            string stars = string.Empty;
+            for (int i = 1; i <= productReview.Rating; i++)
+            {
                 stars += ":star:";
-            eb.WithTitle(stars);
-            eb.AddField(review.Title, review.Body);
+            }
+            embedBuilder.WithTitle(stars);
+            embedBuilder.AddField(productReview.Title, productReview.Body);
 
-            SendEmbed(config["SendNewReviewWebhookUrl"], eb.Build());
+            SendEmbed(config["SendNewReviewWebhookUrl"], embedBuilder.Build());
         }
 
         public async Task SendMessageReplyAsync(MMessageReply reply, string baseUrl)
         {
-            var msg = await messagesRepository.GetMessageAsync(reply.MessageId);
+            MMessage message = await messagesRepository.GetMessageAsync(reply.MessageId);
+            UserInfo senderUserInfo = message.FromUserId == reply.UserId ? message.FromUser : message.ToUser;
+            string discordWebhookUrl = await usersRepository.GetUserDiscordWebhookUrl(message.FromUserId == reply.UserId ? message.ToUserId : message.FromUserId);
 
-            var sender = msg.FromUserId == reply.UserId ? msg.FromUser : msg.ToUser;
-
-            var discordWebhookUrl = await usersRepository.GetUserDiscordWebhookUrl(msg.FromUserId == reply.UserId ? msg.ToUserId : msg.FromUserId);
-
-            if (string.IsNullOrEmpty(discordWebhookUrl))
+            if (string.IsNullOrWhiteSpace(discordWebhookUrl))
+            {
                 return;
+            }
 
-            var eb = new EmbedBuilder();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithColor(Color.Blue);
+            embedBuilder.WithUrl(new StringBuilder()
+                .Append(baseUrl)
+                .Append("/messages/")
+                .Append(message.Id)
+                .ToString());
+            embedBuilder.WithTitle($"New Reply Message #{message.Id}");
+            embedBuilder.WithDescription($"{senderUserInfo.Name} sent a new reply to message: **{message.Title}**");
+            embedBuilder.WithFooter(senderUserInfo.Name);
+            embedBuilder.WithCurrentTimestamp();
 
-            eb.WithColor(Color.Blue);
-            eb.WithUrl(baseUrl + "/messages/" + msg.Id);
-            eb.WithTitle($"New Reply Message #{msg.Id}");
-            eb.WithDescription($"{sender.Name} sent a new reply to message: **{msg.Title}**");
-            eb.WithFooter(sender.Name);
-            eb.WithCurrentTimestamp();
-
-            SendEmbed(discordWebhookUrl, eb.Build());
+            SendEmbed(discordWebhookUrl, embedBuilder.Build());
         }
 
         public async Task SendMessageAsync(int messageId, string baseUrl)
         {
-            var msg = await messagesRepository.GetMessageAsync(messageId);
-            var discordWebhookUrl = await usersRepository.GetUserDiscordWebhookUrl(msg.ToUserId);
+            MMessage message = await messagesRepository.GetMessageAsync(messageId);
+            string discordWebhookUrl = await usersRepository.GetUserDiscordWebhookUrl(message.ToUserId);
 
-            if (string.IsNullOrEmpty(discordWebhookUrl))
+            if (string.IsNullOrWhiteSpace(discordWebhookUrl))
+            {
                 return;
+            }
 
-            var eb = new EmbedBuilder();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithColor(Color.Blue);
+            embedBuilder.WithUrl(new StringBuilder()
+                .Append(baseUrl)
+                .Append("/messages/")
+                .Append(message.Id)
+                .ToString());
+            embedBuilder.WithTitle($"New Message #{message.Id}");
+            embedBuilder.WithDescription($"{message.FromUser.Name} sent you a new message: **{message.Title}**");
+            embedBuilder.WithFooter(message.FromUser.Name);
+            embedBuilder.WithCurrentTimestamp();
 
-            eb.WithColor(Color.Blue);
-            eb.WithUrl(baseUrl + "/messages/" + msg.Id);
-            eb.WithTitle($"New Message #{msg.Id}");
-            eb.WithDescription($"{msg.FromUser.Name} sent you a new message: **{msg.Title}**");
-            eb.WithFooter(msg.FromUser.Name);
-            eb.WithCurrentTimestamp();
-
-            SendEmbed(discordWebhookUrl, eb.Build());
+            SendEmbed(discordWebhookUrl, embedBuilder.Build());
         }
 
         public async Task SendVersionUpdateAsync(MVersion version, string baseUrl)
         {
             version.Branch = await branchesRepository.GetBranchAsync(version.BranchId);
-            var product = await productsRepository.GetProductAsync(version.Branch.ProductId, 0);
+            MProduct product = await productsRepository.GetProductAsync(version.Branch.ProductId, 0);
 
-            var eb = new EmbedBuilder();
+            string iconUrl = new StringBuilder()
+                .Append(baseUrl)
+                .Append("/api/images/")
+                .Append(product.ImageId)
+                .ToString();
 
-            eb.WithColor(Color.Blue);
-            eb.WithAuthor(product.Name, baseUrl + "/api/images/" + product.ImageId, baseUrl + "/products/" + product.Id);
-            eb.WithDescription($"A new version has been published on **{version.Branch.Name}** branch: **{version.Name}**");
-            eb.AddField("Changelog", version.Changelog);
-            eb.WithFooter(product.Seller.Name);
-            eb.WithCurrentTimestamp();
+            string url = new StringBuilder()
+                .Append(baseUrl)
+                .Append("/products/")
+                .Append(product.Id)
+                .ToString();
 
-            SendEmbed(config["SendPluginUpdateWebhookUrl"], eb.Build());
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithAuthor(product.Name, iconUrl, url);
+            embedBuilder.WithDescription($"A new version has been published on **{version.Branch.Name}** branch: **{version.Name}**");
+            embedBuilder.AddField("Changelog", version.Changelog);
+            embedBuilder.WithFooter(product.Seller.Name);
+            embedBuilder.WithCurrentTimestamp();
+
+            SendEmbed(config["SendPluginUpdateWebhookUrl"], embedBuilder.Build());
         }
 
         public void SendPurchaseNotification(MOrder order)
         {
-            if (string.IsNullOrEmpty(order.Seller.DiscordWebhookUrl))
-                return;
-
-            var eb = new EmbedBuilder();
-            eb.WithColor(Color.Blue);
-            eb.WithTitle($"New purchase from {order.PaymentSender}");
-            eb.WithCurrentTimestamp();
-            eb.WithFooter(order.Buyer.Name);
-
-            foreach (var item in order.Items)
+            if (string.IsNullOrWhiteSpace(order.Seller.DiscordWebhookUrl))
             {
-                eb.AddField(item.ProductName, $"${item.Price:N}");
+                return;
             }
 
-            SendEmbed(order.Seller.DiscordWebhookUrl, eb.Build());
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithColor(Color.Blue);
+            embedBuilder.WithTitle($"New purchase from {order.PaymentSender}");
+            embedBuilder.WithCurrentTimestamp();
+            embedBuilder.WithFooter(order.Buyer.Name);
+
+            foreach (MOrderItem orderItem in order.Items)
+            {
+                embedBuilder.AddField(orderItem.ProductName, $"${orderItem.Price:N}");
+            }
+
+            SendEmbed(order.Seller.DiscordWebhookUrl, embedBuilder.Build());
         }
 
-        public void SendProductRelease(ProductInfo product)
+        public void SendProductRelease(ProductInfo productInfo)
         {
             string url = config["SendProductReleaseWebhookUrl"];
-            
-            if (string.IsNullOrEmpty(url))
-                return;
-
-            var eb = new EmbedBuilder();
-
-            eb.WithColor(Color.Blue);
-            eb.WithAuthor(product.Seller.Name, baseUrl.Get("/api/images/{0}", product.Seller.AvatarImageId), baseUrl.Get("/users/{0}", product.Seller.Id));
-            
-            eb.WithThumbnailUrl(baseUrl.Get("api/images/{0}", product.ImageId));
-            
-            eb.WithTitle(product.Name);
-            eb.WithUrl(baseUrl.Get("/products/{0}", product.Id));
-
-            eb.WithDescription(product.Description);
-            
-            eb.AddField("Category", product.Category);
-            eb.AddField("Price", product.GetPrice());
-
-            if (!string.IsNullOrEmpty(product.GithubUrl))
+            if (string.IsNullOrWhiteSpace(url))
             {
-                eb.AddField("GitHub", product.GithubUrl);
+                return;
             }
 
-            eb.WithFooter("Check it out!");
-            eb.WithCurrentTimestamp();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithColor(Color.Blue);
+            embedBuilder.WithAuthor(productInfo.Seller.Name, baseUrl.Get("/api/images/{0}", productInfo.Seller.AvatarImageId), baseUrl.Get("/users/{0}", productInfo.Seller.Id));
+            
+            embedBuilder.WithThumbnailUrl(baseUrl.Get("api/images/{0}", productInfo.ImageId));
+            
+            embedBuilder.WithTitle(productInfo.Name);
+            embedBuilder.WithUrl(baseUrl.Get("/products/{0}", productInfo.Id));
 
-            SendEmbed(url, eb.Build());
+            embedBuilder.WithDescription(productInfo.Description);
+            
+            embedBuilder.AddField("Category", productInfo.Category);
+            embedBuilder.AddField("Price", productInfo.GetPrice());
+
+            if (!string.IsNullOrEmpty(productInfo.GithubUrl))
+            {
+                embedBuilder.AddField("GitHub", productInfo.GithubUrl);
+            }
+
+            embedBuilder.WithFooter("Check it out!");
+            embedBuilder.WithCurrentTimestamp();
+
+            SendEmbed(url, embedBuilder.Build());
         }
 
-        public void SendApproveRequestNotification(ProductInfo product)
+        public void SendApproveRequestNotification(ProductInfo productInfo)
         {
             string url = config["AdminNotificationsWebhookUrl"];
-
             if (string.IsNullOrEmpty(url))
+            {
                 return;
+            }
 
-            EmbedBuilder eb = new();
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.WithColor(Color.Blue);
+            embedBuilder.WithAuthor(productInfo.Seller.Name, baseUrl.Get("/api/images/{0}", productInfo.Seller.AvatarImageId), baseUrl.Get("/users/{0}", productInfo.Seller.Id));
 
-            eb.WithColor(Color.Blue);
-            eb.WithAuthor(product.Seller.Name, baseUrl.Get("/api/images/{0}", product.Seller.AvatarImageId), baseUrl.Get("/users/{0}", product.Seller.Id));
+            embedBuilder.WithTitle(productInfo.Name);
+            embedBuilder.WithUrl(baseUrl.Get("/products/{0}", productInfo.Id));
 
-            eb.WithTitle(product.Name);
-            eb.WithUrl(baseUrl.Get("/products/{0}", product.Id));
+            embedBuilder.WithDescription($"{productInfo.Seller.Name} has just submitted his {productInfo.Name} plugin for approval");
 
-            eb.WithDescription($"{product.Seller.Name} has just submitted his {product.Name} plugin for approval");
+            embedBuilder.WithCurrentTimestamp();
 
-            eb.WithCurrentTimestamp();
-
-            SendEmbed(url, eb.Build());
+            SendEmbed(url, embedBuilder.Build());
         }
     }
 }
