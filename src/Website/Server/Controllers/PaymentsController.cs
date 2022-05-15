@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using RestoreMonarchy.PaymentGateway.Client.Constants;
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Constants;
@@ -26,9 +25,11 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetPaymentMethodsAsync(int sellerId)
         {
             MUser user = await usersRepository.GetUserPrivateAsync(sellerId);
-            if (!RoleConstants.IsSeller(user.Role))
+            if (RoleConstants.IsNotSeller(user.Role))
+            {
                 return BadRequest();
-            
+            }
+
             return Ok(user.GetSellerPaymentProviders(configuration.GetValue<bool>("IsMockEnabled")));
         }
     }

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
@@ -34,7 +32,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetMessageAsync(int messageId)
         {
             if (!await messagesRepository.IsMessageUserAsync(messageId, int.Parse(User.Identity.Name)))
+            {
                 return BadRequest();
+            }
 
             return Ok(await messagesRepository.GetMessageAsync(messageId));
         }
@@ -51,7 +51,7 @@ namespace Website.Server.Controllers
 
             message = await messagesRepository.AddMessageAsync(message);
 
-            await discordService.SendMessageAsync(message.Id, Request.Headers["Origin"]);
+            await discordService.SendMessageAsync(message.Id);
 
             return Ok(message);
         }
@@ -61,7 +61,9 @@ namespace Website.Server.Controllers
         {
             int userId = int.Parse(User.Identity.Name);
             if (!await messagesRepository.IsMessageUserAsync(messageId, userId))
+            {
                 return BadRequest();
+            }
 
             await messagesRepository.CloseMessageAsync(messageId, userId);
             return Ok();
@@ -72,12 +74,14 @@ namespace Website.Server.Controllers
         {
             int userId = int.Parse(User.Identity.Name);
             if (!await messagesRepository.IsMessageUserAsync(reply.MessageId, userId))
+            {
                 return BadRequest();
+            }
 
             reply.UserId = userId;
             reply = await messagesRepository.AddMessageReplyAsync(reply);
 
-            await discordService.SendMessageReplyAsync(reply, Request.Headers["Origin"]);
+            await discordService.SendMessageReplyAsync(reply);
 
             return Ok(reply);
         }
@@ -86,7 +90,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PutMessageReplyAsync([FromBody] MMessageReply reply)
         {
             if (!await messagesRepository.IsMessageReplyUserAsync(reply.Id, int.Parse(User.Identity.Name)))
+            {
                 return BadRequest();
+            }
 
             await messagesRepository.UpdateMessageReplyAsync(reply);
             return Ok();
@@ -96,7 +102,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> DeleteMessageReplyAsync(int replyId)
         {
             if (!await messagesRepository.IsMessageReplyUserAsync(replyId, int.Parse(User.Identity.Name)))
+            {
                 return BadRequest();
+            }
 
             await messagesRepository.DeleteMessageReplyAsync(replyId);
             return Ok();

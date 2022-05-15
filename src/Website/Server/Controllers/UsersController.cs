@@ -73,9 +73,10 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetUserSellerAsync(int userId)
         {
             Seller seller = await usersRepository.GetUserAsync<Seller>(userId);
-
-            if (!RoleConstants.IsSeller(seller.Role))
+            if (RoleConstants.IsNotSeller(seller.Role))
+            {
                 return BadRequest();
+            }
 
             return Ok(seller);
         }
@@ -85,7 +86,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PutProfileAsync([FromBody] MUser user)
         {
             if (user.Id.ToString() != User.Identity.Name)
+            {
                 return Unauthorized();
+            }
 
             await usersRepository.UpdateProfileAsync(user);
             return Ok();
@@ -96,7 +99,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PutSellerAsync([FromBody] MUser user)
         {
             if (user.Id.ToString() != User.Identity.Name)
+            {
                 return Unauthorized();
+            }
 
             await usersRepository.UpdateSellerAsync(user);
             return Ok();
@@ -107,7 +112,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PutNotificationsAsync([FromBody] MUser user)
         {
             if (user.Id.ToString() != User.Identity.Name)
+            {
                 return Unauthorized();
+            }
 
             await usersRepository.UpdateNotificationsAsync(user);
             return Ok();

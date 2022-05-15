@@ -6,7 +6,6 @@ using SteamWebAPI2.Interfaces;
 using SteamWebAPI2.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -22,33 +21,38 @@ namespace Website.Server.Helpers
 
         public static async Task SignIn(CookieSignedInContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
+            UsersRepository usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
+            ImagesRepository imagesRepository = context.HttpContext.RequestServices.GetRequiredService<ImagesRepository>();
+
+            
             string steamId = context.Principal.FindFirst(ClaimTypes.NameIdentifier).Value[SteamIdStartIndex..];
-
-            var usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
-            var imagesRepository = context.HttpContext.RequestServices.GetRequiredService<ImagesRepository>();
-
             MUser user = await usersRepository.GetUserAsync(steamId);
-
+            
+            // Return if user already exists in database
             if (user != null)
             {
                 return;
             }
 
-            var steamFactory = context.HttpContext.RequestServices.GetRequiredService<SteamWebInterfaceFactory>();
-            var httpClientFactory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
-            var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ValidationHelper>>();
+            // Create new user from steamID
 
-            var client = httpClientFactory.CreateClient();
-            client.Timeout = TimeSpan.FromSeconds(3);
+            IHttpClientFactory httpClientFactory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
+            ILogger<ValidationHelper> logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ValidationHelper>>();
+
+            SteamWebInterfaceFactory steamFactory = context.HttpContext.RequestServices.GetRequiredService<SteamWebInterfaceFactory>();
+            HttpClient httpClient = httpClientFactory.CreateClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(3);
 
             PlayerSummaryModel playerSummary = null;
-
             try
             {
-                var response = await steamFactory.CreateSteamWebInterface<SteamUser>(client).GetPlayerSummaryAsync(ulong.Parse(steamId));
-                playerSummary = response.Data;
+                ISteamWebResponse<PlayerSummaryModel> steamWebResponse = await steamFactory.CreateSteamWebInterface<SteamUser>(httpClient).GetPlayerSummaryAsync(ulong.Parse(steamId));
+                playerSummary = steamWebResponse.Data;
             }
             catch (Exception e)
             {
@@ -64,22 +68,20 @@ namespace Website.Server.Helpers
             if (playerSummary != null)
             {
                 user.Name = playerSummary.Nickname;
-            }
 
-            if (playerSummary != null)
-            {
                 try
                 {
-                    byte[] avatarContent = await client.GetByteArrayAsync(playerSummary.AvatarFullUrl);
+                    byte[] avatarContentBytes = await httpClient.GetByteArrayAsync(playerSummary.AvatarFullUrl);
                     MImage img = new MImage()
                     {
                         Name = "steam_avatar.jpg",
-                        Content = avatarContent,
+                        Content = avatarContentBytes,
                         ContentType = "image/jpeg"
                     };
 
                     user.AvatarImageId = await imagesRepository.AddImageAsync(img);
-                } catch (Exception e)
+                } 
+                catch (Exception e)
                 {
                     logger.LogError(e, $"An exception occurated when downloading player avatar {playerSummary.SteamId}");
                 }                
@@ -92,10 +94,8 @@ namespace Website.Server.Helpers
         {
             string steamId = context.Principal.FindFirst(ClaimTypes.NameIdentifier).Value[SteamIdStartIndex..];
 
-            var usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
-
+            UsersRepository usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
             MUser user = await usersRepository.GetUserAsync(steamId);
-
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Id.ToString()),
