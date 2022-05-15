@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
 using System.Text.Json.Serialization;
-using Website.Shared.Constants;
 
 namespace Website.Shared.Models.Database
 {
@@ -32,21 +32,34 @@ namespace Website.Shared.Models.Database
         public DateTime CreateDate { get; set; }
 
         public List<MProductCustomer> Customers { get; set; }
-        
+
+        private const string SteamProfilesPath = "https://steamcommunity.com/profiles/";
+        private const string BlueColorHex = "#0066ff";
+
         [JsonIgnore]
-        public string SteamProfileUrl => "https://steamcommunity.com/profiles/" + SteamId;
+        public string SteamProfileUrl => new StringBuilder()
+                                             .Append(SteamProfilesPath)
+                                             .Append(SteamId)
+                                             .ToString();
+
         [JsonIgnore]
-        public string BackgroundColor => Color ?? "#0066ff";
+        public string BackgroundColor => Color ?? BlueColorHex;
 
         public string[] GetSellerPaymentProviders(bool isMockEnabled)
         {
-            List<string> paymentMethods = new();
+            List<string> paymentMethods = new List<string>();
             if (IsPayPalEnabled)
+            {
                 paymentMethods.Add(PaymentProviders.PayPal);
+            }
             if (IsNanoEnabled)
+            {
                 paymentMethods.Add(PaymentProviders.Nano);
+            }
             if (isMockEnabled)
+            {
                 paymentMethods.Add(PaymentProviders.Mock);
+            }
 
             return paymentMethods.ToArray();
         }

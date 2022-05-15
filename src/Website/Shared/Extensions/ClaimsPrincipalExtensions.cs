@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 
 namespace Website.Shared.Extensions
 {
@@ -17,12 +12,12 @@ namespace Website.Shared.Extensions
         public static bool TryGetId(this ClaimsPrincipal principal, out int userId)
         {
             userId = 0;
-
-            if (!string.IsNullOrEmpty(principal.Identity?.Name ?? null))
+            if (!string.IsNullOrWhiteSpace(principal.Identity?.Name ?? null))
             {
                 int.TryParse(principal.Identity.Name, out userId);
                 return true;
             }
+
             return false;
         }
     }

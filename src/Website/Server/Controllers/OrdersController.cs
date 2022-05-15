@@ -34,7 +34,9 @@ namespace Website.Server.Controllers
 
             MOrder order = await orderService.CreateOrderAsync(orderParams);
             if (order == null)
+            {
                 return BadRequest();
+            }
 
             return Ok(order);
         }
@@ -51,12 +53,15 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PayOrderAsync(int orderId)
         {
             MOrder order = await ordersRepository.GetOrderAsync(orderId);
-
             if (order == null)
+            {
                 return NotFound();
+            }
 
             if (order.BuyerId != User.Id())
+            {
                 return BadRequest();
+            }
 
             return Redirect(orderService.PaymentGatewayClient.BuildPayUrl(order.PaymentId));
         }
@@ -65,7 +70,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> NotifyAsync()
         {
             if (!orderService.PaymentGatewayClient.ValdiateNotifyRequest(Request))
+            {
                 return Forbid();
+            }
 
             string requestBody;
             using (StreamReader reader = new(Request.Body, Encoding.ASCII))
@@ -74,7 +81,9 @@ namespace Website.Server.Controllers
             }
 
             if (!Guid.TryParse(requestBody, out Guid paymentId))
+            {
                 return BadRequest();
+            }
 
             await orderService.UpdateOrderAsync(paymentId);
             return Ok();

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Constants;
@@ -39,7 +37,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetProductAsync(int productId)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(productId, int.Parse(User.Identity.Name)))
+            {
                 return BadRequest();
+            }
 
             return Ok(await sellersRepository.GetSellerProductAsync(productId));
         }

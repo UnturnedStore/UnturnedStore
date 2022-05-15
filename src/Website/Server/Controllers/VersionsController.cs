@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
@@ -28,11 +29,13 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PostVersionAsync([FromBody] MVersion version)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await branchesRepository.IsBranchSellerAsync(version.BranchId, int.Parse(User.Identity.Name)))
+            {
                 return BadRequest();
+            }
 
             version = await versionsRepository.AddVersionAsync(version);
 
-            await discordService.SendVersionUpdateAsync(version, Request.Headers["Origin"]);
+            await discordService.SendVersionUpdateAsync(version);
 
             return Ok(version);
         }
@@ -42,20 +45,23 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PutVersionAsync([FromBody] MVersion version)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await branchesRepository.IsBranchSellerAsync(version.BranchId, int.Parse(User.Identity.Name)))
+            {
                 return BadRequest();
+            }
 
             await versionsRepository.UpdateVersionAsync(version);
 
             return Ok();
         }
 
-
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPatch("{versionId}")]
         public async Task<IActionResult> PatchVersionAsync(int versionId)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await versionsRepository.IsVersionSellerAsync(versionId, int.Parse(User.Identity.Name)))
+            {
                 return BadRequest();
+            }
 
             await versionsRepository.ToggleVersionAsync(versionId);
             return Ok();
@@ -66,7 +72,9 @@ namespace Website.Server.Controllers
         {
             int userId = 0;
             if (User.Identity?.IsAuthenticated ?? false)
+            {
                 userId = int.Parse(User.Identity.Name);
+            }
 
             bool isSeller = false;
             if (userId != 0)
@@ -85,12 +93,16 @@ namespace Website.Server.Controllers
                 if (!version.Branch.Product.IsEnabled || version.Branch.Product.Price > 0)
                 {
                     if (!await versionsRepository.IsVersionCustomerAsync(versionId, userId))
+                    {
                         return Unauthorized();
+                    }
                 }                
             }
 
             if (shouldCount)
+            {
                 await versionsRepository.IncrementDownloadsCount(versionId);
+            }
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" + 
                 string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
@@ -102,12 +114,13 @@ namespace Website.Server.Controllers
         {
             int userId = 0;
             if (User.Identity?.IsAuthenticated ?? false)
+            {
                 userId = int.Parse(User.Identity.Name);
+            }
 
             MVersion version = await versionsRepository.GetLatestVersionAsync(productId);
             if (version == null)
             {
-                // Product doesn't have any versions or not exist
                 return NotFound();
             }
 
@@ -121,7 +134,9 @@ namespace Website.Server.Controllers
             }
 
             if (shouldCount)
+            {
                 await versionsRepository.IncrementDownloadsCount(version.Id);
+            }
 
             Response.Headers.Add("Content-Disposition", "inline; filename=" +
                 string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
