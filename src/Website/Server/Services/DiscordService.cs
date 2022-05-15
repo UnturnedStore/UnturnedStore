@@ -142,6 +142,7 @@ namespace Website.Server.Services
                 = $"A new version has been published on **{version.Branch.Name}** branch: **{version.Name}**";
 
             EmbedBuilder embedBuilder = new();
+            embedBuilder.WithColor(Color.Blue);
             embedBuilder.WithAuthor(product.Name, iconUrl, url);
             embedBuilder.WithDescription(description);
             embedBuilder.AddField("Changelog", version.Changelog);
