@@ -18,8 +18,8 @@ namespace Website.Server.Controllers
 
         public MessagesController(MessagesRepository messagesRepository, DiscordService discordService)
         {
-            this.messagesRepository = messagesRepository ?? throw new ArgumentNullException(nameof(messagesRepository));
-            this.discordService = discordService ?? throw new ArgumentNullException(nameof(discordService));
+            this.messagesRepository = messagesRepository;
+            this.discordService = discordService;
         }
 
         [HttpGet]
@@ -51,7 +51,7 @@ namespace Website.Server.Controllers
 
             message = await messagesRepository.AddMessageAsync(message);
 
-            await discordService.SendMessageAsync(message.Id, Request.Headers["Origin"]);
+            await discordService.SendMessageAsync(message.Id);
 
             return Ok(message);
         }
@@ -81,7 +81,7 @@ namespace Website.Server.Controllers
             reply.UserId = userId;
             reply = await messagesRepository.AddMessageReplyAsync(reply);
 
-            await discordService.SendMessageReplyAsync(reply, Request.Headers["Origin"]);
+            await discordService.SendMessageReplyAsync(reply);
 
             return Ok(reply);
         }

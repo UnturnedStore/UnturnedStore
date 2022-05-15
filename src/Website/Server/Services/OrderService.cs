@@ -33,12 +33,12 @@ namespace Website.Server.Services
 
         public PaymentGatewayClient PaymentGatewayClient { get; }
 
-        public async Task UpdateOrderAsync(Guid paymentGuid)
+        public async Task UpdateOrderAsync(Guid paymentId)
         {
-            MOrder order = await ordersRepository.GetOrderAsync(paymentGuid);
+            MOrder order = await ordersRepository.GetOrderAsync(paymentId);
             if (order == null)
             {
-                logger.LogWarning("Order for payment id {0} not found", paymentGuid);
+                logger.LogWarning("Order for payment id {0} not found", paymentId);
                 return;
             }
 

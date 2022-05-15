@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Text;
+using Website.Shared.Constants;
 
 namespace Website.Server.Services
 {
@@ -8,20 +9,18 @@ namespace Website.Server.Services
     {
         public BaseUrlService(IConfiguration configuration)
         {
-            BaseUrl = configuration["BaseUrl"].TrimEnd(Path.AltDirectorySeparatorChar);
+            BaseUrl = configuration["BaseUrl"].TrimEnd('/');
         }
 
         public string BaseUrl { get; }
 
         public string Get(string relativeUrl, params object[] args)
         {
-            relativeUrl = string.Format(relativeUrl, args);
-            relativeUrl = relativeUrl.TrimStart(Path.AltDirectorySeparatorChar);
-            return new StringBuilder()
-                .Append(BaseUrl)
-                .Append(Path.AltDirectorySeparatorChar)
-                .Append(relativeUrl)
-                .ToString();
+            relativeUrl = string.Format(relativeUrl, args);            
+            relativeUrl = relativeUrl.TrimStart('/');
+            return string.Join('/',
+                BaseUrl,
+                relativeUrl);
         }
     }
 }

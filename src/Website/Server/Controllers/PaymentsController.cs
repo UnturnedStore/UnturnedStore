@@ -17,8 +17,8 @@ namespace Website.Server.Controllers
 
         public PaymentsController(UsersRepository usersRepository, IConfiguration configuration)
         {
-            this.usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.usersRepository = usersRepository;
+            this.configuration = configuration;
         }
 
         [HttpGet("{sellerId}")]

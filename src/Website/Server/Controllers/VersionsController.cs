@@ -19,9 +19,9 @@ namespace Website.Server.Controllers
 
         public VersionsController(VersionsRepository versionsRepository, BranchesRepository branchesRepository, DiscordService discordService)
         {
-            this.versionsRepository = versionsRepository ?? throw new ArgumentNullException(nameof(versionsRepository));
-            this.branchesRepository = branchesRepository ?? throw new ArgumentNullException(nameof(branchesRepository));
-            this.discordService = discordService ?? throw new ArgumentNullException(nameof(discordService));
+            this.versionsRepository = versionsRepository;
+            this.branchesRepository = branchesRepository;
+            this.discordService = discordService;
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
@@ -35,7 +35,7 @@ namespace Website.Server.Controllers
 
             version = await versionsRepository.AddVersionAsync(version);
 
-            await discordService.SendVersionUpdateAsync(version, Request.Headers["Origin"]);
+            await discordService.SendVersionUpdateAsync(version);
 
             return Ok(version);
         }

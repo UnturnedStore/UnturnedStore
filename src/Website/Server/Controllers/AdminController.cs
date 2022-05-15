@@ -17,7 +17,7 @@ namespace Website.Server.Controllers
 
         public AdminController(AdminRepository adminRepository)
         {
-            this.adminRepository = adminRepository ?? throw new ArgumentNullException(nameof(adminRepository));
+            this.adminRepository = adminRepository;
         }
 
         [HttpGet("users")]

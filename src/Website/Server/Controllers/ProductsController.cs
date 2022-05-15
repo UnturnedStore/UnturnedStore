@@ -277,7 +277,7 @@ namespace Website.Server.Controllers
             }
 
             review = await productsRepository.AddProductReviewAsync(review);
-            await discordService.SendReviewAsync(review, Request.Headers["Origin"]);
+            await discordService.SendReviewAsync(review);
             return Ok(review);
         }
 

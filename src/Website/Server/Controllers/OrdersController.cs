@@ -21,8 +21,8 @@ namespace Website.Server.Controllers
 
         public OrdersController(OrdersRepository ordersRepository, OrderService orderService)
         {
-            this.ordersRepository = ordersRepository ?? throw new ArgumentNullException(nameof(ordersRepository));
-            this.orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+            this.ordersRepository = ordersRepository;
+            this.orderService = orderService;
         }
 
         [Authorize]
@@ -80,12 +80,12 @@ namespace Website.Server.Controllers
                 requestBody = await reader.ReadToEndAsync();
             }
 
-            if (!Guid.TryParse(requestBody, out Guid paymentGuid))
+            if (!Guid.TryParse(requestBody, out Guid paymentId))
             {
                 return BadRequest();
             }
 
-            await orderService.UpdateOrderAsync(paymentGuid);
+            await orderService.UpdateOrderAsync(paymentId);
             return Ok();
         }
     }

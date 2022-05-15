@@ -20,7 +20,7 @@ namespace Website.Server.Controllers
 
         public UsersController(UsersRepository usersRepository)
         {
-            this.usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
+            this.usersRepository = usersRepository;
         }
 
         [HttpGet]

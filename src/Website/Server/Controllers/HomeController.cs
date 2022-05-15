@@ -16,8 +16,8 @@ namespace Website.Server.Controllers
 
         public HomeController(IConfiguration configuration, HomeRepository homeRepository)
         {
-            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            this.homeRepository = homeRepository ?? throw new ArgumentNullException(nameof(homeRepository));
+            this.configuration = configuration;
+            this.homeRepository = homeRepository;
         }
 
         [HttpGet("~/discord")]

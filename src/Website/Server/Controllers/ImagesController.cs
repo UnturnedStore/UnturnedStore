@@ -15,7 +15,7 @@ namespace Website.Server.Controllers
 
         public ImagesController(ImagesRepository imagesRepository)
         {
-            this.imagesRepository = imagesRepository ?? throw new ArgumentNullException(nameof(imagesRepository));
+            this.imagesRepository = imagesRepository;
         }
 
         [HttpGet("{imageId}")]

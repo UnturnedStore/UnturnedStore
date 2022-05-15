@@ -48,7 +48,7 @@ namespace Website.Server
                 {
                     options.LoginPath = "/signin";
                     options.LogoutPath = "/signout";
-                    options.AccessDeniedPath = Path.AltDirectorySeparatorChar.ToString();
+                    options.AccessDeniedPath = "/";
                     options.ExpireTimeSpan = TimeSpan.FromDays(7);
                     options.Events.OnSignedIn = ValidationHelper.SignIn;
                     options.Events.OnValidatePrincipal = ValidationHelper.Validate;

@@ -29,12 +29,17 @@ namespace Website.Server.Helpers
             UsersRepository usersRepository = context.HttpContext.RequestServices.GetRequiredService<UsersRepository>();
             ImagesRepository imagesRepository = context.HttpContext.RequestServices.GetRequiredService<ImagesRepository>();
 
-            MUser user = null;
+            
             string steamId = context.Principal.FindFirst(ClaimTypes.NameIdentifier).Value[SteamIdStartIndex..];
-            if ((user = await usersRepository.GetUserAsync(steamId)) != null)
+            MUser user = await usersRepository.GetUserAsync(steamId);
+            
+            // Return if user already exists in database
+            if (user != null)
             {
                 return;
             }
+
+            // Create new user from steamID
 
             IHttpClientFactory httpClientFactory = context.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>();
             ILogger<ValidationHelper> logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<ValidationHelper>>();

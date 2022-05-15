@@ -18,8 +18,8 @@ namespace Website.Server.Controllers
 
         public BranchesController(BranchesRepository branchesRepository, ProductsRepository productsRepository)
         {
-            this.branchesRepository = branchesRepository ?? throw new ArgumentNullException(nameof(branchesRepository));
-            this.productsRepository = productsRepository ?? throw new ArgumentNullException(nameof(productsRepository));
+            this.branchesRepository = branchesRepository;
+            this.productsRepository = productsRepository;
         }
 
         [HttpPost]
