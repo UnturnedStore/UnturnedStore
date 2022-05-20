@@ -261,6 +261,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> DeleteProductCustomerAsync(int customerId)
         {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductCustomerSellerAsync(customerId, int.Parse(User.Identity.Name)))
+            {
+                return Unauthorized();
+            }
 
             await productsRepository.DeleteProductCustomerAsync(customerId);
             return Ok();
