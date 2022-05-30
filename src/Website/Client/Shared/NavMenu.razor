@@ -51,7 +51,7 @@
                         <li class="nav-item ms-2">
                             <a href="/messages" class="nav-link position-relative">
                                 <i class="far fa-envelope">
-                                @if (MessageService.Messages != null && MessageService.NewMessages.Count > 0)
+                                @if (MessageService.Messages != null && MessageService.NewMessages.Count() > 0)
                                 {
                                     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="NewMessagesIcon">
                                         <g color="white">
