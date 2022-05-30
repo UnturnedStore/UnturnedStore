@@ -10,6 +10,7 @@ namespace Website.Shared.Models
         public string SteamId { get; set; }
         public int? AvatarImageId { get; set; }
         public string Color { get; set; }
+        public DateTime LastAccessedMessages { get; set; }
         public DateTime CreateDate { get; set; }
 
         public string AvatarUrl() => AvatarImageId.HasValue ? 
