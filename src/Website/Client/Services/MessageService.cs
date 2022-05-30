@@ -45,6 +45,7 @@ namespace Website.Client.Services
 
         public void RefreshMessages(List<MMessage> messages)
         {
+            if (NewMessages.Count() == 0) return;
             Messages = messages;
             if (NavMenu != null)
                 NavMenu.Refresh();
