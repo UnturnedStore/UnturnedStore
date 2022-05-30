@@ -21,6 +21,8 @@ namespace Website.Client.Pages.User.MessagesPage
         public AuthenticationStateProvider AuthState { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public MessageService MessageService { get; set; }
 
         private SteamAuthProvider SteamAuth => AuthState as SteamAuthProvider;
 
@@ -32,6 +34,8 @@ namespace Website.Client.Pages.User.MessagesPage
         protected override async Task OnInitializedAsync()
         {
             Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
+            SteamAuth.User.LastAccessedMessages = DateTime.Now;
+            MessageService.RefreshMessages(Messages);
         }
 
         private void GoToMessage(MMessage msg)
