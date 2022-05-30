@@ -44,8 +44,9 @@ namespace Website.Client.Services
                 NavMenu.Refresh();
         }
 
-        public async Task RefreshMessagesAsync()
-        {            
+        public void RefreshMessages(List<MMessage> messages)
+        {
+            Messages = messages;
             if (NavMenu != null)
                 NavMenu.Refresh();
         }
