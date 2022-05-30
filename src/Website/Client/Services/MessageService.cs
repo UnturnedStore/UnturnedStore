@@ -30,13 +30,9 @@ namespace Website.Client.Services
         
         public List<MMessage> Messages { get; private set; }
         
-        public List<MMessage> NewMessages
-        {
-            get
-            {
-                return Messages.Where(m => m.CreateDate > userService.User.LastAccessedMessages || m.Replies.Any(mr => mr.CreateDate > userService.User.LastAccessedMessages)).ToList();
-            }
-        }
+        public List<MMessage> NewMessages => Messages.Where(m => m.CreateDate > userService.User.LastAccessedMessages
+                                                            || m.Replies.Any(mr => mr.CreateDate > userService.User.LastAccessedMessages))
+                                                            .ToList();
         
         public async Task ReloadMessagesAsync()
         {
@@ -44,6 +40,12 @@ namespace Website.Client.Services
             if (Messages == null)
                 Messages = new List<MMessage>();
 
+            if (NavMenu != null)
+                NavMenu.Refresh();
+        }
+
+        public async Task RefreshMessagesAsync()
+        {            
             if (NavMenu != null)
                 NavMenu.Refresh();
         }
