@@ -30,9 +30,8 @@ namespace Website.Client.Services
         
         public List<MMessage> Messages { get; private set; }
         
-        public List<MMessage> NewMessages => Messages.Where(m => m.CreateDate > userService.User.LastAccessedMessages
-                                                            || m.Replies.Any(mr => mr.CreateDate > userService.User.LastAccessedMessages))
-                                                            .ToList();
+        public IEnumerable<MMessage> NewMessages => Messages.Where(m => m.CreateDate > userService.User.LastAccessedMessages
+                                                            || m.Replies.Any(mr => mr.CreateDate > userService.User.LastAccessedMessages));
         
         public async Task ReloadMessagesAsync()
         {
