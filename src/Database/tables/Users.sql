@@ -15,6 +15,7 @@
 	TermsAndConditions NVARCHAR(4000) NULL,
 	Biography NVARCHAR(4000) NULL,
 	IsVerifiedSeller BIT NOT NULL CONSTRAINT DF_Users_IsVerifiedSeller DEFAULT 0,
+	LastAccessedMessages DATETIME2(0) NOT NULL CONSTRAINT DF_Users_LastAccessedMessages DEFAULT SYSDATETIME(),
 	CreateDate DATETIME2(0) NOT NULL CONSTRAINT DF_Users_CreateDate DEFAULT SYSDATETIME(),
 	CONSTRAINT UK_Users_SteamId UNIQUE (SteamId)
 )
