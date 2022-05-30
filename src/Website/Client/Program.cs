@@ -26,6 +26,7 @@ namespace Website.Client
             builder.Services.AddTransient<StorageService>();
             builder.Services.AddTransient<ZIPService>();
             builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<MessageService>();
             builder.Services.AddComponentsAndServices();
 
             WebAssemblyHost host = builder.Build();
