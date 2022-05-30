@@ -63,7 +63,7 @@ namespace Website.Data.Repositories
 
         public async Task<MUser> GetUserPublicAsync(int userId)
         {
-            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.TermsAndConditions, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
+            const string sql = "SELECT u.Id, u.Name, u.Role, u.SteamId, u.TermsAndConditions, u.LastAccessedMessages, u.CreateDate, c.*, p.* FROM dbo.Users u LEFT JOIN dbo.ProductCustomers c ON u.Id = c.UserId " +
                 "LEFT JOIN dbo.Products p ON c.ProductId = p.Id WHERE u.Id = @userId;";
 
             MUser user = null;
@@ -143,7 +143,7 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MUser>> GetUsersAsync()
         {
-            const string sql = "SELECT Id, Name, SteamId, Role, AvatarImageId, CreateDate FROM dbo.Users;";
+            const string sql = "SELECT Id, Name, SteamId, Role, AvatarImageId, LastAccessedMessages, CreateDate FROM dbo.Users;";
             return await connection.QueryAsync<MUser>(sql);
         }
     }
