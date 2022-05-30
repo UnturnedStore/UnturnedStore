@@ -41,6 +41,7 @@ AS
 		u.Biography,
 		u.Color,
 		u.IsVerifiedSeller,
+		u.LastAccessedMessages,
 		u.CreateDate,
 		Sales = ISNULL(us.Sales, 0),
 		p.Id,
