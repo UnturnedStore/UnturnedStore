@@ -34,7 +34,6 @@ namespace Website.Client.Pages.User.MessagesPage
         protected override async Task OnInitializedAsync()
         {
             Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
-            SteamAuth.User.LastAccessedMessages = DateTime.Now;
             MessageService.RefreshMessages(Messages);
         }
 
