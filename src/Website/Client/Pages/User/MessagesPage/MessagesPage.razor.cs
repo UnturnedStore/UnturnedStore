@@ -34,7 +34,7 @@ namespace Website.Client.Pages.User.MessagesPage
         protected override async Task OnInitializedAsync()
         {
             Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
-            MessageService.RefreshMessages(Messages);
+            await MessageService.RefreshMessages(Messages); // Don't know if this will block the page from loading, if it does move this into a Task.Run() somewhere
         }
 
         private void GoToMessage(MMessage msg)
