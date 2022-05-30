@@ -43,12 +43,20 @@ namespace Website.Client.Services
                 NavMenu.Refresh();
         }
 
-        public void RefreshMessages(List<MMessage> messages)
+        public async Task RefreshMessages(List<MMessage> messages)
         {
-            if (NewMessages.Count() == 0) return;
-            Messages = messages;
-            if (NavMenu != null)
+            userService.User.LastAccessedMessages = DateTime.Now;
+            var user = MUser.FromUser(userService.User);
+            await HttpClient.PutAsJsonAsync("api/users/profile", user);
+
+            if (NewMessages.Count() > 0 && NavMenu != null)
+            {
+                Messages = messages;
                 NavMenu.Refresh();
+            } else
+            {
+                Messages = messages;
+            }
         }
     }
 }
