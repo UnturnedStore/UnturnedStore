@@ -96,7 +96,7 @@ namespace Website.Data.Repositories
         
         public async Task<MUser> GetUserAsync(string steamId)
         {
-            const string sql = "SELECT Id, Name, Role, SteamId, CreateDate " +
+            const string sql = "SELECT Id, Name, Role, SteamId, LastAccessedMessages, CreateDate " +
                 "FROM dbo.Users WHERE SteamId = @steamId;";
 
             return await connection.QuerySingleOrDefaultAsync<MUser>(sql, new { steamId });
@@ -105,7 +105,7 @@ namespace Website.Data.Repositories
         public async Task<MUser> AddUserAsync(MUser user)
         {
             const string sql = "INSERT INTO dbo.Users (Name, Role, SteamId, AvatarImageId) " +
-                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Role, INSERTED.SteamId, INSERTED.AvatarImageId, INSERTED.CreateDate " +
+                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Role, INSERTED.SteamId, INSERTED.AvatarImageId, INSERTED.LastAccessedMessages, INSERTED.CreateDate " +
                 "VALUES (@Name, @Role, @SteamId, @AvatarImageId);";
 
             return await connection.QuerySingleOrDefaultAsync<MUser>(sql, user);
