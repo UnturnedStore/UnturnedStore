@@ -26,6 +26,19 @@ i {
     transform: translateY(7%);
 }
 
+.NewMessagesIcon {
+    position: absolute;
+    right: -50%;
+    bottom: 35%;
+    left: 50%;
+    transition: transform 0.25s;
+}
+
+.NewMessagesIcon:hover {
+    transform: scale(1.25);
+    transition: transform 0.25s;
+}
+
 .navbar-btn-avatar,
 .navbar-btn-avatar:active,
 .navbar-btn-avatar:hover,
