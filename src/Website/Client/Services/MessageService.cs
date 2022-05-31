@@ -8,12 +8,14 @@ using Website.Shared.Constants;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
+using Website.Data.Repositories;
 
 namespace Website.Client.Services
 {
     public class MessageService
     {
         private readonly UserService userService;
+        private reedonly UsersRepository usersRepository;
         private readonly HttpClient httpClient;
 
         private NavMenu NavMenu { get; set; }
@@ -22,9 +24,10 @@ namespace Website.Client.Services
             NavMenu = navMenu;
         }
 
-        public MessageService(UserService userService, HttpClient httpClient)
+        public MessageService(UserService userService, UsersRepository usersRepository, HttpClient httpClient)
         {
             this.userService = userService;
+            this.usersRepository = usersRepository;
             this.httpClient = httpClient;
         }
         
@@ -47,7 +50,7 @@ namespace Website.Client.Services
         {
             userService.User.LastAccessedMessages = DateTime.Now;
             var user = MUser.FromUser(userService.User);
-            await HttpClient.PutAsJsonAsync("api/users/profile", user);
+            await usersRepository.UpdateLastAccessedMessages(user);
 
             if (NewMessages.Count() > 0 && NavMenu != null)
             {
