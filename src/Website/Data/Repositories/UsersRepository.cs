@@ -140,6 +140,13 @@ namespace Website.Data.Repositories
             const string sql = "SELECT DiscordWebhookUrl FROM dbo.Users WHERE Id = @userId;";
             return await connection.ExecuteScalarAsync<string>(sql, new { userId });
         }
+        
+        public async Task UpdateLastAccessedMessages(MUser user)
+        {
+            const string sql = "UPDATE dbo.Users SET LastAccessedMessages = @LastAccessedMessages WHERE Id = @Id;";
+
+            await connection.ExecuteAsync(sql, user);
+        }
 
         public async Task<IEnumerable<MUser>> GetUsersAsync()
         {
