@@ -29,6 +29,7 @@ namespace Website.Shared.Models.Database
         [StringLength(4000)]
         public string Biography { get; set; }
         public bool IsVerifiedSeller { get; set; }
+        public DateTime LastAccessedMessages { get; set; }
         public DateTime CreateDate { get; set; }
 
         public List<MProductCustomer> Customers { get; set; }
@@ -82,6 +83,7 @@ namespace Website.Shared.Models.Database
                 Biography = user.Biography,
                 DiscordWebhookUrl = user.DiscordWebhookUrl,
                 IsVerifiedSeller = user.IsVerifiedSeller,
+                LastAccessedMessages = user.LastAccessedMessages,
                 CreateDate = user.CreateDate
             };
         }
