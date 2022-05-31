@@ -15,7 +15,7 @@ namespace Website.Client.Services
     public class MessageService
     {
         private readonly UserService userService;
-        private reedonly UsersRepository usersRepository;
+        private readonly UsersRepository usersRepository;
         private readonly HttpClient httpClient;
 
         private NavMenu NavMenu { get; set; }
@@ -48,7 +48,7 @@ namespace Website.Client.Services
 
         public async Task RefreshMessages(List<MMessage> messages)
         {
-            userService.User.LastAccessedMessages = DateTime.Now;
+            userService.User.LastAccessedMessages = DateTime.UtcNow;
             var user = MUser.FromUser(userService.User);
             await usersRepository.UpdateLastAccessedMessages(user);
 
