@@ -132,7 +132,8 @@ namespace Website.Server.Controllers
             }
 
             read.UserId = userId;
-            await messagesRepository.AddMessageReadAsync(read);
+            read = await messagesRepository.AddMessageReadAsync(read);
+            
             return OK(read);
         }
 
