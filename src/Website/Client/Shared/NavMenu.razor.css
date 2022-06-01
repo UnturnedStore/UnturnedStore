@@ -21,9 +21,15 @@
     }
 }
 
-
 i {
     transform: translateY(7%);
+}
+
+.NewMessagesDot {
+    position: absolute;
+    right: -50%;
+    bottom: 35%;
+    left: 50%;
 }
 
 .navbar-btn-avatar,

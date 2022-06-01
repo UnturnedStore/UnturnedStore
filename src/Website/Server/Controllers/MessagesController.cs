@@ -109,5 +109,45 @@ namespace Website.Server.Controllers
             await messagesRepository.DeleteMessageReplyAsync(replyId);
             return Ok();
         }
+
+        [HttpGet("read/{messageId}/{userId}")]
+        public async Task<IActionResult> GetMessageReadAsync(int messageId, int userId)
+        {
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(read.MessageId, userId))
+            {
+                return BadRequest();
+            }
+
+            return OK(await messagesRepository.GetMessageReadAsync(messageId, userId));
+        }
+
+        [HttpPost("read")]
+        public async Task<IActionResult> PostMessageReadAsync([FromBody] MMessageRead read)
+        {
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(read.MessageId, userId))
+            {
+                return BadRequest();
+            }
+
+            read.UserId = userId;
+            await messagesRepository.AddMessageReadAsync(read);
+            return OK(read);
+        }
+
+        [HttpPut("read")]
+        public async Task<IActionResult> PutMessageReadAsync([FromBody] MMessageRead read)
+        {
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(read.MessageId, userId))
+            {
+                return BadRequest();
+            }
+
+            read.UserId = userId;
+            await messagesRepository.UpdateMessageReadAsync(read);
+            return OK();
+        }
     }
 }

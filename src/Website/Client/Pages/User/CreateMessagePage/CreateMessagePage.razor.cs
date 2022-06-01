@@ -50,6 +50,12 @@ namespace Website.Client.Pages.User.CreateMessagePage
         {
             Content = null
         };
+        private MMessageRead newRead(MMessage message, int userId, int read) => new MMessageRead()
+        {
+            MessageId = message.Id,
+            UserId = userId,
+            Read = read
+        };
 
         private bool isLoading = false;
         private string message = null;
@@ -68,7 +74,11 @@ namespace Website.Client.Pages.User.CreateMessagePage
 
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/messages", Message);
             MMessage msg = await response.Content.ReadFromJsonAsync<MMessage>();
-            
+
+            await HttpClient.PostAsJsonAsync("api/messages/read", newRead(msg, msg.ToUserId, -1));
+            HttpResponseMessage responseRead = await HttpClient.PostAsJsonAsync("api/messages/read", newRead(msg, msg.FromUserId, 0));
+            msg.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
+
             SetDefault();
             NavigationManager.NavigateTo($"/messages/{msg.Id}");
 

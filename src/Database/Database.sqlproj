@@ -79,6 +79,7 @@
     <Build Include="procedures\GetHomeStatistics.sql" />
     <Build Include="procedures\GetPromotedProducts.sql" />
     <Build Include="procedures\GetProduct.sql" />
+    <Build Include="tables\MessageRead.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

@@ -21,6 +21,8 @@ namespace Website.Client.Pages.User.MessagesPage
         public AuthenticationStateProvider AuthState { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public MessageReadService MessageReadService { get; set; }
 
         private SteamAuthProvider SteamAuth => AuthState as SteamAuthProvider;
 

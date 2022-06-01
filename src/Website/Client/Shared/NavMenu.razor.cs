@@ -17,10 +17,13 @@ namespace Website.Client.Shared
         public CartService CartService { get; set; }
         [Inject]
         public UserService UserService { get; set; }
+        [Inject]
+        public MessageReadService MessageReadService { get; set; }
 
         protected override void OnInitialized()
         {
             CartService.SetNavMenu(this);
+            MessageReadService.SetNavMenu(this);
             Refresh();
         }
 

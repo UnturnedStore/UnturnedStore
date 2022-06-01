@@ -21,6 +21,8 @@ namespace Website.Client.Pages.User.MessagePage
         public HttpClient HttpClient { get; set; }
         [Inject]
         public AuthenticationStateProvider AuthState { get; set; }
+        [Inject]
+        public MessageReadService MessageReadService { get; set; }
 
         public SteamAuthProvider steamAuth => AuthState as SteamAuthProvider;
 
@@ -36,14 +38,27 @@ namespace Website.Client.Pages.User.MessagePage
             {
                 Message = await response.Content.ReadFromJsonAsync<MMessage>();
                 SetDefault();
+
+                var responseRead = await HttpClient.GetAsync("api/messages/read/" + MessageId + "/" + steamAuth.User.Id); // This is really stupid but Id rather not mess up trying to add a way for this page to have access to the MMessageRead.Id
+                Message.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
+                await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
+                Message.Read = newlyRead;
+                MessageReadService.UpdateMessagesRead(Message);
             }
-            
         }
 
         private MMessageReply Reply { get; set; }
         private MMessageReply defaultReply => new MMessageReply()
         {
             MessageId = Message.Id
+        };
+
+        private MMessageRead newlyRead => new MMessageRead()
+        {
+            Id = Message.Read.Id,
+            MessageId = Message.Id,
+            UserId = steamAuth.User.Id,
+            ReadId = Message.Replies.Count
         };
 
         private void SetDefault()
