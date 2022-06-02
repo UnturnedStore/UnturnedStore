@@ -89,8 +89,6 @@ namespace Website.Data.Repositories
             return await connection.QuerySingleAsync<MMessageRead>(sql, read);
         }
 
-        // I mean yeah ideally you wouldn't have to even use this but Im too afraid ill break something if i mess with the GetMessageAsync function so this will do for now
-        // If someone would like to change this please go ahead, since I am really not qualified to do so
         public async Task<MMessageRead> GetMessageReadAsync(int messageId, int userId)
         {
             const string sql = "SELECT mr.* FROM dbo.MessageRead mr WHERE mr.MessageId = @messageId AND mr.UserId = @userId;";

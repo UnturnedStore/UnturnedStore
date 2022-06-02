@@ -28,21 +28,26 @@ namespace Website.Client.Services
 
         public List<MMessage> Messages { get; private set; }
 
-        public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && m.Replies.Count > m.Read.ReadId);
+        public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && m.Replies[m.Replies.Count - 1].Id > m.Read.ReadId);
 
         public async Task ReloadMessagesReadAsync()
         {
             Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
+
+            if (NavMenu != null)
+                NavMenu.Refresh();
         }
 
         public bool HasNewMessage(int messageId)
         {
-            return NewMessages.Contains(Messages.Find(m => m.Id == messageId));
+            return NewMessages.Any(m => m.Id == messageId);
         }
 
         public void UpdateMessagesRead(MMessage message)
         {
-            Messages.Find(m => m.Id == message.Id) = message;
+            var msg = Messages.FirstOrDefault(m => m.Id == message.Id);
+            if (msg == null) Messages.Add(message);
+            else msg = message;
 
             if (NavMenu != null)
                 NavMenu.Refresh();

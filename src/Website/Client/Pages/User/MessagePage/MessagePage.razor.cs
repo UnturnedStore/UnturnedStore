@@ -39,10 +39,18 @@ namespace Website.Client.Pages.User.MessagePage
                 Message = await response.Content.ReadFromJsonAsync<MMessage>();
                 SetDefault();
 
-                var responseRead = await HttpClient.GetAsync("api/messages/read/" + MessageId + "/" + steamAuth.User.Id); // This is really stupid but Id rather not mess up trying to add a way for this page to have access to the MMessageRead.Id
+                var responseRead = await HttpClient.GetAsync("api/messages/read/" + MessageId + "/" + steamAuth.User.Id);
                 Message.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
-                await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
-                Message.Read = newlyRead;
+                if (Message.Read == null)
+                {
+                    Message.Read = await HttpClient.PostAsJsonAsync("api/messages/read", newlyRead);
+                }
+                else
+                {
+                    await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
+                    Message.Read = newlyRead;
+                }
+                
                 MessageReadService.UpdateMessagesRead(Message);
             }
         }
@@ -58,7 +66,7 @@ namespace Website.Client.Pages.User.MessagePage
             Id = Message.Read.Id,
             MessageId = Message.Id,
             UserId = steamAuth.User.Id,
-            ReadId = Message.Replies.Count
+            ReadId = Message.Replies.Count == 0 ? 0 : Message.Replies[Message.Replies.Count - 1].Id
         };
 
         private void SetDefault()
@@ -81,7 +89,15 @@ namespace Website.Client.Pages.User.MessagePage
 
             var response = await HttpClient.PostAsJsonAsync("api/messages/replies", Reply);
             SetDefault();
-            Message.Replies.Add(await response.Content.ReadFromJsonAsync<MMessageReply>());            
+            Message.Replies.Add(await response.Content.ReadFromJsonAsync<MMessageReply>());
+
+            if (Message.Read != null)
+            {
+                await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
+                Message.Read = newlyRead;
+                MessageReadService.UpdateMessagesRead(Message);
+            }
+
             isLoading = false;
         }
 

@@ -146,7 +146,6 @@ namespace Website.Server.Controllers
                 return BadRequest();
             }
 
-            read.UserId = userId;
             await messagesRepository.UpdateMessageReadAsync(read);
             return OK();
         }
