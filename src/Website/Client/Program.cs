@@ -31,6 +31,7 @@ namespace Website.Client
 
             WebAssemblyHost host = builder.Build();
             await host.Services.GetRequiredService<CartService>().ReloadCartAsync();
+            await host.Services.GetRequiredService<MessageReadService>().ReloadMessagesReadAsync();
             await host.RunAsync();
         }
     }

@@ -23,7 +23,6 @@ namespace Website.Client.Shared
         protected override void OnInitialized()
         {
             CartService.SetNavMenu(this);
-            Task.Run(async () => await MessageReadService.ReloadMessagesReadAsync());
             MessageReadService.SetNavMenu(this);
             Refresh();
         }
