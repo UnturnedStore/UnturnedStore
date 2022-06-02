@@ -39,7 +39,7 @@ namespace Website.Client.Pages.User.MessagePage
                 Message = await response.Content.ReadFromJsonAsync<MMessage>();
                 SetDefault();
 
-                var responseRead = await HttpClient.GetAsync("api/messages/read/" + MessageId + "/" + steamAuth.User.Id);
+                var responseRead = await HttpClient.GetAsync("api/messages/read/" + MessageId);
                 Message.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
                 if (Message.Read == null)
                 {

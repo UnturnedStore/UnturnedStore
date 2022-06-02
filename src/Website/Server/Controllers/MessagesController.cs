@@ -110,8 +110,8 @@ namespace Website.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("read/{messageId}/{userId}")]
-        public async Task<IActionResult> GetMessageReadAsync(int messageId, int userId)
+        [HttpGet("read/{messageId}")]
+        public async Task<IActionResult> GetMessageReadAsync(int messageId)
         {
             int userId = int.Parse(User.Identity.Name);
             if (!await messagesRepository.IsMessageUserAsync(read.MessageId, userId))
