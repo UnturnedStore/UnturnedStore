@@ -53,9 +53,10 @@
     </div>
     <div class="mb-3">
         <div class="row row-cols-1 row-cols-sm-2 justify-content-center">
-            <Virtualize Context="product" Items="OrderedProducts">
+            @foreach (var product in OrderedProducts)
+            {
                 <ProductCard Product="product" Seller="product.Seller" />
-            </Virtualize>
+            }
         </div>
     </div>
 }
