@@ -45,11 +45,10 @@
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-search"></i></span>
                 <input type="text" class="form-control" placeholder=" Search by Name, Description or Author" @bind="searchString" @bind:event="oninput" />
-            </div>            
-            @foreach (MProduct product in OrderedProducts)
-            {
+            </div>   
+            <Virtualize Items="OrderedProducts" Context="product">
                 <ProductItem Product="product" />
-            }
+            </Virtualize>
         </div>
     </div>
     

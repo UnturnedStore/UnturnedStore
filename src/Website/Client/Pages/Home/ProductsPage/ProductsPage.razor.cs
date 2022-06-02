@@ -28,23 +28,20 @@ namespace Website.Client.Pages.Home.ProductsPage
             || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || x.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase));
 
-        private IEnumerable<MProduct> OrderedProducts
+        private List<MProduct> OrderedProducts
         {
             get
             {
-                switch (orderBy)
+                var products = orderBy switch
                 {
-                    case EOrderBy.MostDownloads:
-                        return SearchedProducts.OrderByDescending(x => x.TotalDownloadsCount + x.ServersCount);
-                    case EOrderBy.BestRated:
-                        return SearchedProducts.OrderByDescending(x => x.AverageRating).ThenByDescending(x => x.RatingsCount);
-                    case EOrderBy.PriceAsc:
-                        return SearchedProducts.OrderBy(x => x.Price);
-                    case EOrderBy.PriceDesc:
-                        return SearchedProducts.OrderByDescending(x => x.Price);
-                    default:
-                        return SearchedProducts.OrderByDescending(x => x.CreateDate);
-                }
+                    EOrderBy.MostDownloads => SearchedProducts.OrderByDescending(x => x.TotalDownloadsCount + x.ServersCount),
+                    EOrderBy.BestRated => SearchedProducts.OrderByDescending(x => x.AverageRating).ThenByDescending(x => x.RatingsCount),
+                    EOrderBy.PriceAsc => SearchedProducts.OrderBy(x => x.Price),
+                    EOrderBy.PriceDesc => SearchedProducts.OrderByDescending(x => x.Price),
+                    _ => SearchedProducts.OrderByDescending(x => x.CreateDate)
+                };
+
+                return products.ToList();
             }
         }
 
