@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Providers;
+using Website.Client.Services;
 using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.User.MessagesPage
