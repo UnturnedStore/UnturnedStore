@@ -39,7 +39,7 @@ namespace Website.Client.Pages.User.MessagePage
                 Message = await response.Content.ReadFromJsonAsync<MMessage>();
                 SetDefault();
 
-                var responseRead = await HttpClient.GetAsync("api/messages/read/" + MessageId);
+                var responseRead = await HttpClient.GetAsync("api/messages/" + MessageId + "/read");
                 Message.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
                 if (Message.Read == null)
                 {
