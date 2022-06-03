@@ -82,7 +82,7 @@ namespace Website.Data.Repositories
 
         public async Task<MMessageRead> AddMessageReadAsync(MMessageRead read)
         {
-            const string sql = "INSERT INTO dbo.MessageRead (MessageId, UserId, ReadId) " +
+            const string sql = "INSERT INTO dbo.MessagesRead (MessageId, UserId, ReadId) " +
                 "OUTPUT INSERTED.Id, INSERTED.MessageId, INSERTED.UserId, INSERTED.ReadId, " +
                 "VALUES (@MessageId, @UserId, @ReadId);";
 
@@ -91,14 +91,14 @@ namespace Website.Data.Repositories
 
         public async Task<MMessageRead> GetMessageReadAsync(int messageId, int userId)
         {
-            const string sql = "SELECT mr.* FROM dbo.MessageRead mr WHERE mr.MessageId = @messageId AND mr.UserId = @userId;";
+            const string sql = "SELECT mr.* FROM dbo.MessagesRead mr WHERE mr.MessageId = @messageId AND mr.UserId = @userId;";
 
             return await connection.QueryAsync<MMessageRead>(sql, new { messageId, userId });
         }
 
         public async Task UpdateMessageReadAsync(MMessageRead read)
         {
-            const string sql = "UPDATE dbo.MessageRead SET ReadId = @ReadId WHERE Id = @Id;";
+            const string sql = "UPDATE dbo.MessagesRead SET ReadId = @ReadId WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, read);
         }
@@ -129,7 +129,7 @@ namespace Website.Data.Repositories
         {
             const string sql = "SELECT m.*, fu.Id, fu.Name, fu.AvatarImageId, tu.Id, tu.Name, tu.AvatarImageId, r.*, mr.* FROM dbo.Messages m JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
                 "LEFT JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId" +
-                "LEFT JOIN dbo.MessageRead mr ON mr.MessageId = m.Id WHERE mr.UserId = @userId;";
+                "LEFT JOIN dbo.MessagesRead mr ON mr.MessageId = m.Id WHERE mr.UserId = @userId;";
 
             var messages = new List<MMessage>();
             await connection.QueryAsync<MMessage, UserInfo, UserInfo, MMessageReply, MMessageRead, MMessage>(sql, (m, fu, tu, r, mr) => 

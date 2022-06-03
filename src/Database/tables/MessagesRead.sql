@@ -1,4 +1,4 @@
-﻿CREATE TABLE dbo.MessageRead
+﻿CREATE TABLE dbo.MessagesRead
 (
 	Id INT IDENTITY(1, 1) NOT NULL CONSTRAINT PK_MessageRead PRIMARY KEY,
 	MessageId INT NOT NULL CONSTRAINT FK_MessageRead_MessageId FOREIGN KEY REFERENCES dbo.Messages(Id),

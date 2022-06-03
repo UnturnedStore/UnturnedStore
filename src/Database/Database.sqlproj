@@ -71,7 +71,7 @@
     <Build Include="tables\ProductCustomers.sql" />
     <Build Include="tables\MessageReplies.sql" />
     <Build Include="tables\Messages.sql" />
-    <Build Include="tables\MessageRead.sql" />
+    <Build Include="tables\MessagesRead.sql" />
     <Build Include="tables\ProductReviews.sql" />
     <Build Include="procedures\GetProducts.sql" />
     <Build Include="procedures\GetUserProducts.sql" />
