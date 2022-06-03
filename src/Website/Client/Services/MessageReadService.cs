@@ -14,6 +14,7 @@ namespace Website.Client.Services
     public class MessageReadService
     {
         private readonly HttpClient httpClient;
+        private readonly UserService userService;
 
         private NavMenu NavMenu { get; set; }
         public void SetNavMenu(NavMenu navMenu)
@@ -21,9 +22,10 @@ namespace Website.Client.Services
             NavMenu = navMenu;
         }
 
-        public MessageReadService(HttpClient httpClient)
+        public MessageReadService(HttpClient httpClient, UserService userService)
         {
             this.httpClient = httpClient;
+            this.userService = userService;
         }
 
         public List<MMessage> Messages { get; private set; }
@@ -32,6 +34,8 @@ namespace Website.Client.Services
 
         public async Task ReloadMessagesReadAsync()
         {
+            if (!userService.IsAuthenticated) return;
+
             Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
 
             if (NavMenu != null)
