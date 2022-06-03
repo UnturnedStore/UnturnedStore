@@ -63,7 +63,7 @@ namespace Website.Client.Pages.User.MessagePage
 
         private MMessageRead newlyRead => new MMessageRead()
         {
-            Id = Message.Read.Id,
+            Id = Message.Read?.Id ?? 0,
             MessageId = Message.Id,
             UserId = steamAuth.User.Id,
             ReadId = Message.Replies.Count <= 1 ? 0 : Message.Replies[Message.Replies.Count - 1].Id
