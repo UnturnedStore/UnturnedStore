@@ -54,7 +54,7 @@ namespace Website.Client.Pages.User.CreateMessagePage
         {
             MessageId = message.Id,
             UserId = userId,
-            Read = read
+            ReadId = read
         };
 
         private bool isLoading = false;
