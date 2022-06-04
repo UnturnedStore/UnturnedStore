@@ -160,7 +160,7 @@
                         }
                         @if (DefaultBranch != null)
                         {
-                            @if (IsCustomer && SteamAuth.IsAuthenticated && !IsSeller)
+                            @if (IsCustomer && UserService.IsAuthenticated && !IsSeller)
                             {
                                 @if (Review == null)
                                 {

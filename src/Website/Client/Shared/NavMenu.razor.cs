@@ -16,7 +16,7 @@ namespace Website.Client.Shared
         [Inject]
         public CartService CartService { get; set; }
         [Inject]
-        public UserService UserService { get; set; }
+        public AuthenticatedUserService UserService { get; set; }
 
         protected override void OnInitialized()
         {

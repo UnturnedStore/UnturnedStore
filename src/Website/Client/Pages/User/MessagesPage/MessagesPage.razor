@@ -38,7 +38,7 @@
                         <td class="align-middle">@msg.Id</td>
                         <td class="align-middle">@msg.Title</td>
                         <td class="align-middle">@msg.Replies.Count</td>
-                        <td class="align-middle"><Username User="@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser : msg.ToUser)" /></td>
+                        <td class="align-middle"><Username User="@(msg.ToUserId == UserService.UserId ? msg.FromUser : msg.ToUser)" /></td>
                     </tr>
                 }
             </tbody>
@@ -63,7 +63,7 @@
                         <td class="align-middle">@msg.Id</td>
                         <td class="align-middle">@msg.Title</td>
                         <td class="align-middle">@msg.Replies.Count</td>
-                        <td class="align-middle"><Username User="@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser : msg.ToUser)" /></td>
+                        <td class="align-middle"><Username User="@(msg.ToUserId == UserService.UserId ? msg.FromUser : msg.ToUser)" /></td>
                     </tr>
                 }
             </tbody>

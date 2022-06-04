@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Providers;
+using Website.Client.Services;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
@@ -20,9 +21,7 @@ namespace Website.Client.Pages.User.MessagePage
         [Inject]
         public HttpClient HttpClient { get; set; }
         [Inject]
-        public AuthenticationStateProvider AuthState { get; set; }
-
-        public SteamAuthProvider steamAuth => AuthState as SteamAuthProvider;
+        public AuthenticatedUserService UserService { get; set; }
 
         public MMessage Message { get; set; }
             
@@ -79,7 +78,7 @@ namespace Website.Client.Pages.User.MessagePage
         public async Task CloseAsync()
         {
             Message.IsClosed = true;
-            Message.ClosingUserId = steamAuth.User.Id;
+            Message.ClosingUserId = UserService.UserId;
             await HttpClient.PatchAsync("api/messages/" + MessageId, null);            
         }
 

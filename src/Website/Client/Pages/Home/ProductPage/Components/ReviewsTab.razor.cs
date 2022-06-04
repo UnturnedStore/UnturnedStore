@@ -17,7 +17,7 @@ namespace Website.Client.Pages.Home.ProductPage.Components
         public EventCallback<MProductReview> OnDeleteReview { get; set; }
 
         [Inject]
-        public UserService UserService { get; set; }
+        public AuthenticatedUserService UserService { get; set; }
 
         public ConfirmModal<MProductReview> DeleteReviewConfirm { get; set; }
 

@@ -35,7 +35,6 @@ namespace Website.Server.Controllers
             return Ok(await usersRepository.GetUserAsync<UserInfo>(userId));
         }
 
-        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> GetMeUserAsync()
         {
