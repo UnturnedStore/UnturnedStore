@@ -31,7 +31,7 @@ namespace Website.Client.Services
             this.userService = userService;
         }
 
-        public List<MMessage> Messages { get; private set; }
+        public List<MMessage> Messages { get; set; }
 
         public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && (m.Replies.Count <= 1 ? 0 : m.Replies[m.Replies.Count - 1].Id) > (m.Read?.ReadId ?? -1));
 
@@ -67,6 +67,14 @@ namespace Website.Client.Services
             var msg = Messages.FindIndex(m => m.Id == message.Id);
             if (msg == -1) Messages.Add(message);
             else Messages[msg] = message;
+
+            if (NavMenu != null)
+                NavMenu.Refresh();
+        }
+
+        public void UpdateMessagesRead(List<MMessage> messages)
+        {
+            Messages = messages;
 
             if (NavMenu != null)
                 NavMenu.Refresh();
