@@ -17,7 +17,7 @@ namespace Website.Client.Services
     public class MessageReadService
     {
         private readonly HttpClient httpClient;
-        private readonly UserService userService;
+        private readonly AuthenticatedUserService userService;
 
         private NavMenu NavMenu { get; set; }
         public void SetNavMenu(NavMenu navMenu)
@@ -25,7 +25,7 @@ namespace Website.Client.Services
             NavMenu = navMenu;
         }
 
-        public MessageReadService(HttpClient httpClient, UserService userService)
+        public MessageReadService(HttpClient httpClient, AuthenticatedUserService userService)
         {
             this.httpClient = httpClient;
             this.userService = userService;
@@ -37,21 +37,9 @@ namespace Website.Client.Services
 
         public async Task ReloadMessagesReadAsync()
         {
-            //if (!userService.IsAuthenticated) return;
+            if (!userService.IsAuthenticated) return;
 
-            //Messages = await httpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
-
-            // UserService isn't initlized when this function is called so that's why I am doing this terriblness
-            // If someone can fix it please do!
-            try
-            {
-                var response = await httpClient.GetAsync("api/messages");
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    Messages = await response.Content.ReadFromJsonAsync<List<MMessage>>();
-                }
-            }
-            catch (Exception) { }
+            Messages = await httpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
 
             if (NavMenu != null)
                 NavMenu.Refresh();
