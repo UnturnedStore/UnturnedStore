@@ -31,12 +31,17 @@ namespace Website.Server.Controllers
         [HttpGet("{messageId}")]
         public async Task<IActionResult> GetMessageAsync(int messageId)
         {
-            if (!await messagesRepository.IsMessageUserAsync(messageId, int.Parse(User.Identity.Name)))
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(messageId, userId))
             {
                 return BadRequest();
             }
 
-            return Ok(await messagesRepository.GetMessageAsync(messageId));
+            MMessage message = await messagesRepository.GetMessageAsync(messageId);
+
+            message.Read = await messagesRepository.GetMessageReadAsync(messageId, userId);
+
+            return Ok(message);
         }
 
         [HttpPost]
@@ -110,18 +115,6 @@ namespace Website.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("{messageId}/read")]
-        public async Task<IActionResult> GetMessageReadAsync(int messageId)
-        {
-            int userId = int.Parse(User.Identity.Name);
-            if (!await messagesRepository.IsMessageUserAsync(read.MessageId, userId))
-            {
-                return BadRequest();
-            }
-
-            return OK(await messagesRepository.GetMessageReadAsync(messageId, userId));
-        }
-
         [HttpPost("read")]
         public async Task<IActionResult> PostMessageReadAsync([FromBody] MMessageRead read)
         {
@@ -134,7 +127,7 @@ namespace Website.Server.Controllers
             read.UserId = userId;
             read = await messagesRepository.AddMessageReadAsync(read);
             
-            return OK(read);
+            return Ok(read);
         }
 
         [HttpPut("read")]
@@ -147,7 +140,7 @@ namespace Website.Server.Controllers
             }
 
             await messagesRepository.UpdateMessageReadAsync(read);
-            return OK();
+            return Ok();
         }
     }
 }

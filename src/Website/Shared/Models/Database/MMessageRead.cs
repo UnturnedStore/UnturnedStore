@@ -12,5 +12,13 @@ namespace Website.Shared.Models.Database
         public int MessageId { get; set; }
         public int UserId { get; set; }
         public int ReadId { get; set; }
+
+        public MMessageRead() { }
+        public MMessageRead(MMessage message, bool isRead)
+        {
+            MessageId = message.Id;
+            UserId = isRead ? message.FromUserId : message.ToUserId;
+            ReadId = isRead ? 0 : -1;
+        }
     }
 }

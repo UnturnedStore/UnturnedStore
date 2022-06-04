@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Client.Providers;
 using Website.Client.Shared;
 using Website.Shared.Constants;
 using Website.Shared.Models;
@@ -30,13 +33,25 @@ namespace Website.Client.Services
 
         public List<MMessage> Messages { get; private set; }
 
-        public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && (m.Replies.Count <= 1 ? 0 : m.Replies[m.Replies.Count - 1].Id) > m.Read.ReadId);
+        public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && (m.Replies.Count <= 1 ? 0 : m.Replies[m.Replies.Count - 1].Id) > (m.Read?.ReadId ?? -1));
 
         public async Task ReloadMessagesReadAsync()
         {
-            if (!userService.IsAuthenticated) return;
+            //if (!userService.IsAuthenticated) return;
 
-            Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
+            //Messages = await httpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
+
+            // UserService isn't initlized when this function is called so that's why I am doing this terriblness
+            // If someone can fix it please do!
+            try
+            {
+                var response = await httpClient.GetAsync("api/messages");
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Messages = await response.Content.ReadFromJsonAsync<List<MMessage>>();
+                }
+            }
+            catch (Exception) { }
 
             if (NavMenu != null)
                 NavMenu.Refresh();
@@ -49,9 +64,9 @@ namespace Website.Client.Services
 
         public void UpdateMessagesRead(MMessage message)
         {
-            var msg = Messages.FirstOrDefault(m => m.Id == message.Id);
-            if (msg == null) Messages.Add(message);
-            else msg = message;
+            var msg = Messages.FindIndex(m => m.Id == message.Id);
+            if (msg == -1) Messages.Add(message);
+            else Messages[msg] = message;
 
             if (NavMenu != null)
                 NavMenu.Refresh();
