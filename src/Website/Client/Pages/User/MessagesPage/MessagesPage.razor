@@ -39,7 +39,7 @@
                         <td class="align-middle">@msg.Title</td>
                         <td class="align-middle">@msg.Replies.Count</td>
                         <td class="align-middle" style="position: relative;">
-                            <Username User="@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser : msg.ToUser)" />
+                            <Username User="@(msg.ToUserId == UserService.UserId ? msg.FromUser : msg.ToUser)" />
                             @if (MessageReadService.Messages != null && MessageReadService.HasNewMessage(msg.Id))
                             {
                                 <div class="NewMessagesIcon"><i class="fas fa-envelope-open-text"></i></div>
@@ -69,7 +69,7 @@
                         <td class="align-middle">@msg.Id</td>
                         <td class="align-middle">@msg.Title</td>
                         <td class="align-middle">@msg.Replies.Count</td>
-                        <td class="align-middle"><Username User="@(msg.ToUserId == SteamAuth.User.Id ? msg.FromUser : msg.ToUser)" /></td>
+                        <td class="align-middle"><Username User="@(msg.ToUserId == UserService.UserId ? msg.FromUser : msg.ToUser)" /></td>
                     </tr>
                 }
             </tbody>

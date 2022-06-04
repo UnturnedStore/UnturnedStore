@@ -21,11 +21,9 @@ namespace Website.Client.Pages.User.MessagePage
         [Inject]
         public HttpClient HttpClient { get; set; }
         [Inject]
-        public AuthenticationStateProvider AuthState { get; set; }
+        public AuthenticatedUserService UserService { get; set; }
         [Inject]
         public MessageReadService MessageReadService { get; set; }
-
-        public SteamAuthProvider steamAuth => AuthState as SteamAuthProvider;
 
         public MMessage Message { get; set; }
             
@@ -65,7 +63,7 @@ namespace Website.Client.Pages.User.MessagePage
         {
             Id = Message.Read?.Id ?? 0,
             MessageId = Message.Id,
-            UserId = steamAuth.User.Id,
+            UserId = UserService.UserId,
             ReadId = Message.Replies.Count <= 1 ? 0 : Message.Replies[Message.Replies.Count - 1].Id
         };
 
@@ -110,7 +108,7 @@ namespace Website.Client.Pages.User.MessagePage
         public async Task CloseAsync()
         {
             Message.IsClosed = true;
-            Message.ClosingUserId = steamAuth.User.Id;
+            Message.ClosingUserId = UserService.UserId;
             await HttpClient.PatchAsync("api/messages/" + MessageId, null);            
         }
 

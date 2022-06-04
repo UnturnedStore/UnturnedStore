@@ -20,7 +20,7 @@ namespace Website.Client.Pages.Home.UserPage
         [Inject]
         public HttpClient HttpClient { get; set; }
         [Inject]
-        public UserService UserService { get; set; }
+        public AuthenticatedUserService UserService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
