@@ -90,6 +90,7 @@
                                 <Avatar User="UserService.User" Width="40" Height="40" Class="border border-2 m-auto" />
                             </a>
                             <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute">
+				<div class="navbar-arrow-up"></div>
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
                                     <Authorized>
                                         <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>

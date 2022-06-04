@@ -51,3 +51,18 @@ i {
         width: 32px;
         border-radius: 4px;
     }
+
+.navbar-arrow-up::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: -1px;
+    right: 19px;
+    transform: translateY(-100%);
+    display: block;
+    border: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid rgba(0,0,0,0.15);
+}
