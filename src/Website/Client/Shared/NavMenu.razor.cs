@@ -20,6 +20,8 @@ namespace Website.Client.Shared
         public AuthenticatedUserService UserService { get; set; }
         [Inject]
         public MessageReadService MessageReadService { get; set; }
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
 
         protected override void OnInitialized()
         {
@@ -30,7 +32,7 @@ namespace Website.Client.Shared
 
         protected override async Task OnInitializedAsync()
         {
-            await MessageReadService.ReloadMessagesReadAsync();
+            if (NavigationManager.BaseUri != "/messages") await MessageReadService.ReloadMessagesReadAsync();
         }
 
         public void Refresh()
