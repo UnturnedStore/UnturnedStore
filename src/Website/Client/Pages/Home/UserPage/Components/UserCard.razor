@@ -77,7 +77,7 @@
     public UserProfile User { get; set; }
 
     [Inject]
-    public UserService UserService { get; set; }
+    public AuthenticatedUserService UserService { get; set; }
 
     public string Disabled() => UserService.IsAuthenticated ? "" : "disabled";
 }

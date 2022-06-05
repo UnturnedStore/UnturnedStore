@@ -26,7 +26,7 @@ namespace Website.Client.Pages.Seller.ProductPage
         [Inject]
         public AlertService AlertService { get; set; }
         [Inject]
-        public UserService UserService { get; set; }
+        public AuthenticatedUserService UserService { get; set; }
 
         public SellerProduct Product { get; set; }
 

@@ -50,7 +50,19 @@
                     <Authorized>
                         <li class="nav-item ms-2">
                             <a href="/messages" class="nav-link position-relative">
-                                <i class="far fa-envelope"></i>
+                                <i class="far fa-envelope">
+                                @if (MessageReadService.Messages != null && MessageReadService.NewMessages.Count() > 0)
+                                {
+                                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="NewMessagesDot">
+                                        <g color="white">
+                                            <circle r="22.5" cx="50" cy="50" fill="currentcolor"></circle>
+                                            <g color="#dc3545">
+                                                <circle cx="50" cy="50" r="12.5" fill="currentcolor"></circle>
+                                            </g>
+                                        </g>
+                                    </svg>
+                                }
+                                </i>
                             </a>                
                         </li>
                         <li class="nav-item ms-2">
@@ -75,10 +87,10 @@
                     <Authorized>
                         <li class="nav-item dropdown ms-3">
                             <a href="#" class="navbar-btn-avatar nav-link" data-bs-toggle="dropdown">
-                                <Avatar User="UserService.User" Width="40" Height="40" Class="border border-2 m-auto" />
+                                <Avatar User="UserService.UserInfo" Width="40" Height="40" Class="border border-2 m-auto" />
                             </a>
                             <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute">
-				<div class="navbar-arrow-up"></div>
+				                <div class="navbar-arrow-up"></div>
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
                                     <Authorized>
                                         <li><a class="dropdown-item" href="/admin/users">Manage Users</a></li>
@@ -114,7 +126,6 @@
                 </AuthorizeView>
             </ul>
         </div>
-
 
         @*<div class="d-flex align-items-center">
 

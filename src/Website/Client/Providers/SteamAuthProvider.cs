@@ -1,73 +1,48 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
-using System;
-using System.Net.Http;
-using System.Net.Http.Json;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Website.Client.Services;
 using Website.Shared.Models;
-using Website.Shared.Models.Database;
 
 namespace Website.Client.Providers
 {
     public class SteamAuthProvider : AuthenticationStateProvider
     {
-        private readonly HttpClient httpClient;
+        private readonly AuthenticatedUserService userService;
 
-        public SteamAuthProvider(HttpClient httpClient)
+        public SteamAuthProvider(AuthenticatedUserService userService)
         {
-            this.httpClient = httpClient;
+            this.userService = userService;
         }
 
-        public UserInfo User { get; private set; }
-        public bool IsAuthenticated { get; private set; }
-
-        public async Task UpdateUserAsync()
+        private static IEnumerable<Claim> GetClaims(UserInfo userInfo)
         {
-            try
+            return new[]
             {
-                var response = await httpClient.GetAsync("api/users/me");
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    User = await response.Content.ReadFromJsonAsync<UserInfo>();
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+                new Claim(ClaimTypes.Name, userInfo.Name),
+                new Claim(ClaimTypes.NameIdentifier, userInfo.Id.ToString()),
+                new Claim("SteamId", userInfo.SteamId),
+                new Claim(ClaimTypes.Role, userInfo.Role)
+            };
         }
 
-        private AuthenticationState authState;
-
-        public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+        public override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            if (authState != null)
-            {
-                return authState;
-            }
-
-            await UpdateUserAsync();
             ClaimsIdentity identity;
-            if (User == null)
+            if (userService.IsAuthenticated)
             {
-                identity = new ClaimsIdentity();
+                IEnumerable<Claim> claims = GetClaims(userService.UserInfo);
+                identity = new(claims, "Steam");
             }
             else
             {
-                identity = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.Name, User.Name),
-                    new Claim(ClaimTypes.NameIdentifier, User.Id.ToString()),
-                    new Claim("SteamId", User.SteamId),
-                    new Claim(ClaimTypes.Role, User.Role)
-                }, "Steam");
-                IsAuthenticated = true;
+                identity = new ClaimsIdentity();
             }
 
-            var user = new ClaimsPrincipal(identity);
-
-            authState = new AuthenticationState(user);
-            return authState;
+            ClaimsPrincipal user = new(identity);
+            AuthenticationState authenticationState = new(user);
+            return Task.FromResult(authenticationState);
         }
     }
 }

@@ -1,0 +1,33 @@
+﻿.NewMessagesIcon {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+    color: #dc3545;
+    font-size: 1.25rem;
+    animation-name: NewMessageIconMove;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes NewMessageIconMove {
+    0% {
+        transform: translateY(-50%) rotateZ(0deg);
+    }
+
+    25% {
+        transform: translateY(-50%) rotateZ(0deg);
+    }
+
+    50% {
+        transform: translateY(-50%) rotateZ(-10deg);
+    }
+
+    75% {
+        transform: translateY(-50%) rotateZ(10deg);
+    }
+
+    100% {
+        transform: translateY(-50%) rotateZ(0deg);
+    }
+}

@@ -22,14 +22,23 @@ namespace Website.Client
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, SteamAuthProvider>();
+
             builder.Services.AddScoped<CartService>();
+            builder.Services.AddScoped<AuthenticatedUserService>();
+            builder.Services.AddScoped<MessageReadService>();
+
             builder.Services.AddTransient<StorageService>();
-            builder.Services.AddTransient<ZIPService>();
-            builder.Services.AddScoped<UserService>();
+  
+            builder.Services.AddTransient<ZIPService>();            
             builder.Services.AddComponentsAndServices();
 
             WebAssemblyHost host = builder.Build();
-            await host.Services.GetRequiredService<CartService>().ReloadCartAsync();
+
+            // Get UserInfo from the web API
+            await host.Services.GetRequiredService<AuthenticatedUserService>().InitializeAsync();
+            // Reload the cart from Local Storage
+            await host.Services.GetRequiredService<CartService>().ReloadCartAsync();            
+
             await host.RunAsync();
         }
     }

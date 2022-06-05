@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Providers;
+using Website.Client.Services;
 using Website.Shared.Models.Database;
 
 namespace Website.Client.Pages.User.MessagesPage
@@ -21,8 +22,10 @@ namespace Website.Client.Pages.User.MessagesPage
         public AuthenticationStateProvider AuthState { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-
-        private SteamAuthProvider SteamAuth => AuthState as SteamAuthProvider;
+        [Inject]
+        public AuthenticatedUserService UserService { get; set; }
+        [Inject]
+        public MessageReadService MessageReadService { get; set; }
 
         public List<MMessage> Messages { get; set; }
 
@@ -32,6 +35,7 @@ namespace Website.Client.Pages.User.MessagesPage
         protected override async Task OnInitializedAsync()
         {
             Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
+            MessageReadService.UpdateMessagesRead(Messages);
         }
 
         private void GoToMessage(MMessage msg)
