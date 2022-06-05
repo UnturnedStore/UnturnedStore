@@ -128,7 +128,7 @@ namespace Website.Data.Repositories
         public async Task<IEnumerable<MMessage>> GetMessagesAsync(int userId)
         {
             const string sql = "SELECT m.*, fu.Id, fu.Name, fu.AvatarImageId, tu.Id, tu.Name, tu.AvatarImageId, mr.*, r.* FROM dbo.Messages m JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
-                "JOIN dbo.MessagesRead mr ON mr.MessageId = m.Id AND mr.UserId = @userId " +
+                "LEFT JOIN dbo.MessagesRead mr ON mr.MessageId = m.Id AND mr.UserId = @userId " +
                 "LEFT JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
 
             var messages = new List<MMessage>();
@@ -136,7 +136,7 @@ namespace Website.Data.Repositories
             {
                 var msg = messages.FirstOrDefault(x => x.Id == m.Id);
                 if (msg == null)
-                {
+                {   
                     msg = m;
                     m.FromUser = fu;
                     m.ToUser = tu;
