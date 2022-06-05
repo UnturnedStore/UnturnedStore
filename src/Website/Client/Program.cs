@@ -25,10 +25,11 @@ namespace Website.Client
 
             builder.Services.AddScoped<CartService>();
             builder.Services.AddScoped<AuthenticatedUserService>();
+            builder.Services.AddScoped<MessageReadService>();
 
             builder.Services.AddTransient<StorageService>();
+  
             builder.Services.AddTransient<ZIPService>();            
-
             builder.Services.AddComponentsAndServices();
 
             WebAssemblyHost host = builder.Build();

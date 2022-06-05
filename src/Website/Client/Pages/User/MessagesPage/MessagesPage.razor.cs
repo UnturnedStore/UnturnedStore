@@ -24,6 +24,8 @@ namespace Website.Client.Pages.User.MessagesPage
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public AuthenticatedUserService UserService { get; set; }
+        [Inject]
+        public MessageReadService MessageReadService { get; set; }
 
         public List<MMessage> Messages { get; set; }
 
@@ -33,6 +35,7 @@ namespace Website.Client.Pages.User.MessagesPage
         protected override async Task OnInitializedAsync()
         {
             Messages = await HttpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
+            MessageReadService.UpdateMessagesRead(Messages);
         }
 
         private void GoToMessage(MMessage msg)

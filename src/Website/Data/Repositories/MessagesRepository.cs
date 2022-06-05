@@ -44,6 +44,9 @@ namespace Website.Data.Repositories
                 msg.Replies.Add(await AddMessageReplyAsync(reply));                
             }
 
+            await AddMessageReadAsync(new MMessageRead(msg, false));
+            msg.Read = await AddMessageReadAsync(new MMessageRead(msg, true));
+
             return msg;
         }
 
@@ -77,6 +80,29 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql, new { messageId, userId });
         }
 
+        public async Task<MMessageRead> AddMessageReadAsync(MMessageRead read)
+        {
+            const string sql = "INSERT INTO dbo.MessagesRead (MessageId, UserId, ReadId) " +
+                "OUTPUT INSERTED.Id, INSERTED.MessageId, INSERTED.UserId, INSERTED.ReadId " +
+                "VALUES (@MessageId, @UserId, @ReadId);";
+
+            return await connection.QuerySingleAsync<MMessageRead>(sql, read);
+        }
+
+        public async Task<MMessageRead> GetMessageReadAsync(int messageId, int userId)
+        {
+            const string sql = "SELECT mr.* FROM dbo.MessagesRead mr WHERE mr.MessageId = @messageId AND mr.UserId = @userId;";
+
+            return await connection.QuerySingleOrDefaultAsync<MMessageRead>(sql, new { messageId, userId });
+        }
+
+        public async Task UpdateMessageReadAsync(MMessageRead read)
+        {
+            const string sql = "UPDATE dbo.MessagesRead SET ReadId = @ReadId WHERE MessageId = @MessageId AND UserId = @UserId;";
+
+            await connection.ExecuteAsync(sql, read);
+        }
+
         public async Task<MMessage> GetMessageAsync(int messageId)
         {
             const string sql = "SELECT m.*, fu.Id, fu.Name, fu.AvatarImageId, tu.Id, tu.Name, tu.AvatarImageId " +
@@ -101,11 +127,12 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MMessage>> GetMessagesAsync(int userId)
         {
-            const string sql = "SELECT m.*, fu.Id, fu.Name, fu.AvatarImageId, tu.Id, tu.Name, tu.AvatarImageId, r.* FROM dbo.Messages m JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
+            const string sql = "SELECT m.*, fu.Id, fu.Name, fu.AvatarImageId, tu.Id, tu.Name, tu.AvatarImageId, mr.*, r.* FROM dbo.Messages m JOIN dbo.Users fu ON fu.Id = m.FromUserId JOIN dbo.Users tu ON tu.Id = m.ToUserId " +
+                "JOIN dbo.MessagesRead mr ON mr.MessageId = m.Id AND mr.UserId = @userId " +
                 "LEFT JOIN dbo.MessageReplies r ON r.MessageId = m.Id WHERE m.FromUserId = @userId OR m.ToUserId = @userId;";
 
             var messages = new List<MMessage>();
-            await connection.QueryAsync<MMessage, UserInfo, UserInfo, MMessageReply, MMessage>(sql, (m, fu, tu, r) => 
+            await connection.QueryAsync<MMessage, UserInfo, UserInfo, MMessageRead, MMessageReply, MMessage>(sql, (m, fu, tu, mr, r) => 
             {
                 var msg = messages.FirstOrDefault(x => x.Id == m.Id);
                 if (msg == null)
@@ -113,13 +140,14 @@ namespace Website.Data.Repositories
                     msg = m;
                     m.FromUser = fu;
                     m.ToUser = tu;
+                    m.Read = mr;
                     msg.Replies = new List<MMessageReply>();
                     messages.Add(msg);
                 }
 
                 if (r != null)
                     msg.Replies.Add(r);
-                
+
                 return m;
             }, new { userId });
 

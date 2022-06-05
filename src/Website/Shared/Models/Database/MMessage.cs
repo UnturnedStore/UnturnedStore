@@ -23,5 +23,6 @@ namespace Website.Shared.Models.Database
         public UserInfo ToUser { get; set; }
 
         public List<MMessageReply> Replies { get; set; }
+        public MMessageRead Read { get; set; }
     }
 }

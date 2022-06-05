@@ -31,12 +31,17 @@ namespace Website.Server.Controllers
         [HttpGet("{messageId}")]
         public async Task<IActionResult> GetMessageAsync(int messageId)
         {
-            if (!await messagesRepository.IsMessageUserAsync(messageId, int.Parse(User.Identity.Name)))
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(messageId, userId))
             {
                 return BadRequest();
             }
 
-            return Ok(await messagesRepository.GetMessageAsync(messageId));
+            MMessage message = await messagesRepository.GetMessageAsync(messageId);
+
+            message.Read = await messagesRepository.GetMessageReadAsync(messageId, userId);
+
+            return Ok(message);
         }
 
         [HttpPost]
@@ -107,6 +112,34 @@ namespace Website.Server.Controllers
             }
 
             await messagesRepository.DeleteMessageReplyAsync(replyId);
+            return Ok();
+        }
+
+        [HttpPost("read")]
+        public async Task<IActionResult> PostMessageReadAsync([FromBody] MMessageRead read)
+        {
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(read.MessageId, userId))
+            {
+                return BadRequest();
+            }
+
+            read.UserId = userId;
+            read = await messagesRepository.AddMessageReadAsync(read);
+            
+            return Ok(read);
+        }
+
+        [HttpPut("read")]
+        public async Task<IActionResult> PutMessageReadAsync([FromBody] MMessageRead read)
+        {
+            int userId = int.Parse(User.Identity.Name);
+            if (!await messagesRepository.IsMessageUserAsync(read.MessageId, userId))
+            {
+                return BadRequest();
+            }
+
+            await messagesRepository.UpdateMessageReadAsync(read);
             return Ok();
         }
     }

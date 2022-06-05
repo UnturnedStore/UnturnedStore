@@ -68,7 +68,7 @@ namespace Website.Client.Pages.User.CreateMessagePage
 
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/messages", Message);
             MMessage msg = await response.Content.ReadFromJsonAsync<MMessage>();
-            
+
             SetDefault();
             NavigationManager.NavigateTo($"/messages/{msg.Id}");
 

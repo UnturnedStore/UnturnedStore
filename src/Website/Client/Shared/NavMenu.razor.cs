@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,19 @@ namespace Website.Client.Shared
         public CartService CartService { get; set; }
         [Inject]
         public AuthenticatedUserService UserService { get; set; }
+        [Inject]
+        public MessageReadService MessageReadService { get; set; }
 
         protected override void OnInitialized()
         {
             CartService.SetNavMenu(this);
+            MessageReadService.SetNavMenu(this);
             Refresh();
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await MessageReadService.ReloadMessagesReadAsync();
         }
 
         public void Refresh()

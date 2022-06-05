@@ -22,6 +22,8 @@ namespace Website.Client.Pages.User.MessagePage
         public HttpClient HttpClient { get; set; }
         [Inject]
         public AuthenticatedUserService UserService { get; set; }
+        [Inject]
+        public MessageReadService MessageReadService { get; set; }
 
         public MMessage Message { get; set; }
             
@@ -35,14 +37,34 @@ namespace Website.Client.Pages.User.MessagePage
             {
                 Message = await response.Content.ReadFromJsonAsync<MMessage>();
                 SetDefault();
+
+                if (Message.Read == null)
+                {
+                    var responseRead = await HttpClient.PostAsJsonAsync("api/messages/read", newlyRead);
+                    Message.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
+                }
+                else
+                {
+                    await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
+                    Message.Read = newlyRead;
+                }
+                
+                MessageReadService.UpdateMessagesRead(Message);
             }
-            
         }
 
         private MMessageReply Reply { get; set; }
         private MMessageReply defaultReply => new MMessageReply()
         {
             MessageId = Message.Id
+        };
+
+        private MMessageRead newlyRead => new MMessageRead()
+        {
+            Id = Message.Read?.Id ?? 0,
+            MessageId = Message.Id,
+            UserId = UserService.UserId,
+            ReadId = Message.Replies.Count <= 1 ? 0 : Message.Replies[Message.Replies.Count - 1].Id
         };
 
         private void SetDefault()
@@ -65,7 +87,15 @@ namespace Website.Client.Pages.User.MessagePage
 
             var response = await HttpClient.PostAsJsonAsync("api/messages/replies", Reply);
             SetDefault();
-            Message.Replies.Add(await response.Content.ReadFromJsonAsync<MMessageReply>());            
+            Message.Replies.Add(await response.Content.ReadFromJsonAsync<MMessageReply>());
+
+            if (Message.Read != null)
+            {
+                await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
+                Message.Read = newlyRead;
+                MessageReadService.UpdateMessagesRead(Message);
+            }
+
             isLoading = false;
         }
 
