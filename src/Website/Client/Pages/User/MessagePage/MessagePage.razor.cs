@@ -38,18 +38,21 @@ namespace Website.Client.Pages.User.MessagePage
                 Message = await response.Content.ReadFromJsonAsync<MMessage>();
                 SetDefault();
 
-                if (Message.Read == null)
+                if (MessageReadService.HasNewMessage(Message.Id))
                 {
-                    var responseRead = await HttpClient.PostAsJsonAsync("api/messages/read", newlyRead);
-                    Message.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
+                    if (Message.Read == null)
+                    {
+                        var responseRead = await HttpClient.PostAsJsonAsync("api/messages/read", newlyRead);
+                        Message.Read = await responseRead.Content.ReadFromJsonAsync<MMessageRead>();
+                    }
+                    else
+                    {
+                        await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
+                        Message.Read = newlyRead;
+                    }
+
+                    MessageReadService.UpdateMessagesRead(Message);
                 }
-                else
-                {
-                    await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
-                    Message.Read = newlyRead;
-                }
-                
-                MessageReadService.UpdateMessagesRead(Message);
             }
         }
 
