@@ -18,7 +18,7 @@ namespace Website.Shared.Models.Database
         {
             MessageId = message.Id;
             UserId = isRead ? message.FromUserId : message.ToUserId;
-            ReadId = isRead ? 0 : -1;
+            ReadId = isRead ? (message.Replies.Count == 0 ? 0 : message.Replies[message.Replies.Count - 1].Id) : -1;
         }
     }
 }
