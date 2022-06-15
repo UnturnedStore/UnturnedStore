@@ -33,7 +33,7 @@ namespace Website.Client.Services
 
         public List<MMessage> Messages { get; set; }
 
-        public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && (m.Replies.Count <= 1 ? 0 : m.Replies[m.Replies.Count - 1].Id) > (m.Read?.ReadId ?? -1));
+        public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && (m.Replies.Count == 0 ? 0 : m.Replies[m.Replies.Count - 1].Id) > (m.Read?.ReadId ?? -1));
 
         public async Task ReloadMessagesReadAsync()
         {

@@ -67,7 +67,7 @@ namespace Website.Client.Pages.User.MessagePage
             Id = Message.Read?.Id ?? 0,
             MessageId = Message.Id,
             UserId = UserService.UserId,
-            ReadId = Message.Replies.Count <= 1 ? 0 : Message.Replies[Message.Replies.Count - 1].Id
+            ReadId = Message.Replies.Count == 0 ? 0 : Message.Replies[Message.Replies.Count - 1].Id
         };
 
         private void SetDefault()
