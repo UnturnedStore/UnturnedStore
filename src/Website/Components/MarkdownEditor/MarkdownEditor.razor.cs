@@ -33,6 +33,10 @@ namespace Website.Components.MarkdownEditor
         [Parameter]
         public bool DisableHtml { get; set; } = true;
 
+        [Parameter]
+        public string[] HighlightedPlaceholders { get; set; } = new string[0];
+        private bool HighlightPlaceholders => HighlightedPlaceholders.Length > 0;
+
         [CascadingParameter]
         private EditContext CascadedEditContext { get; set; }
 
@@ -40,8 +44,9 @@ namespace Website.Components.MarkdownEditor
 
         private string _previewText = "";
 
-        private int height = 500;
-        private string heightString => height + "px";
+        [Parameter]
+        public int Height { get; set; } = 500;
+        private string heightString => Height + "px";
 
         private FieldIdentifier _fieldIdentifier;
         private string _fieldCssClasses => CascadedEditContext?.FieldCssClass(_fieldIdentifier) ?? "";
@@ -63,14 +68,22 @@ namespace Website.Components.MarkdownEditor
         {
             await ValueChanged.InvokeAsync(args.Value.ToString());
 
-            _previewText = MarkdownHelper.ParseToHtml(args.Value.ToString(), DisableHtml);
+            _previewText = ParsePlaceholders(MarkdownHelper.ParseToHtml(args.Value.ToString(), DisableHtml));
 
             CascadedEditContext?.NotifyFieldChanged(_fieldIdentifier);            
         }
 
         private void UpdatePreview()
         {
-            _previewText = MarkdownHelper.ParseToHtml(Value.ToString(), DisableHtml);
+            _previewText = ParsePlaceholders(MarkdownHelper.ParseToHtml(Value.ToString(), DisableHtml));
+        }
+
+        private string ParsePlaceholders(string markdown)
+        {
+            if (!HighlightPlaceholders) return markdown;
+            foreach (string placeholder in HighlightedPlaceholders)
+                markdown = markdown.Replace($"<{placeholder}>", $"<span style=\"color: #fd7e14;\">{placeholder}</span>");
+            return markdown;
         }
 
         private void HandleBoldClick()
@@ -88,6 +101,12 @@ namespace Website.Components.MarkdownEditor
         private void HandleListClick()
         {
             Value = $"{Value} \n - List Item";
+            UpdatePreview();
+        }
+
+        private void HandlePlaceholderClick(string Placeholder)
+        {
+            Value = $"{Value} <{Placeholder}>";
             UpdatePreview();
         }
 

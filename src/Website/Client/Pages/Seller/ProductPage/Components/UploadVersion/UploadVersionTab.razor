@@ -1,6 +1,7 @@
 ﻿@using Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Inputs
 @using Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modals
 @using Website.Components.Alerts
+@using Website.Components.MarkdownEditor
 
 
 
@@ -38,7 +39,7 @@
 
         <div class="mb-3">
             <label class="form-label">Changelog</label>
-            <InputTextArea class="form-control" @bind-Value="Version.Changelog" required />
+            <MarkdownEditor @bind-Value="Version.Changelog" EnableToolbar="false" DisableHtml="true" Height="175" />
         </div>
 
                 

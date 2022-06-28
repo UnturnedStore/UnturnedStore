@@ -1,4 +1,6 @@
-﻿<div class="modal fade" id="@nameof(EditVersionModal)" tabindex="-1">
+﻿@using Website.Components.MarkdownEditor
+
+<div class="modal fade" id="@nameof(EditVersionModal)" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             @if (Model != null)
@@ -18,7 +20,7 @@
 
                         <div class="mb-4">
                             <label class="form-label">Changelog</label>
-                            <InputTextArea class="form-control" @bind-Value="Model.Changelog" />
+                            <MarkdownEditor @bind-Value="Model.Changelog" EnableToolbar="false" DisableHtml="true" Height="150" />
                         </div>
 
                         <div class="mb-3">
