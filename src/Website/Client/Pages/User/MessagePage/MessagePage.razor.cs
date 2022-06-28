@@ -7,6 +7,8 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Providers;
 using Website.Client.Services;
+using Website.Components.Basic;
+using Website.Components.Alerts;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
 
@@ -108,7 +110,14 @@ namespace Website.Client.Pages.User.MessagePage
             Message.Replies.Remove(reply);
         }
 
-        public async Task CloseAsync()
+        public ConfirmModal<MMessage> ConfirmClose { get; set; }
+
+        private async Task HandleClose()
+        {
+            await ConfirmClose.ShowAsync(Message);
+        }
+
+        public async Task SubmitCloseAsync()
         {
             Message.IsClosed = true;
             Message.ClosingUserId = UserService.UserId;
