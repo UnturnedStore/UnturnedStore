@@ -119,6 +119,6 @@ else
     }
 }
 
-<ConfirmModal @ref="ConfirmClose" TItem="MMessage" Title="Confirm closing message" BtnClass="btn btn-danger" BtnText=" Close" BtnChildHtml="@("<i class=\"bi bi-exclamation-circle\"></i>")" ModalId="ConfirmSubmitModal" OnConfirm="SubmitCloseAsync">
+<ConfirmModal @ref="ConfirmClose" TItem="MMessage" Title="Confirm closing message" BtnClass="btn btn-danger" BtnText="@("<i class=\"bi bi-exclamation-circle\"></i> Close")" BtnTextUseHtml="true" ModalId="ConfirmSubmitModal" OnConfirm="SubmitCloseAsync">
     Are you sure you want to close this message?
 </ConfirmModal>
