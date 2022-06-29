@@ -23,6 +23,9 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private IEnumerable<MProduct> SearchedProducts => Products
             .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
+            .Where(x => x.Price >= (minPrice < maxPrice ? minPrice : maxPrice) && x.Price <= (minPrice < maxPrice ? maxPrice : minPrice))
+            .Where(x => minRating == 0 || x.AverageRating >= minRating)
+            .Where(x => !verifiedSellersOnly || x.Seller.IsVerifiedSeller)
             .Where(x => string.IsNullOrEmpty(searchString)
             || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
@@ -47,10 +50,51 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private string searchString = string.Empty;
         private string searchCategory = string.Empty;
+        private decimal minPrice = 0.00M;
+        private decimal maxPrice = 0.00M;
+        private byte minRating = 0;
+        private bool verifiedSellersOnly = false;
 
+        private string minPriceString
+        {
+            get => minPrice.ToString("F2");
+            set
+            {
+                if (decimal.TryParse(value, out decimal result))
+                {
+                    minPrice = Math.Round(result, 2);
+                }
+            }
+        }
+
+        private string maxPriceString
+        {
+            get => maxPrice.ToString("F2");
+            set
+            {
+                if (decimal.TryParse(value, out decimal result))
+                {
+                    maxPrice = Math.Round(result, 2);
+                }
+            }
+        }
+
+        private void ChangeRating(byte newRating)
+        {
+            if (newRating == minRating) minRating = 0;
+            else minRating = newRating;
+        }
+
+        private string GetRatingClass(byte rating)
+        {
+            if (rating <= minRating) return "bi-star-fill";
+            return "bi-star";
+        }
+        
         protected override async Task OnInitializedAsync()
         {
             Products = await HttpClient.GetFromJsonAsync<MProduct[]>("api/products");
+            maxPrice = Products.OrderByDescending(x => x.Price).First().Price;
         }
 
         private EOrderBy orderBy = EOrderBy.Newest;

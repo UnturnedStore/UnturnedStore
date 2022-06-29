@@ -40,6 +40,32 @@
                     }
                 </select>
             </div>
+            <div class="mb-2">
+                <label class="form-label text-muted small mb-1">Price range</label>
+                <div class="d-flex gap-1 align-items-baseline">
+                    <span class="fs-5">$</span>
+                    <input type="number" class="form-control" min="0" placeholder="0.00" step="any" @bind="@minPriceString">
+                    <span class="fs-5">-</span>
+                    <input type="number" class="form-control" min="0" placeholder="@Products.OrderByDescending(x => x.Price).First().Price" step="any" @bind="@maxPriceString">
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="form-label text-muted small mb-0">Minimum Rating</label>
+                <div class="d-flex fs-5" style="transform: translateY(-7%);">
+                    <i class="bi @GetRatingClass(1)" style="cursor: pointer;" @onclick="() => ChangeRating(1)"></i>
+                    <i class="bi @GetRatingClass(2)" style="cursor: pointer;" @onclick="() => ChangeRating(2)"></i>
+                    <i class="bi @GetRatingClass(3)" style="cursor: pointer;" @onclick="() => ChangeRating(3)"></i>
+                    <i class="bi @GetRatingClass(4)" style="cursor: pointer;" @onclick="() => ChangeRating(4)"></i>
+                    <i class="bi @GetRatingClass(5)" style="cursor: pointer;" @onclick="() => ChangeRating(5)"></i>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="form-label text-muted small mb-1">Products from</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="verifiedselleronly-check" @bind-value="@verifiedSellersOnly">
+                    <label class="form-label form-check-label" for="verifiedselleronly-check">Verified Sellers Only</label>
+                </div>
+            </div>
         </div>
         <div class="col-md-9">
             <div class="input-group">
