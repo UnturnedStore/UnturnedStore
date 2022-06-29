@@ -21,6 +21,8 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         public IEnumerable<MProduct> Products { get; set; }
 
+        private decimal HighestProductPrice => Products.OrderByDescending(x => x.Price).FirstOrDefault()?.Price ?? 0;
+
         private IEnumerable<MProduct> SearchedProducts => Products
             .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
             .Where(x => x.Price >= (minPrice < maxPrice ? minPrice : maxPrice) && x.Price <= (minPrice < maxPrice ? maxPrice : minPrice))
@@ -94,7 +96,7 @@ namespace Website.Client.Pages.Home.ProductsPage
         protected override async Task OnInitializedAsync()
         {
             Products = await HttpClient.GetFromJsonAsync<MProduct[]>("api/products");
-            maxPrice = Products.OrderByDescending(x => x.Price).First().Price;
+            maxPrice = HighestProductPrice;
         }
 
         private EOrderBy orderBy = EOrderBy.Newest;

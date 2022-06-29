@@ -46,7 +46,7 @@
                     <span class="fs-5">$</span>
                     <input type="number" class="form-control" min="0" placeholder="0.00" step="any" @bind="@minPriceString">
                     <span class="fs-5">-</span>
-                    <input type="number" class="form-control" min="0" placeholder="@Products.OrderByDescending(x => x.Price).First().Price" step="any" @bind="@maxPriceString">
+                    <input type="number" class="form-control" min="0" placeholder="@HighestProductPrice" step="any" @bind="@maxPriceString">
                 </div>
             </div>
             <div class="mb-2">
