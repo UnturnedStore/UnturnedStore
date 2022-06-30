@@ -25,6 +25,7 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private IEnumerable<MProduct> SearchedProducts => Products
             .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
+            .Where(x => searchTags.Count == 0 || searchTags.All(t => x.Tags.Contains(t)))
             .Where(x => x.Price >= (minPrice < maxPrice ? minPrice : maxPrice) && x.Price <= (minPrice < maxPrice ? maxPrice : minPrice))
             .Where(x => minRating == 0 || x.AverageRating >= minRating)
             .Where(x => !verifiedSellersOnly || x.Seller.IsVerifiedSeller)
@@ -52,10 +53,17 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private string searchString = string.Empty;
         private string searchCategory = string.Empty;
+        private HashSet<string> searchTags = new HashSet<string>();
         private decimal minPrice = 0.00M;
         private decimal maxPrice = 0.00M;
         private byte minRating = 0;
         private bool verifiedSellersOnly = false;
+
+        private void HandleSearchTag(string Tag, bool Value)
+        {
+            if (!Value && searchTags.Contains(Tag)) searchTags.Remove(Tag);
+            else if (Value && !searchTags.Contains(Tag)) searchTags.Add(Tag);
+        }
 
         private string minPriceString
         {
@@ -81,6 +89,14 @@ namespace Website.Client.Pages.Home.ProductsPage
             }
         }
 
+        private bool IsHoveringRatings = false;
+        private decimal minRatingHover = 0;
+
+        private void ChangeHoverRating(byte newRating)
+        {
+            minRatingHover = newRating;
+        }
+
         private void ChangeRating(byte newRating)
         {
             if (newRating == minRating) minRating = 0;
@@ -89,7 +105,7 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private string GetRatingClass(byte rating)
         {
-            if (rating <= minRating) return "bi-star-fill";
+            if (rating <= (IsHoveringRatings ? minRatingHover : minRating)) return "bi-star-fill";
             return "bi-star";
         }
         

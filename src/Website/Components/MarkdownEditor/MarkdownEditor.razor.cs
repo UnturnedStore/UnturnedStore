@@ -34,7 +34,7 @@ namespace Website.Components.MarkdownEditor
         public bool DisableHtml { get; set; } = true;
 
         [Parameter]
-        public string[] HighlightedPlaceholders { get; set; } = new string[0];
+        public string[] HighlightedPlaceholders { get; set; } = Array.Empty<string>();
         private bool HighlightPlaceholders => HighlightedPlaceholders.Length > 0;
 
         [CascadingParameter]

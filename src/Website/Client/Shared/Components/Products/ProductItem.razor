@@ -30,6 +30,15 @@
                     <i class="fas fa-cloud-download-alt"></i>
                 </div>
             }
+            @if (!string.IsNullOrEmpty(Product.Tags))
+            {
+                <div class="d-flex ms-1" style="gap: 0.25rem;">
+                @foreach (MProductTag productTag in ProductTagsConstants.DeSerializeTags(Product.Tags))
+                {
+                    <ProductTag Tag="productTag" />
+                }
+                </div>
+            }
         </div>
         <div class="d-none d-md-block" style="font-size: 14px;">
             @Product.GetDescription()

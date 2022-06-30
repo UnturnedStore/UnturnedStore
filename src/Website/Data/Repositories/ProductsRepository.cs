@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Shared.Extensions;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;   
 using Website.Shared.Params;
@@ -173,12 +174,12 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> AddProductAsync(MProduct product)
         {
-            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
+            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, Tags, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
                 "Status, IsLoaderEnabled) " +
-                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.GithubUrl, INSERTED.Price, " +
+                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.Tags, INSERTED.GithubUrl, INSERTED.Price, " +
                 "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.Status, INSERTED.IsLoaderEnabled, " +
                 "INSERTED.LastUpdate, INSERTED.CreateDate " +
-                "VALUES (@Name, @Description, @Category, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
+                "VALUES (@Name, @Description, @Category, @Tags, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
             product = await connection.QuerySingleAsync<MProduct>(sql, product);
 
             const string sql1 = "INSERT INTO dbo.Branches (ProductId, Name, Description) " +
@@ -195,7 +196,7 @@ namespace Website.Data.Repositories
 
         public async Task UpdateProductAsync(MProduct product)
         {
-            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, GithubUrl = @GithubUrl, " +
+            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, Tags = @Tags, GithubUrl = @GithubUrl, " +
                 "Price = @Price, ImageId = @ImageId, IsEnabled = @IsEnabled, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, product);
         }

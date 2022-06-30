@@ -13,6 +13,7 @@ BEGIN
 		p.Name,
 		p.Description,
 		p.Category,
+		p.Tags,
 		p.GithubUrl,
 		p.ImageId,
 		p.Price,
