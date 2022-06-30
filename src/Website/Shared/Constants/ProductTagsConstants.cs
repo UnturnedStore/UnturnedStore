@@ -9,6 +9,8 @@ namespace Website.Shared.Constants
 {
     public class ProductTagsConstants
     {
+        public const int MaximumTagsAllowed = 2;
+
         public static string CombineTags(params string[] Tags)
         {
             return string.Join(",", Tags);

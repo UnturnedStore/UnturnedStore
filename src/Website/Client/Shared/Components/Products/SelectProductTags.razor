@@ -33,7 +33,7 @@
     public EventCallback<string> TagsChanged { get; set; }
 
     [Parameter]
-    public int MaxTags { get; set; } = 0;
+    public int MaxTags { get; set; } = ProductTagsConstants.MaximumTagsAllowed;
     private bool MaximumTagsReached => productTags.Length >= MaxTags;
 
     private MProductTag[] productTags => ProductTagsConstants.DeSerializeTags(Tags);
