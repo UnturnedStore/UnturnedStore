@@ -16,7 +16,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn @BtnClass" @onclick="ConfirmAsync">@(BtnTextUseHtml ? (MarkupString)BtnText : BtnText)</button>
+                <button type="button" class="btn @BtnClass" @onclick="ConfirmAsync">@(new MarkupString(BtnText))</button>
             </div>
         </div>
     </div>
@@ -32,8 +32,6 @@
     public RenderFragment ChildContent { get; set; }
     [Parameter]
     public string BtnText { get; set; }
-    [Parameter]
-    public bool BtnTextUseHtml { get; set; } = false;
     [Parameter]
     public string Title { get; set; }
     [Parameter]

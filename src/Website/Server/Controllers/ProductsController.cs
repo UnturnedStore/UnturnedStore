@@ -123,6 +123,52 @@ namespace Website.Server.Controllers
             return Redirect($"/api/images/{imageId}");
         }
 
+        [HttpGet("tags")]
+        public async Task<IActionResult> GetProductTagsAsync()
+        {
+            return Ok(await productsRepository.GetProductTagsAsync());
+        }
+
+        [Authorize(Roles = RoleConstants.AdminRoleId)]
+        [HttpPost("tags")]
+        public async Task<IActionResult> PostProductTagAsync([FromBody] MProductTag tag)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            return Ok(await productsRepository.AddProductTagAsync(tag));
+        }
+
+        [Authorize(Roles = RoleConstants.AdminRoleId)]
+        [HttpPut("tags")]
+        public async Task<IActionResult> PutProductTagAsync([FromBody] MProductTag tag)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.UpdateProductTagAsync(tag);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleConstants.AdminRoleId)]
+        [HttpDelete("tags/{tagid}")]
+        public async Task<IActionResult> DeleteProductTagAsync(int tagid)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.DeleteProductTagAsync(tagid);
+
+            return Ok();
+        }
+
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost]
         public async Task<IActionResult> PostProductAsync([FromBody] MProduct product)

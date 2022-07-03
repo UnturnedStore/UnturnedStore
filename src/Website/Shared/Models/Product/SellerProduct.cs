@@ -21,7 +21,7 @@ namespace Website.Shared.Models
                 Price = Price,
                 Description = Description,
                 Category = Category,
-                Tags = Tags,
+                SerializedTags = SerializedTags,
                 GithubUrl = GithubUrl,
                 Name = Name,
                 ImageId = ImageId,

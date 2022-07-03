@@ -112,12 +112,12 @@ namespace Website.Client.Pages.User.MessagePage
 
         public ConfirmModal<MMessage> ConfirmClose { get; set; }
 
-        private async Task HandleClose()
+        private async Task ShowCloseMessageAsync()
         {
             await ConfirmClose.ShowAsync(Message);
         }
 
-        public async Task SubmitCloseAsync()
+        public async Task CloseMessageAsync()
         {
             Message.IsClosed = true;
             Message.ClosingUserId = UserService.UserId;

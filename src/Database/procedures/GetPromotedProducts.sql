@@ -33,7 +33,7 @@ BEGIN
 		p.Name,
 		p.Description,
 		p.Category,
-		p.Tags,
+		p.SerializedTags,
 		p.GithubUrl,
 		p.ImageId,
 		p.Price,

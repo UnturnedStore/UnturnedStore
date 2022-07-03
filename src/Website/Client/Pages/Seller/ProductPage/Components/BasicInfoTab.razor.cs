@@ -7,6 +7,8 @@ using Website.Shared.Models.Database;
 using Website.Shared.Models;
 using Website.Components.Alerts;
 using System.Net;
+using System.Collections.Generic;
+using Website.Shared.Constants;
 
 namespace Website.Client.Pages.Seller.ProductPage.Components
 {
@@ -14,14 +16,23 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
     {
         [Parameter]
         public SellerProduct Product { get; set; }
+        private List<MProductTag> Tags { get; set; }
 
         [Parameter]
         public EventCallback<SellerProduct> ProductChanged { get; set; }
+
+        public List<MProductTag> ProductTags { get; set; }
 
         [Inject]
         public HttpClient HttpClient { get; set; }
         [Inject]
         public AlertService AlertService { get; set; }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            ProductTags = await HttpClient.GetFromJsonAsync<List<MProductTag>>("api/products/tags");
+            Tags = ProductTagsConstants.DeSerializeTags(Product.SerializedTags, ProductTags);
+        }
 
         private async Task OnInputFileChange(InputFileChangeEventArgs e)
         {
@@ -47,6 +58,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         private async Task SubmitAsync()
         {
             isLoading = true;
+            Product.SerializedTags = ProductTagsConstants.CombineTags(Tags);
             HttpResponseMessage response = await HttpClient.PutAsJsonAsync($"api/products", Product.ToMProduct());
             if (response.StatusCode == HttpStatusCode.OK)
             {

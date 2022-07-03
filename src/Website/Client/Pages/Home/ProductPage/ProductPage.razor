@@ -128,10 +128,10 @@
                                <span><i class="@ProductCategoryConstants.GetCategoryIcon(Product.Category)"></i> @Product.Category</span> 
                             }                            
                         </li>
-                        @if (!string.IsNullOrEmpty(Product.Tags))
+                        @if (!string.IsNullOrEmpty(Product.SerializedTags))
                         {
                             <li class="d-flex flex-wrap justify-content-center" style="padding: 0.25rem 2rem; gap: 0.25rem;">
-                                @foreach (MProductTag productTag in ProductTagsConstants.DeSerializeTags(Product.Tags))
+                                @foreach (MProductTag productTag in ProductTagsConstants.DeSerializeTags(Product.SerializedTags, ProductTags))
                                 {
                                     <ProductTag Tag="productTag" />
                                 }

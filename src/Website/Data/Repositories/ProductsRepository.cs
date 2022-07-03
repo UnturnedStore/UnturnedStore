@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Shared.Constants;
 using Website.Shared.Extensions;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;   
@@ -174,12 +175,12 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> AddProductAsync(MProduct product)
         {
-            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, Tags, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
+            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, SerializedTags, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
                 "Status, IsLoaderEnabled) " +
-                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.Tags, INSERTED.GithubUrl, INSERTED.Price, " +
+                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.SerializedTags, INSERTED.GithubUrl, INSERTED.Price, " +
                 "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.Status, INSERTED.IsLoaderEnabled, " +
                 "INSERTED.LastUpdate, INSERTED.CreateDate " +
-                "VALUES (@Name, @Description, @Category, @Tags, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
+                "VALUES (@Name, @Description, @Category, @SerializedTags, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
             product = await connection.QuerySingleAsync<MProduct>(sql, product);
 
             const string sql1 = "INSERT INTO dbo.Branches (ProductId, Name, Description) " +
@@ -196,7 +197,7 @@ namespace Website.Data.Repositories
 
         public async Task UpdateProductAsync(MProduct product)
         {
-            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, Tags = @Tags, GithubUrl = @GithubUrl, " +
+            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, SerializedTags = @SerializedTags, GithubUrl = @GithubUrl, " +
                 "Price = @Price, ImageId = @ImageId, IsEnabled = @IsEnabled, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, product);
         }
@@ -220,6 +221,44 @@ namespace Website.Data.Repositories
         {
             const string sql = "DELETE FROM dbo.ProductTabs WHERE Id = @tabId;";
             await connection.ExecuteAsync(sql, new { tabId });
+        }
+
+        public async Task<List<MProductTag>> GetProductTagsAsync()
+        {
+            const string sql = "SELECT * FROM dbo.ProductTags;";
+            return (await connection.QueryAsync<MProductTag>(sql)).ToList();
+        }
+
+        public async Task<List<MProductTag>> GetProductTagsAsync(string tadIds)
+        {
+            const string sql = "SELECT * FROM dbo.ProductTags WHERE Id IN (@tadIds);";
+            return (await connection.QueryAsync<MProductTag>(sql, new { tadIds })).ToList();
+        }
+
+        public async Task<MProductTag> AddProductTagAsync(MProductTag tag)
+        {
+            const string sql = "INSERT INTO dbo.ProductTags (Title, Color, BackgroundColor) " +
+                "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.Color, INSERTED.BackgroundColor " +
+                "VALUES (@Title, @Color, @BackgroundColor);";
+            return await connection.QuerySingleAsync<MProductTag>(sql, tag);
+        }
+
+        public async Task UpdateProductTagAsync(MProductTag tag)
+        {
+            const string sql = "UPDATE dbo.ProductTags SET Title = @Title, Color = @Color, BackgroundColor = @BackgroundColor " +
+                "WHERE Id = @Id;";
+            await connection.ExecuteAsync(sql, tag);
+        }
+
+        public async Task DeleteProductTagAsync(int tagId)
+        {
+            const string sql0 = "DELETE FROM dbo.ProductTags WHERE Id = @tagId;";
+            await connection.ExecuteAsync(sql0, new { tagId });
+
+            // Remove TagId from Products
+            const string sql1 = "UPDATE dbo.Products SET SerializedTags = TRIM(',' FROM REPLACE(REPLACE(SerializedTags, @tagId, ''), ',,', ','))" +
+                "WHERE @tagId IN (SELECT value FROM STRING_SPLIT(SerializedTags, ','));";
+            await connection.ExecuteAsync(sql1, new { tagId });
         }
 
         public async Task<MProductMedia> AddProductMediaAsync(MProductMedia media)

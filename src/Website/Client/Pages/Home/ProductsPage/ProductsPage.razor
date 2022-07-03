@@ -69,11 +69,11 @@
             <div class="mb-2">
                 <label class="form-label text-muted small mb-1">Tags</label>
                 <ul class="m-0 small" style="list-style: none; padding-left: 0.5rem; column-gap: 0.25rem;">
-                    @foreach (string productTag in ProductTagsConstants.ProductTags.Select(t => t.Title))
+                    @foreach (MProductTag productTag in ProductTags)
                     {
                         <li>
-                            <input type="checkbox" class="form-check-input" id="@productTag-tag-check" @oninput="(ChangeEventArgs e) => HandleSearchTag(productTag, (bool)e.Value)">
-                            <label class="form-label form-check-label" style="margin-bottom: 0.25rem;" for="@productTag-tag-check">@productTag</label>
+                            <input type="checkbox" class="form-check-input" id="@productTag.Title-tag-check" @oninput="(ChangeEventArgs e) => HandleSearchTag(productTag, (bool)e.Value)">
+                            <label class="form-label form-check-label" style="margin-bottom: 0.25rem;" for="@productTag.Title-tag-check">@productTag.Title</label>
                         </li>
                     }
                 </ul>
@@ -85,7 +85,7 @@
                 <input type="text" class="form-control" placeholder=" Search by Name, Description or Author" @bind="searchString" @bind:event="oninput" />
             </div>   
             <Virtualize Items="OrderedProducts" Context="product">
-                <ProductItem Product="product" />
+                <ProductItem Product="product" ProductTags="ProductTags" />
             </Virtualize>
         </div>
     </div>

@@ -30,10 +30,10 @@
                     <i class="fas fa-cloud-download-alt"></i>
                 </div>
             }
-            @if (!string.IsNullOrEmpty(Product.Tags))
+            @if (!string.IsNullOrEmpty(Product.SerializedTags))
             {
                 <div class="d-flex ms-1" style="gap: 0.25rem;">
-                @foreach (MProductTag productTag in ProductTagsConstants.DeSerializeTags(Product.Tags))
+                @foreach (MProductTag productTag in ProductTagsConstants.DeSerializeTags(Product.SerializedTags, ProductTags))
                 {
                     <ProductTag Tag="productTag" />
                 }

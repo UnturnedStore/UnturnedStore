@@ -9,6 +9,7 @@ using Website.Shared.Models.Database;
 using Website.Shared.Constants;
 using Website.Components.Alerts;
 using System.Net;
+using System.Collections.Generic;
 
 namespace Website.Client.Pages.Seller.ProductsPage.Components
 {
@@ -26,15 +27,21 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
         public EventCallback<MProduct> OnProductAdded { get; set; }
 
         public MProduct Model { get; set; } = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
+        private List<MProductTag> Tags { get; set; } = new List<MProductTag>();
+        public List<MProductTag> ProductTags { get; set; }
+
         public async Task ShowAsync()
         {
             await JSRuntime.ShowModalStaticAsync(nameof(CreateProductModal));
+            ProductTags = await HttpClient.GetFromJsonAsync<List<MProductTag>>("api/products/tags");
         }
 
         private bool isLoading = false;
         public async Task SubmitAsync()
         {
             isLoading = true;
+
+            Model.SerializedTags = ProductTagsConstants.CombineTags(Tags);
 
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/products", Model);
 

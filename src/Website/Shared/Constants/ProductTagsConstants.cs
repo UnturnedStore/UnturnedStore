@@ -1,80 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Website.Shared.Models;
+using Website.Shared.Models.Database;
 
 namespace Website.Shared.Constants
 {
     public class ProductTagsConstants
     {
         public const int MaximumTagsAllowed = 2;
+        public const string DefaultColor = "#6c757d";
+        public const string DefaultBackgroundColor = "#ebebef";
 
-        public static string CombineTags(params string[] Tags)
+        public static string CombineTags(List<MProductTag> Tags)
         {
-            return string.Join(",", Tags);
+            return string.Join(",", Tags.Select(t => t.Id));
         }
 
-        public static MProductTag[] DeSerializeTags(string Tags)
+        public static List<MProductTag> DeSerializeTags(string Tags, List<MProductTag> ProductTags)
         {
-            if (string.IsNullOrEmpty(Tags)) return Array.Empty<MProductTag>();
-
-            List<MProductTag> DeSerializedTags = new List<MProductTag>();
-            foreach (string tag in Tags.Split(","))
+            string[] tagIds = Tags.Split(",", StringSplitOptions.RemoveEmptyEntries);
+            if (ProductTags == null || tagIds.Length == 0) return new List<MProductTag>();
+            
+            // Doesn't auto sort the Tags and instead uses the order the User Specified
+            
+            List<MProductTag> tags = new List<MProductTag>();
+            foreach (string tagId in tagIds)
             {
-                var newTag = ProductTags.FirstOrDefault(t => t.Title == tag);
-                if (newTag != null) DeSerializedTags.Add(newTag);
+                var tag = ProductTags.FirstOrDefault(t => t.Id.ToString() == tagId);
+                if (tag != null) tags.Add(tag);
             }
+            
+            return tags;
 
-            return DeSerializedTags.ToArray();
+            //return ProductTags.Where(t => tagIds.Contains(t.Id.ToString())).ToList(); // Will auto sort the Tags by their Id
         }
 
-        public static MProductTag[] ProductTags => new MProductTag[] {
-            new MProductTag()
-            {
-                Title = "Roleplay"
-            },
-            new MProductTag()
-            {
-                Title = "Economy"
-            },
-            new MProductTag()
-            {
-                Title = "Storage"
-            },
-            new MProductTag()
-            {
-                Title = "Communication"
-            },
-            new MProductTag()
-            {
-                Title = "Teleportation"
-            },
-            new MProductTag()
-            {
-                Title = "Items"
-            },
-            new MProductTag()
-            {
-                Title = "Vehicles"
-            },
-            new MProductTag()
-            {
-                Title = "Animals"
-            },
-            new MProductTag()
-            {
-                Title = "Administration"
-            },
-            new MProductTag()
-            {
-                Title = "Server Utility"
-            },
-            new MProductTag()
-            {
-                Title = "Miscellaneous"
-            }
-        };
+        // Recommended Tags:
+        //
+        // Roleplay
+        // Economy
+        // Storage
+        // Communication
+        // Teleportation
+        // Items
+        // Vehicles
+        // Animals
+        // Administration
+        // Server Utility
+        // Miscellaneous
     }
 }
