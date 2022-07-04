@@ -46,8 +46,6 @@ namespace Website.Client.Pages.Home.ProductPage
 
         private HttpStatusCode statusCode;
 
-        private List<MProductTag> ProductTags { get; set; }
-
         public ProductReviewModal ReviewModal { get; set; }
         public MProductReview Review { get; set; }
 
@@ -75,8 +73,6 @@ namespace Website.Client.Pages.Home.ProductPage
                 {
                     Product.AverageRating = (byte)(Product.Reviews.Sum(x => x.Rating) / Product.Reviews.Count);
                 }
-
-                ProductTags = await HttpClient.GetFromJsonAsync<List<MProductTag>>("api/products/tags");
             }
 
             await CartService.ReloadCartAsync();

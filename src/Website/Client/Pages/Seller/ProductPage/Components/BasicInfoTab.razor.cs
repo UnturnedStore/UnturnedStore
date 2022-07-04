@@ -16,7 +16,6 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
     {
         [Parameter]
         public SellerProduct Product { get; set; }
-        private List<MProductTag> Tags { get; set; }
 
         [Parameter]
         public EventCallback<SellerProduct> ProductChanged { get; set; }
@@ -31,7 +30,6 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         protected override async Task OnParametersSetAsync()
         {
             ProductTags = await HttpClient.GetFromJsonAsync<List<MProductTag>>("api/products/tags");
-            Tags = ProductTagsConstants.DeSerializeTags(Product.SerializedTags, ProductTags);
         }
 
         private async Task OnInputFileChange(InputFileChangeEventArgs e)
@@ -58,7 +56,6 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         private async Task SubmitAsync()
         {
             isLoading = true;
-            Product.SerializedTags = ProductTagsConstants.CombineTags(Tags);
             HttpResponseMessage response = await HttpClient.PutAsJsonAsync($"api/products", Product.ToMProduct());
             if (response.StatusCode == HttpStatusCode.OK)
             {

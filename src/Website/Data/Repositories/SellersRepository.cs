@@ -113,13 +113,16 @@ namespace Website.Data.Repositories
             if (product == null)
                 return product;
 
-            const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
-            product.Media = (await connection.QueryAsync<MProductMedia>(sql1, product)).ToList();
+            const string sql1 = "SELECT * FROM dbo.ProductTags WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@SerializedTags, ','));";
+            product.Tags = (await connection.QueryAsync<MProductTag>(sql1, product)).ToList();
 
-            const string sql2 = "SELECT b.*, v.Id, v.BranchId, v.Name, v.FileName, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate " +
+            const string sql2 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
+            product.Media = (await connection.QueryAsync<MProductMedia>(sql2, product)).ToList();
+
+            const string sql3 = "SELECT b.*, v.Id, v.BranchId, v.Name, v.FileName, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate " +
                 "FROM dbo.Branches b LEFT JOIN dbo.Versions v ON v.BranchId = b.Id WHERE b.ProductId = @Id;";
             product.Branches = new List<MBranch>();
-            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql2, (b, v) =>
+            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql3, (b, v) =>
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
 

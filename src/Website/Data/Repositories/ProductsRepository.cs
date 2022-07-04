@@ -128,6 +128,8 @@ namespace Website.Data.Repositories
             if (product == null)
                 return null;
 
+            product.Tags = await GetProductTagsAsync(product.SerializedTags);
+
             const string sql0 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id;";
             product.Tabs = (await connection.QueryAsync<MProductTab>(sql0, product)).ToList();
 
@@ -231,7 +233,7 @@ namespace Website.Data.Repositories
 
         public async Task<List<MProductTag>> GetProductTagsAsync(string tadIds)
         {
-            const string sql = "SELECT * FROM dbo.ProductTags WHERE Id IN (@tadIds);";
+            const string sql = "SELECT * FROM dbo.ProductTags WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@tadIds, ','));";
             return (await connection.QueryAsync<MProductTag>(sql, new { tadIds })).ToList();
         }
 

@@ -46,6 +46,7 @@ namespace Website.Shared.Models.Database
         public List<MProductMedia> Medias { get; set; }
         public List<MProductReview> Reviews { get; set; }
         public List<MBranch> Branches { get; set; }
+        public List<MProductTag> Tags { get; set; }
 
         public string GetDescription()
         {
