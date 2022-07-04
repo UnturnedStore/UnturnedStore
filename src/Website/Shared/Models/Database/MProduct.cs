@@ -24,7 +24,7 @@ namespace Website.Shared.Models.Database
         [Required]
         public string Category { get; set; }
         [MaxLength(255)]
-        public string SerializedTags { get; set; }
+        public string TagIds { get; set; }
         public int SellerId { get; set; }
         public int? AdminId { get; set; }
         public ProductStatus Status { get; set; }

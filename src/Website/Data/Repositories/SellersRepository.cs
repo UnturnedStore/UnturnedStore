@@ -113,7 +113,7 @@ namespace Website.Data.Repositories
             if (product == null)
                 return product;
 
-            const string sql1 = "SELECT * FROM dbo.ProductTags WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@SerializedTags, ','));";
+            const string sql1 = "SELECT * FROM dbo.ProductTags WHERE Id IN (SELECT value FROM STRING_SPLIT(@TagIds, ','));";
             product.Tags = (await connection.QueryAsync<MProductTag>(sql1, product)).ToList();
 
             const string sql2 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";

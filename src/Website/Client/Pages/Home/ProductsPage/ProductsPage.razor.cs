@@ -27,7 +27,7 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private IEnumerable<MProduct> SearchedProducts => Products
             .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
-            .Where(x => searchTagIds.Count == 0 || searchTagIds.All(t => x.SerializedTags.Split(",").Contains(t.ToString())))
+            .Where(x => searchTagIds.Count == 0 || searchTagIds.All(t => x.TagIds.Split(",").Contains(t.ToString())))
             .Where(x => x.Price >= (minPrice < maxPrice ? minPrice : maxPrice) && x.Price <= (minPrice < maxPrice ? maxPrice : minPrice))
             .Where(x => minRating == 0 || x.AverageRating >= minRating)
             .Where(x => !verifiedSellersOnly || x.Seller.IsVerifiedSeller)

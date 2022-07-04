@@ -128,7 +128,7 @@ namespace Website.Data.Repositories
             if (product == null)
                 return null;
 
-            product.Tags = await GetProductTagsAsync(product.SerializedTags);
+            product.Tags = await GetProductTagsAsync(product.TagIds);
 
             const string sql0 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id;";
             product.Tabs = (await connection.QueryAsync<MProductTab>(sql0, product)).ToList();
@@ -177,12 +177,12 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> AddProductAsync(MProduct product)
         {
-            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, SerializedTags, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
+            const string sql = "INSERT INTO dbo.Products (Name, Description, Category, TagIds, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
                 "Status, IsLoaderEnabled) " +
-                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.SerializedTags, INSERTED.GithubUrl, INSERTED.Price, " +
+                "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.TagIds, INSERTED.GithubUrl, INSERTED.Price, " +
                 "INSERTED.ImageId, INSERTED.SellerId, INSERTED.IsEnabled, INSERTED.Status, INSERTED.IsLoaderEnabled, " +
                 "INSERTED.LastUpdate, INSERTED.CreateDate " +
-                "VALUES (@Name, @Description, @Category, @SerializedTags, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
+                "VALUES (@Name, @Description, @Category, @TagIds, @GithubUrl, @Price, @ImageId, @SellerId, @IsEnabled, @Status, @IsLoaderEnabled);";
             product = await connection.QuerySingleAsync<MProduct>(sql, product);
 
             const string sql1 = "INSERT INTO dbo.Branches (ProductId, Name, Description) " +
@@ -199,7 +199,7 @@ namespace Website.Data.Repositories
 
         public async Task UpdateProductAsync(MProduct product)
         {
-            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, SerializedTags = @SerializedTags, GithubUrl = @GithubUrl, " +
+            const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, TagIds = @TagIds, GithubUrl = @GithubUrl, " +
                 "Price = @Price, ImageId = @ImageId, IsEnabled = @IsEnabled, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, product);
         }
@@ -231,10 +231,10 @@ namespace Website.Data.Repositories
             return (await connection.QueryAsync<MProductTag>(sql)).ToList();
         }
 
-        public async Task<List<MProductTag>> GetProductTagsAsync(string tadIds)
+        public async Task<List<MProductTag>> GetProductTagsAsync(string tagIds)
         {
-            const string sql = "SELECT * FROM dbo.ProductTags WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT(@tadIds, ','));";
-            return (await connection.QueryAsync<MProductTag>(sql, new { tadIds })).ToList();
+            const string sql = "SELECT * FROM dbo.ProductTags WHERE Id IN (SELECT value FROM STRING_SPLIT(@tagIds, ','));";
+            return (await connection.QueryAsync<MProductTag>(sql, new { tagIds })).ToList();
         }
 
         public async Task<MProductTag> AddProductTagAsync(MProductTag tag)
@@ -258,8 +258,8 @@ namespace Website.Data.Repositories
             await connection.ExecuteAsync(sql0, new { tagId });
 
             // Remove TagId from Products
-            const string sql1 = "UPDATE dbo.Products SET SerializedTags = TRIM(',' FROM REPLACE(REPLACE(SerializedTags, @tagId, ''), ',,', ','))" +
-                "WHERE @tagId IN (SELECT value FROM STRING_SPLIT(SerializedTags, ','));";
+            const string sql1 = "UPDATE dbo.Products SET TagIds = TRIM(',' FROM REPLACE(REPLACE(TagIds, @tagId, ''), ',,', ','))" +
+                "WHERE @tagId IN (SELECT value FROM STRING_SPLIT(TagIds, ','));";
             await connection.ExecuteAsync(sql1, new { tagId });
         }
 

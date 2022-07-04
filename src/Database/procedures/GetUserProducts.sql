@@ -13,7 +13,7 @@ BEGIN
 		p.Name,
 		p.Description,
 		p.Category,
-		p.SerializedTags,
+		p.TagIds,
 		p.GithubUrl,
 		p.ImageId,
 		p.Price,

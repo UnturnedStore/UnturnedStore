@@ -26,8 +26,7 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
         [Parameter]
         public EventCallback<MProduct> OnProductAdded { get; set; }
 
-        public MProduct Model { get; set; } = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
-        private List<MProductTag> Tags { get; set; } = new List<MProductTag>();
+        public MProduct Model { get; set; } = new MProduct() { Category = ProductCategoryConstants.DefaultCategory, Tags = new List<MProductTag>() };
         public List<MProductTag> ProductTags { get; set; }
 
         public async Task ShowAsync()
@@ -41,7 +40,7 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
         {
             isLoading = true;
 
-            Model.SerializedTags = ProductTagsConstants.CombineTags(Tags);
+            Model.TagIds = ProductTagsConstants.CombineTags(Model.Tags);
 
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/products", Model);
 
@@ -62,7 +61,7 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
                 AlertService.ShowAlert("products-main", $"Successfully created new product <strong>{product.Name}</strong>!", AlertType.Success);
                 
                 await JSRuntime.HideModalAsync(nameof(CreateProductModal));
-                Model = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
+                Model = new MProduct() { Category = ProductCategoryConstants.DefaultCategory, Tags = new List<MProductTag>() };
                 StateHasChanged();
             }
 

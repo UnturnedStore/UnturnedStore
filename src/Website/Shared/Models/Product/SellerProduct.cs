@@ -22,7 +22,7 @@ namespace Website.Shared.Models
                 Price = Price,
                 Description = Description,
                 Category = Category,
-                SerializedTags = ProductTagsConstants.CombineTags(Tags),
+                TagIds = ProductTagsConstants.CombineTags(Tags),
                 GithubUrl = GithubUrl,
                 Name = Name,
                 ImageId = ImageId,

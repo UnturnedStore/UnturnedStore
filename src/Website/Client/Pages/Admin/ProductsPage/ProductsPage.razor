@@ -159,7 +159,7 @@
         <ProductTag Tag="@tag" />
     </DataTableColumn>
     <DataTableColumn TItem="MProductTag" Name="Products" Field="x => string.Empty" Context="tag" IsSearchable="false">
-        <span>@Products.Where(p => ProductTagsConstants.DeSerializeTags(p.SerializedTags, ProductTags).Contains(tag)).Count()</span>
+        <span>@Products.Where(p => ProductTagsConstants.DeSerializeTags(p.TagIds, ProductTags).Contains(tag)).Count()</span>
     </DataTableColumn>
     <DataTableColumn TItem="MProductTag" Name="" Context="tag" Field="x => string.Empty" IsSearchable="false">
         <div class="d-flex">
