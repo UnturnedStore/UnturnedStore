@@ -97,7 +97,7 @@ namespace Website.Client.Pages.Admin.ProductsPage.Components
             {
                 await OnTagEdited.InvokeAsync(Model);
 
-                AlertService.ShowAlert("product-tags-modal-main", $"Successfully created edited tag <strong>{Model.Title}</strong>!", AlertType.Success);
+                AlertService.ShowAlert("product-tags-modal-main", $"Successfully edited tag <strong>{Model.Title}</strong>!", AlertType.Success);
 
                 await JSRuntime.HideModalAsync(nameof(ProductTagsModal));
                 Model = new MProductTag();

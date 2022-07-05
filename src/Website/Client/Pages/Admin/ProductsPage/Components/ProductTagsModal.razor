@@ -35,7 +35,7 @@
                     <div class="mb-3">
                         <label class="form-label">Color</label>
                         <div class="d-flex" style="gap: 0.25rem;">
-                            <input type="color" class="form-control form-control-color" @bind-value="Model.Color" />
+                            <input type="color" class="form-control form-control-color" @bind="Model.Color" @bind:event="oninput" />
                             <InputText class="form-control" @bind-Value="Model.Color" />
                         </div>
                         <div class="form-text">Set the foreground text color</div>
@@ -44,7 +44,7 @@
                     <div class="mb-3">
                         <label class="form-label">Background Color</label>
                         <div class="d-flex" style="gap: 0.25rem;">
-                            <input type="color" class="form-control form-control-color" @bind-value="Model.BackgroundColor" />
+                            <input type="color" class="form-control form-control-color" @bind="Model.BackgroundColor" @bind:event="oninput" />
                             <InputText class="form-control" @bind-Value="Model.BackgroundColor" />
                         </div>
                         <div class="form-text">Set the background color</div>
