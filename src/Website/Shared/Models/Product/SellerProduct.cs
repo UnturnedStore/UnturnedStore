@@ -22,7 +22,6 @@ namespace Website.Shared.Models
                 Price = Price,
                 Description = Description,
                 Category = Category,
-                TagIds = ProductTagsConstants.CombineTags(Tags),
                 GithubUrl = GithubUrl,
                 Name = Name,
                 ImageId = ImageId,
@@ -32,7 +31,8 @@ namespace Website.Shared.Models
                 IsLoaderEnabled = IsLoaderEnabled,
                 IsEnabled = IsEnabled,
                 LastUpdate = LastUpdate,
-                CreateDate = CreateDate
+                CreateDate = CreateDate,
+                Tags = Tags
             };
         }
 

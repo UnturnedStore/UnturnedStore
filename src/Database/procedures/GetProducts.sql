@@ -33,7 +33,6 @@ BEGIN
 		p.Name,
 		p.Description,
 		p.Category,
-		p.TagIds,
 		p.GithubUrl,
 		p.ImageId,
 		p.Price,
@@ -51,9 +50,14 @@ BEGIN
 		u.SteamId, 
 		u.AvatarImageId,
 		u.IsVerifiedSeller,
-		u.CreateDate		
+		u.CreateDate,
+		t.Id,
+		t.Title,
+		t.Color,
+		t.BackgroundColor
 	FROM dbo.Products p 
-	JOIN dbo.Users u ON p.SellerId = u.Id 
+	JOIN dbo.Users u ON p.SellerId = u.Id
+	LEFT JOIN dbo.Tags t ON t.Id IN (SELECT pt.TagId FROM dbo.ProductTags pt WHERE pt.ProductId = p.Id)
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
 	LEFT JOIN CTE_ProductServers s ON s.ProductId = p.Id

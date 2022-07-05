@@ -27,7 +27,7 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private IEnumerable<MProduct> SearchedProducts => Products
             .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
-            .Where(x => searchTagIds.Count == 0 || searchTagIds.All(t => x.TagIds.Split(",").Contains(t.ToString())))
+            .Where(x => searchTagIds.Count == 0 || searchTagIds.All(t => x.Tags.Contains(t)))
             .Where(x => x.Price >= (minPrice < maxPrice ? minPrice : maxPrice) && x.Price <= (minPrice < maxPrice ? maxPrice : minPrice))
             .Where(x => minRating == 0 || x.AverageRating >= minRating)
             .Where(x => !verifiedSellersOnly || x.Seller.IsVerifiedSeller)
@@ -55,7 +55,7 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private string searchString = string.Empty;
         private string searchCategory = string.Empty;
-        private HashSet<int> searchTagIds = new HashSet<int>();
+        private HashSet<MProductTag> searchTagIds = new HashSet<MProductTag>();
         private decimal minPrice = 0.00M;
         private decimal maxPrice = 0.00M;
         private byte minRating = 0;
@@ -63,8 +63,8 @@ namespace Website.Client.Pages.Home.ProductsPage
 
         private void HandleSearchTag(MProductTag Tag, bool Value)
         {
-            if (!Value && searchTagIds.Contains(Tag.Id)) searchTagIds.Remove(Tag.Id);
-            else if (Value && !searchTagIds.Contains(Tag.Id)) searchTagIds.Add(Tag.Id);
+            if (!Value && searchTagIds.Contains(Tag)) searchTagIds.Remove(Tag);
+            else if (Value && !searchTagIds.Contains(Tag)) searchTagIds.Add(Tag);
         }
 
         private string minPriceString

@@ -13,7 +13,6 @@ BEGIN
 		p.Name,
 		p.Description,
 		p.Category,
-		p.TagIds,
 		p.GithubUrl,
 		p.ImageId,
 		p.Price,
@@ -23,7 +22,7 @@ BEGIN
 		p.CreateDate,
 		TotalDownloadsCount = ISNULL(d.TotalDownloadsCount, 0), 
 		AverageRating = ISNULL(r.AverageRating, 0), 
-		RatingsCount = ISNULL(RatingsCount, 0)	
+		RatingsCount = ISNULL(RatingsCount, 0)
 	FROM dbo.Products p 
 	JOIN dbo.Users u ON p.SellerId = u.Id 
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id

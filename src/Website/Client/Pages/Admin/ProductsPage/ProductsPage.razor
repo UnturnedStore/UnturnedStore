@@ -159,7 +159,7 @@
         <ProductTag Tag="@tag" />
     </DataTableColumn>
     <DataTableColumn TItem="MProductTag" Name="Products" Field="x => string.Empty" Context="tag" IsSearchable="false">
-        <span>@Products.Where(p => ProductTagsConstants.DeSerializeTags(p.TagIds, ProductTags).Contains(tag)).Count()</span>
+        <span>@Products.Where(p => p.Tags.Contains(tag)).Count()</span>
     </DataTableColumn>
     <DataTableColumn TItem="MProductTag" Name="" Context="tag" Field="x => string.Empty" IsSearchable="false">
         <div class="d-flex">
@@ -181,6 +181,5 @@
 
 <ConfirmModal @ref="ConfirmDeleteTag" TItem="MProductTag" Title="Confirm delete tag" BtnClass="btn btn-danger" BtnText="Delete" ModalId="ConfirmDeleteTagModal" OnConfirm="DeleteTagAsync">
     Are you sure you want to delete tag <span class="fw-bold">@ConfirmDeleteTag.Item.Title</span>?
-    <p class="fst-italic m-0">Deleting a tag might take a while if it is used by a lot of products.</p>
 </ConfirmModal>
 <ProductTagsModal @ref="Modal" OnTagAdded="AddTag" OnTagEdited="EditTag" />

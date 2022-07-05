@@ -40,8 +40,6 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
         {
             isLoading = true;
 
-            Model.TagIds = ProductTagsConstants.CombineTags(Model.Tags);
-
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/products", Model);
 
             if (response.StatusCode != HttpStatusCode.OK)

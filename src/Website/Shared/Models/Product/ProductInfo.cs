@@ -11,7 +11,6 @@ namespace Website.Shared.Models
         public int ImageId { get; set; }
         public decimal Price { get; set; }
         public string Category { get; set; }
-        public string TagIds { get; set; }
         public bool IsLoaderEnabled { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime LastUpdate { get; set; }

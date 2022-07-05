@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Website.Shared.Constants;
 
 namespace Website.Shared.Models.Database
 {
-    public class MProductTag
+    public class MProductTag : IEquatable<MProductTag>
     {
         public int Id { get; set; }
 
@@ -26,6 +27,11 @@ namespace Website.Shared.Models.Database
             Title = Tag.Title;
             Color = Tag.Color;
             BackgroundColor = Tag.BackgroundColor;
+        }
+
+        public bool Equals(MProductTag other)
+        {
+            return Id == other.Id;
         }
     }
 }

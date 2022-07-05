@@ -126,7 +126,7 @@ namespace Website.Server.Controllers
         [HttpGet("tags")]
         public async Task<IActionResult> GetProductTagsAsync()
         {
-            return Ok(await productsRepository.GetProductTagsAsync());
+            return Ok(await productsRepository.GetTagsAsync());
         }
 
         [Authorize(Roles = RoleConstants.AdminRoleId)]
@@ -138,7 +138,19 @@ namespace Website.Server.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            return Ok(await productsRepository.AddProductTagAsync(tag));
+            try
+            {
+                return Ok(await productsRepository.AddTagAsync(tag));
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627)
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                throw e;
+            }
         }
 
         [Authorize(Roles = RoleConstants.AdminRoleId)]
@@ -150,7 +162,7 @@ namespace Website.Server.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            await productsRepository.UpdateProductTagAsync(tag);
+            await productsRepository.UpdateTagAsync(tag);
 
             return Ok();
         }
@@ -164,7 +176,7 @@ namespace Website.Server.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            await productsRepository.DeleteProductTagAsync(tagid);
+            await productsRepository.DeleteTagAsync(tagid);
 
             return Ok();
         }

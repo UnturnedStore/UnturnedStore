@@ -51,7 +51,7 @@
             </div>
             <div class="mb-2">
                 <label class="form-label text-muted small mb-0">Minimum rating</label>
-                <div class="d-flex fs-5" style="transform: translateY(-7%);" @onmouseover="() => IsHoveringRatings = true" @onmouseout="() => IsHoveringRatings = false">
+                <div class="d-flex fs-5" style="width: fit-content; transform: translateY(-7%);" @onmouseover="() => IsHoveringRatings = true" @onmouseout="() => IsHoveringRatings = false">
                     <i class="bi @GetRatingClass(1)" style="cursor: pointer;" @onclick="() => ChangeRating(1)" @onmouseover="() => ChangeHoverRating(1)"></i>
                     <i class="bi @GetRatingClass(2)" style="cursor: pointer;" @onclick="() => ChangeRating(2)" @onmouseover="() => ChangeHoverRating(2)"></i>
                     <i class="bi @GetRatingClass(3)" style="cursor: pointer;" @onclick="() => ChangeRating(3)" @onmouseover="() => ChangeHoverRating(3)"></i>
