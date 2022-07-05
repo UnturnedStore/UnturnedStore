@@ -188,6 +188,7 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> AddProductAsync(MProduct product)
         {
+            var initialTags = product.Tags;
             const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
                 "Status, IsLoaderEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.GithubUrl, INSERTED.Price, " +
@@ -205,7 +206,7 @@ namespace Website.Data.Repositories
                 await connection.QuerySingleAsync<MBranch>(sql1, product)
             };
 
-            product.Tags = await SetProductTagsAsync(product.Id, product.Tags);
+            product.Tags = await SetProductTagsAsync(product.Id, initialTags);
 
             return product;
         }
