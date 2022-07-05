@@ -155,10 +155,10 @@
             <span class="ms-1">@tag.BackgroundColor</span>
         </div>
     </DataTableColumn>
-    <DataTableColumn TItem="MProductTag" Name="Preview" Field="x => string.Empty" Context="tag" IsSearchable="false">
+    <DataTableColumn TItem="MProductTag" Name="Preview" Field="x => x.Title" Context="tag" IsSearchable="false">
         <ProductTag Tag="@tag" />
     </DataTableColumn>
-    <DataTableColumn TItem="MProductTag" Name="Products" Field="x => string.Empty" Context="tag" IsSearchable="false">
+    <DataTableColumn TItem="MProductTag" Name="Products" Field="x => Products.Where(p => p.Tags.Contains(x)).Count()" Context="tag" IsSearchable="false">
         <span>@Products.Where(p => p.Tags.Contains(tag)).Count()</span>
     </DataTableColumn>
     <DataTableColumn TItem="MProductTag" Name="" Context="tag" Field="x => string.Empty" IsSearchable="false">
