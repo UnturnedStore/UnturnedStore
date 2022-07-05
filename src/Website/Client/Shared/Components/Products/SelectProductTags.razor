@@ -46,7 +46,7 @@
 
     [Parameter]
     public List<MProductTag> ProductTags { get; set; }
-    private IEnumerable<MProductTag> availableTags => ProductTags.Concat(Tags).GroupBy(t => t.Title).Where(g => g.Count() == 1).Select(t => t.FirstOrDefault());
+    private IEnumerable<MProductTag> availableTags => ProductTags.Concat(Tags).GroupBy(t => t.Id).Where(g => g.Count() == 1).Select(t => t.FirstOrDefault());
     private IEnumerable<MProductTag> searchedTags => availableTags.Where(t => string.IsNullOrEmpty(searchTagTitle) || t.Title.Contains(searchTagTitle, StringComparison.OrdinalIgnoreCase));
     private string searchTagTitle { get; set; }
 
