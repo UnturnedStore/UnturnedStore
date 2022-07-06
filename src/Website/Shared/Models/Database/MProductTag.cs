@@ -9,7 +9,7 @@ namespace Website.Shared.Models.Database
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(255)]
+        [MaxLength(35)]
         public string Title { get; set; }
 
         [MaxLength(7)]
