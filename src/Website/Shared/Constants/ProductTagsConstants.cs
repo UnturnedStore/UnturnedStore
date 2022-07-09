@@ -7,7 +7,7 @@ namespace Website.Shared.Constants
 {
     public class ProductTagsConstants
     {
-        public const int MaximumTagsAllowed = 2;
+        public const int MaximumTagsAllowed = 6;
         public const string DefaultColor = "#6c757d";
         public const string DefaultBackgroundColor = "#ebebef";
 
