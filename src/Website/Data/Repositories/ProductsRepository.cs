@@ -6,6 +6,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Shared.Constants;
+using Website.Shared.Extensions;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;   
 using Website.Shared.Params;
@@ -101,11 +103,21 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MProduct>> GetProductsAsync(int userId)
         {
-            return await connection.QueryAsync<MProduct, Seller, MProduct>("dbo.GetProducts", (p, u) => 
+            var productDictionary = new Dictionary<int, MProduct>();
+
+            return (await connection.QueryAsync<MProduct, Seller, MProductTag, MProduct>("dbo.GetProducts", (p, u, t) => 
             {
-                p.Seller = u;
-                return p;
-            }, new { UserId = userId }, commandType: CommandType.StoredProcedure);
+                if (!productDictionary.TryGetValue(p.Id, out MProduct mappedProduct))
+                {
+                    mappedProduct = p;
+                    mappedProduct.Seller = u;
+                    mappedProduct.Tags = new List<MProductTag>();
+                    productDictionary.Add(mappedProduct.Id, mappedProduct);
+                }
+
+                mappedProduct.Tags.Add(t);
+                return mappedProduct;
+            }, new { UserId = userId }, commandType: CommandType.StoredProcedure)).Distinct();
         }
 
         public async Task<IEnumerable<MProduct>> GetUserProductsAsync(int userId)
@@ -126,18 +138,21 @@ namespace Website.Data.Repositories
             if (product == null)
                 return null;
 
-            const string sql0 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id;";
-            product.Tabs = (await connection.QueryAsync<MProductTab>(sql0, product)).ToList();
+            const string sql0 = "SELECT * FROM dbo.Tags WHERE Id IN (SELECT TagId FROM dbo.ProductTags WHERE ProductId = @Id);";
+            product.Tags = (await connection.QueryAsync<MProductTag>(sql0, product)).ToList();
 
-            const string sql1 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
-            product.Medias = (await connection.QueryAsync<MProductMedia>(sql1, product)).ToList();
+            const string sql1 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id;";
+            product.Tabs = (await connection.QueryAsync<MProductTab>(sql1, product)).ToList();
 
-            const string sql2 = "SELECT b.*, v.Id, v.Name, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate FROM dbo.Branches b " +
+            const string sql2 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
+            product.Medias = (await connection.QueryAsync<MProductMedia>(sql2, product)).ToList();
+
+            const string sql3 = "SELECT b.*, v.Id, v.Name, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate FROM dbo.Branches b " +
                 "LEFT JOIN dbo.Versions v ON v.BranchId = b.Id AND v.IsEnabled = 1 WHERE b.ProductId = @Id AND b.IsEnabled = 1;";
 
             product.Branches = new List<MBranch>();
 
-            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql2, (b, v) => 
+            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql3, (b, v) => 
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
                 if (branch == null)
@@ -173,6 +188,7 @@ namespace Website.Data.Repositories
 
         public async Task<MProduct> AddProductAsync(MProduct product)
         {
+            var initialTags = product.Tags;
             const string sql = "INSERT INTO dbo.Products (Name, Description, Category, GithubUrl, Price, ImageId, SellerId, IsEnabled, " +
                 "Status, IsLoaderEnabled) " +
                 "OUTPUT INSERTED.Id, INSERTED.Name, INSERTED.Description, INSERTED.Category, INSERTED.GithubUrl, INSERTED.Price, " +
@@ -190,6 +206,8 @@ namespace Website.Data.Repositories
                 await connection.QuerySingleAsync<MBranch>(sql1, product)
             };
 
+            product.Tags = await SetProductTagsAsync(product.Id, initialTags);
+
             return product;
         }
 
@@ -198,6 +216,8 @@ namespace Website.Data.Repositories
             const string sql = "UPDATE dbo.Products SET Name = @Name, Description = @Description, Category = @Category, GithubUrl = @GithubUrl, " +
                 "Price = @Price, ImageId = @ImageId, IsEnabled = @IsEnabled, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, product);
+
+            await SetProductTagsAsync(product.Id, product.Tags);
         }
 
         public async Task<MProductTab> AddProductTabAsync(MProductTab tab)
@@ -219,6 +239,57 @@ namespace Website.Data.Repositories
         {
             const string sql = "DELETE FROM dbo.ProductTabs WHERE Id = @tabId;";
             await connection.ExecuteAsync(sql, new { tabId });
+        }
+
+        public async Task<List<MProductTag>> GetTagsAsync()
+        {
+            const string sql = "SELECT * FROM dbo.Tags;";
+            return (await connection.QueryAsync<MProductTag>(sql)).ToList();
+        }
+
+        public async Task<MProductTag> AddTagAsync(MProductTag tag)
+        {
+            const string sql = "INSERT INTO dbo.Tags (Title, Color, BackgroundColor) " +
+                "OUTPUT INSERTED.Id, INSERTED.Title, INSERTED.Color, INSERTED.BackgroundColor " +
+                "VALUES (@Title, @Color, @BackgroundColor);";
+            return await connection.QuerySingleAsync<MProductTag>(sql, tag);
+        }
+
+        public async Task<List<MProductTag>> SetProductTagsAsync(int productId, List<MProductTag> tags)
+        {
+            if (tags == null) return new List<MProductTag>();
+
+            const string sql0 = "DELETE FROM dbo.ProductTags WHERE ProductId = @productId;";
+            await connection.ExecuteAsync(sql0, new { productId });
+
+            if (tags.Count == 0) return new List<MProductTag>();
+
+            string sql1 = $"INSERT INTO dbo.ProductTags (ProductId, TagId) VALUES {ProductTagsInsertMultiple(tags)};";
+            await connection.ExecuteAsync(sql1, new { productId });
+            return tags;
+        }
+
+        private string ProductTagsInsertMultiple(List<MProductTag> tags)
+        {
+            List<string> tagsInsert = new List<string>();
+
+            foreach (MProductTag tag in tags)
+                tagsInsert.Add($"(@productId, {tag.Id})");
+
+            return string.Join(",", tagsInsert);
+        }
+
+        public async Task UpdateTagAsync(MProductTag tag)
+        {
+            const string sql = "UPDATE dbo.Tags SET Title = @Title, Color = @Color, BackgroundColor = @BackgroundColor " +
+                "WHERE Id = @Id;";
+            await connection.ExecuteAsync(sql, tag);
+        }
+
+        public async Task DeleteTagAsync(int tagId)
+        {
+            const string sql = "DELETE FROM dbo.Tags WHERE Id = @tagId;";
+            await connection.ExecuteAsync(sql, new { tagId });
         }
 
         public async Task<MProductMedia> AddProductMediaAsync(MProductMedia media)

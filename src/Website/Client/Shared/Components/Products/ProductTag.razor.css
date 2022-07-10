@@ -1,0 +1,12 @@
+﻿.product-tag-button {
+    transition: opacity 0.25s;
+    opacity: 1.0;
+    color: inherit;
+    font-size: x-small;
+    padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+}
+
+.product-tag-button:hover {
+    transition: opacity 0.25s;
+    opacity: 0.4;
+}

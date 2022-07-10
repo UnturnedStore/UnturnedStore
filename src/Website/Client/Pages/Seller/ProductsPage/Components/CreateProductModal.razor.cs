@@ -9,6 +9,7 @@ using Website.Shared.Models.Database;
 using Website.Shared.Constants;
 using Website.Components.Alerts;
 using System.Net;
+using System.Collections.Generic;
 
 namespace Website.Client.Pages.Seller.ProductsPage.Components
 {
@@ -25,10 +26,13 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
         [Parameter]
         public EventCallback<MProduct> OnProductAdded { get; set; }
 
-        public MProduct Model { get; set; } = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
+        public MProduct Model { get; set; } = new MProduct() { Category = ProductCategoryConstants.DefaultCategory, Tags = new List<MProductTag>() };
+        public List<MProductTag> ProductTags { get; set; }
+
         public async Task ShowAsync()
         {
             await JSRuntime.ShowModalStaticAsync(nameof(CreateProductModal));
+            ProductTags = await HttpClient.GetFromJsonAsync<List<MProductTag>>("api/products/tags");
         }
 
         private bool isLoading = false;
@@ -55,7 +59,7 @@ namespace Website.Client.Pages.Seller.ProductsPage.Components
                 AlertService.ShowAlert("products-main", $"Successfully created new product <strong>{product.Name}</strong>!", AlertType.Success);
                 
                 await JSRuntime.HideModalAsync(nameof(CreateProductModal));
-                Model = new MProduct() { Category = ProductCategoryConstants.DefaultCategory };
+                Model = new MProduct() { Category = ProductCategoryConstants.DefaultCategory, Tags = new List<MProductTag>() };
                 StateHasChanged();
             }
 

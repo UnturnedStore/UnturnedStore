@@ -1,0 +1,24 @@
+﻿@if (Tag != null)
+{
+    <span title="@Tag.Title" class="small" style="padding: 0 0.5rem; border-radius: 50rem; white-space: nowrap; color: @Tag.Color; background-color: @Tag.BackgroundColor;">
+        @Tag.Title
+        @if (RemoveButton)
+        {
+            <a class="btn product-tag-button" @onclick:preventDefault @onclick="() => HandleTagRemove()"><i class="fas fa-minus" style="vertical-align: initial; color: inherit;"></i></a>
+        }
+    </span>
+}
+
+@code {
+    [Parameter]
+    public MProductTag Tag { get; set; }
+    [Parameter]
+    public bool RemoveButton { get; set; } = false;
+    [Parameter]
+    public EventCallback<MProductTag> OnTagRemove { get; set; }
+
+    private async Task HandleTagRemove()
+    {
+        await OnTagRemove.InvokeAsync(Tag);
+    }
+}

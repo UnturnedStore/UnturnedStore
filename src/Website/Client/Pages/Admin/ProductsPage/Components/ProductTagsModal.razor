@@ -1,0 +1,77 @@
+﻿@using Website.Components.Alerts
+@using Website.Client.Shared.Components.Products;
+
+<div class="modal fade" id="@nameof(ProductTagsModal)" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <EditForm Model="Model" OnValidSubmit="@(IsEditing ? SubmitEditAsync : SubmitAddAsync)">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create new Product Tag</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Preview</label>
+                        <div>
+                            @if (!string.IsNullOrEmpty(Model.Title))
+                            {
+                                <ProductTag Tag="Model" />
+                            }
+                            else
+                            {
+                                <i class="text-muted small" style="cursor: default;">Enter a Title</i>
+                            }
+                        </div>
+                        <div class="form-text">This is how the final tag will be displayed</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <InputText class="form-control" @bind-Value="Model.Title" />
+                        <div class="form-text">Title should be preferably short, up to a maximum of 35 characters</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Color</label>
+                        <div class="d-flex" style="gap: 0.25rem;">
+                            <input type="color" class="form-control form-control-color" @bind="Model.Color" @bind:event="oninput" />
+                            <InputText class="form-control" @bind-Value="Model.Color" />
+                        </div>
+                        <div class="form-text">Set the foreground text color</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Background Color</label>
+                        <div class="d-flex" style="gap: 0.25rem;">
+                            <input type="color" class="form-control form-control-color" @bind="Model.BackgroundColor" @bind:event="oninput" />
+                            <InputText class="form-control" @bind-Value="Model.BackgroundColor" />
+                        </div>
+                        <div class="form-text">Set the background color</div>
+                    </div>
+
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                </div>
+
+                <div class="mx-2">
+                    <AlertBox ID="product-tags-modal-basicinfo" Group="productspage" />
+                </div>
+                
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                    @if (isLoading)
+                    {
+                        <LoadingButton />
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary">@(IsEditing ? "Edit" : "Create")</button>
+                    }
+                </div>
+            </EditForm>            
+        </div>
+    </div>
+</div>

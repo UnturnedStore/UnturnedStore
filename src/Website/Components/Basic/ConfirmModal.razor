@@ -16,7 +16,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn @BtnClass" @onclick="ConfirmAsync">@BtnText</button>
+                <button type="button" class="btn @BtnClass" @onclick="ConfirmAsync">@(new MarkupString(BtnText))</button>
             </div>
         </div>
     </div>

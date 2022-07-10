@@ -33,12 +33,25 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MProduct>> GetProductsAsync()
         {
-            const string sql = "SELECT p.*, u.* FROM dbo.Products p JOIN dbo.Users u ON p.SellerId = u.Id;";
-            return await connection.QueryAsync<MProduct, Seller, MProduct>(sql, (p, s) => 
+            const string sql = "SELECT p.*, u.*, t.* FROM dbo.Products p " +
+                "JOIN dbo.Users u ON p.SellerId = u.Id " +
+                "LEFT JOIN dbo.Tags t ON t.Id IN (SELECT TagId FROM dbo.ProductTags WHERE ProductId = p.Id);";
+
+            var productDictionary = new Dictionary<int, MProduct>();
+
+            return (await connection.QueryAsync<MProduct, Seller, MProductTag, MProduct>(sql, (p, s, t) => 
             {
-                p.Seller = s;
-                return p;
-            });
+                if (!productDictionary.TryGetValue(p.Id, out MProduct mappedProduct))
+                {
+                    mappedProduct = p;
+                    mappedProduct.Seller = s;
+                    mappedProduct.Tags = new List<MProductTag>();
+                    productDictionary.Add(mappedProduct.Id, mappedProduct);
+                }
+
+                mappedProduct.Tags.Add(t);
+                return mappedProduct;
+            })).Distinct();
         }
     }
 }

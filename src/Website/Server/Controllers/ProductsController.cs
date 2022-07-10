@@ -123,6 +123,64 @@ namespace Website.Server.Controllers
             return Redirect($"/api/images/{imageId}");
         }
 
+        [HttpGet("tags")]
+        public async Task<IActionResult> GetProductTagsAsync()
+        {
+            return Ok(await productsRepository.GetTagsAsync());
+        }
+
+        [Authorize(Roles = RoleConstants.AdminRoleId)]
+        [HttpPost("tags")]
+        public async Task<IActionResult> PostProductTagAsync([FromBody] MProductTag tag)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            try
+            {
+                return Ok(await productsRepository.AddTagAsync(tag));
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627)
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                throw e;
+            }
+        }
+
+        [Authorize(Roles = RoleConstants.AdminRoleId)]
+        [HttpPut("tags")]
+        public async Task<IActionResult> PutProductTagAsync([FromBody] MProductTag tag)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.UpdateTagAsync(tag);
+
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleConstants.AdminRoleId)]
+        [HttpDelete("tags/{tagid}")]
+        public async Task<IActionResult> DeleteProductTagAsync(int tagid)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.DeleteTagAsync(tagid);
+
+            return Ok();
+        }
+
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost]
         public async Task<IActionResult> PostProductAsync([FromBody] MProduct product)

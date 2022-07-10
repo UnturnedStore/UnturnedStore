@@ -51,6 +51,10 @@ i {
     vertical-align: 0.125em;
 }
 
+td {
+    vertical-align: middle;
+}
+
 @media (max-width: 980px) {
     .table-hide {
         display: none !important;

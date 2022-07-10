@@ -72,7 +72,6 @@ namespace Website.Client.Pages.Home.ProductPage
                 {
                     Product.AverageRating = (byte)(Product.Reviews.Sum(x => x.Rating) / Product.Reviews.Count);
                 }
-                
             }
 
             await CartService.ReloadCartAsync();

@@ -1,4 +1,5 @@
-﻿
+﻿@using Website.Components.Helpers;
+
 @if (Product != null)
 {
     <div class="mb-3">
@@ -30,7 +31,7 @@
                     </div>                    
                 </div>
                 <div class="card-body">
-                    <p class="card-text">@version.Changelog</p>
+                    <p class="card-text">@((MarkupString)MarkdownHelper.ParseToHtml(version.Changelog, false))</p>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="text-muted">
                             @version.CreateDate
