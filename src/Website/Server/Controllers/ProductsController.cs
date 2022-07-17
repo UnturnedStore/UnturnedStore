@@ -38,18 +38,18 @@ namespace Website.Server.Controllers
                 return Unauthorized();
             }
 
-            if (product.Status == ProductStatus.Released)
+            if (product.Status == ProductStatus.Released && parameters.Status != ProductStatus.Disabled)
             {
                 return BadRequest();
             }
 
             if (parameters.Status == ProductStatus.WaitingForApproval)
             {
-                if ((product.Status != ProductStatus.New && product.Status != ProductStatus.Rejected) || product.Price == 0)
+                if (((product.Status != ProductStatus.New && product.Status != ProductStatus.Rejected) || product.Price == 0 || product.Seller.IsVerifiedSeller) && product.Status != ProductStatus.Disabled)
                 {
                     return BadRequest();
                 }
-                
+
                 discordService.SendApproveRequestNotification(product);
             }
 
@@ -73,6 +73,16 @@ namespace Website.Server.Controllers
                 discordService.SendProductRelease(product);
             }
 
+            if (parameters.Status == ProductStatus.Disabled)
+            {
+                if (product.Status != ProductStatus.Released || !User.IsInRole(RoleConstants.AdminRoleId))
+                {
+                    return BadRequest();
+                }
+                parameters.AdminId = User.Id();
+                await productsRepository.SetProductEnabledAsync(product.Id, false);
+            }
+
             await productsRepository.UpdateStatusAsync(parameters);
             return Ok();
         }
@@ -82,7 +92,7 @@ namespace Website.Server.Controllers
         {
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
             var products = await productsRepository.GetProductsAsync(userId);
-                
+
             return Ok(products);
         }
 
@@ -100,7 +110,7 @@ namespace Website.Server.Controllers
         {
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
             var product = await productsRepository.GetProductAsync(productId, userId);
-            
+
             if (product == null)
             {
                 return NoContent();
@@ -211,13 +221,13 @@ namespace Website.Server.Controllers
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPut]
         public async Task<IActionResult> PutProductAsync([FromBody] MProduct product)
-        {            
+        {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(product.Id, int.Parse(User.Identity.Name)))
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            if (product.IsLoaderEnabled && product.Price == 0) 
+            if (product.IsLoaderEnabled && product.Price == 0)
             {
                 return BadRequest();
             }
@@ -235,7 +245,7 @@ namespace Website.Server.Controllers
 
                 throw e;
             }
-            
+
             return Ok();
         }
 
@@ -326,7 +336,7 @@ namespace Website.Server.Controllers
             await productsRepository.DeleteProductCustomerAsync(customerId);
             return Ok();
         }
-        
+
         [Authorize]
         [HttpPost("reviews")]
         public async Task<IActionResult> PostProductReviewAsync([FromBody] MProductReview review)

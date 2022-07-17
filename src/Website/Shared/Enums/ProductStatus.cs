@@ -9,6 +9,7 @@ namespace Website.Shared.Enums
         WaitingForApproval,
         Approved,
         Rejected,
-        Released
+        Released,
+        Disabled
     }
 }

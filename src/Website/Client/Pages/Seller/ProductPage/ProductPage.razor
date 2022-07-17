@@ -63,13 +63,19 @@
                             Rejected by: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Admin.Id">@Product.Admin.Name</a>
                         </div>
                     }
+                    @if (Product.Status == ProductStatus.Disabled && Product.Admin != null)
+                    {
+                        <div class="text-muted">
+                            Disabled by: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Admin.Id">@Product.Admin.Name</a>
+                        </div> 
+                    }
                 </div>
             </div>
             <div class="ms-auto">
                 <div class="d-grid gap-2 d-md-block">
                     <a href="/products/@Product.Id" class="btn btn-primary" target="_blank">View product page</a>
-                    @if (!Product.Seller.IsVerifiedSeller && 
-                        ((Product.Status == ProductStatus.New && Product.Price > 0) || Product.Status == ProductStatus.Rejected))
+                    @if ((Product.Status == ProductStatus.New && Product.Price > 0 && !Product.Seller.IsVerifiedSeller) ||
+                          Product.Status == ProductStatus.Rejected || Product.Status == ProductStatus.Disabled)
                     {
                         <button class="btn btn-success ms-md-2" @onclick="HandleSubmit">Submit for approval</button>
                     } 
@@ -87,6 +93,9 @@
                         {
                             <button class="btn btn-danger ms-md-2 fw-bold" @onclick="HandleReject">Reject</button>
                             <button class="btn btn-success ms-md-2 fw-bold" @onclick="HandleApprove">Approve</button>
+                        } else if (Product.Status == ProductStatus.Released)
+                        {
+                            <button class="btn btn-secondary ms-md-2 fw-bold" @onclick="HandleDisable">Disable product</button>
                         }
                     }
                 </div>                
@@ -145,15 +154,27 @@
         Are you sure you want to release <span class="fw-bold">@Product.Name</span>?
     </div>
     <div>
-        When you will confirm it will:
+        Releasing your product will:
         <ul>
-            <li>Send a webhook to #product-releases channel on Discord</li>
+            <li>Send a message in the #new-products channel on Discord</li>
             <li>Automatically enable the product</li>
-            <li>The product will be visible on the list</li>
+            <li>The product will be visible on the public product list</li>
             @if (Product.Price > 0)
             {
-                <li>Users will be able to purchase this product</li>    
+                <li>Allow users to purchase this product</li>    
             }            
+        </ul>
+    </div>
+</ConfirmModal>
+<ConfirmModal @ref="ConfirmDisable" TItem="ProductInfo" Title="Confirm disable product" BtnClass="btn btn-danger" BtnText="Disable" ModalId="ConfirmDisableModal" OnConfirm="SubmitDisableAsync">
+    <div>
+        Are you sure you want to disable <span class="fw-bold">@Product.Name</span>?
+    </div>
+    <div>
+        Disabling this product will:
+        <ul>
+            <li>Force the seller to resubmit the product for approval</li>
+            <li>Hide the product from the public product list</li>
         </ul>
     </div>
 </ConfirmModal>
