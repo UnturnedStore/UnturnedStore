@@ -6,7 +6,7 @@
     {
         @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.OrderByDescending(w => w.IsRequired).ThenBy(w => w.UseableFileId))
         {
-            <ProductWorkshopItem WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.UseableFileId)" SellerSteamId="@Product.Seller.SteamId" />
+            <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.UseableFileId)" SellerSteamId="@Product.Seller.SteamId" />
         }
     } else
     {

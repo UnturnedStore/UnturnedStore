@@ -1,4 +1,4 @@
-﻿<div class="ctooltip-wrapper" style="@Style" @onclick="() => ShowTooltip = true" @onmouseout="() => ShowTooltip = false">
+﻿<div class="ctooltip-wrapper" @onclick="() => ShowTooltip = OnHover ? ShowTooltip : !OnHover" @onmouseover="() => ShowTooltip = OnHover" @onmouseout="() => ShowTooltip = false">
     <div class="ctooltip rounded @(ShowTooltip ? "show" : "")">
         @Text
     </div>
@@ -11,7 +11,7 @@
     [Parameter]
     public string Text { get; set; }
     [Parameter]
-    public string Style { get; set; }
+    public bool OnHover { get; set; } = false;
 
     private bool ShowTooltip { get; set; }
 }

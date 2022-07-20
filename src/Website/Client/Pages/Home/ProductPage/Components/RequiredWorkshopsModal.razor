@@ -19,7 +19,7 @@
                 {
                     @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.Where(w => w.IsRequired).OrderBy(w => w.UseableFileId))
                     {
-                        <ProductWorkshopItem WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.UseableFileId)" SellerSteamId="@Product.Seller.SteamId" />
+                        <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.UseableFileId)" SellerSteamId="@Product.Seller.SteamId" />
                     }
                 } else
                 {

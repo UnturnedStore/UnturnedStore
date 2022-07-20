@@ -53,7 +53,7 @@
                     <div class="text-muted align-self-center workshop-item-create-date" title="Create Date">
                         @DateTimeOffset.FromUnixTimeSeconds(WorkshopResult.time_created).DateTime
                     </div>
-                    <div class="input-group input-group-sm align-self-end workshop-item-fileid position-relative">
+                    <div class="input-group input-group-sm align-self-end flex-nowrap workshop-item-fileid">
                         <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=@WorkshopResult.publishedfileid" target="_blank" class="btn btn-secondary">
                             <i class="fab fa-steam"></i>
                         </a>
