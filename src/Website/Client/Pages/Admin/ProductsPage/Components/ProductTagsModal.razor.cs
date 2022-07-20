@@ -59,7 +59,7 @@ namespace Website.Client.Pages.Admin.ProductsPage.Components
                     AlertService.ShowAlert("product-tags-modal-basicinfo", $"There's already a tag with this name", AlertType.Danger);
                 } else
                 {
-                    AlertService.ShowAlert("product-tags-modal-basicinfo", $"An error occurated <strong>{response.StatusCode}</strong>", AlertType.Danger);
+                    AlertService.ShowAlert("product-tags-modal-basicinfo", $"An error occurred <strong>{response.StatusCode}</strong>", AlertType.Danger);
                 }
             } else
             {
@@ -90,7 +90,7 @@ namespace Website.Client.Pages.Admin.ProductsPage.Components
                 }
                 else
                 {
-                    AlertService.ShowAlert("product-tags-modal-basicinfo", $"An error occurated <strong>{response.StatusCode}</strong>", AlertType.Danger);
+                    AlertService.ShowAlert("product-tags-modal-basicinfo", $"An error occurred <strong>{response.StatusCode}</strong>", AlertType.Danger);
                 }
             }
             else

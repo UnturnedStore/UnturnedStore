@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
@@ -12,6 +16,7 @@ using Website.Shared.Extensions;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
+using Website.Shared.Results;
 
 namespace Website.Server.Controllers
 {
@@ -375,6 +380,104 @@ namespace Website.Server.Controllers
             }
 
             await productsRepository.DeleteProductReviewAsync(reviewId);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("workshop")]
+        public async Task<IActionResult> PostProductWorkshopItemAsync([FromBody] MProductWorkshopItem workshopItem)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItem.ProductId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            try
+            {
+                return Ok(await productsRepository.AddProductWorkshopItemAsync(workshopItem));
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627)
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                throw e;
+            }
+        }
+
+        [Authorize]
+        [HttpPost("workshop/verify")]
+        public async Task<IActionResult> VerifyProductWorkshopItemAsync([FromBody] List<MProductWorkshopItem> workshopItems)
+        {
+            if (workshopItems == null || workshopItems.Count == 0 || workshopItems.Count == 1 && workshopItems[0].UseableFileId == 0)
+            {
+                return NoContent();
+            }
+
+            if (workshopItems.Count > 1 && !workshopItems.Skip(1).All(w => w.ProductId == workshopItems[0].ProductId))
+            {
+                return BadRequest();
+            }
+
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItems[0].ProductId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            WorkshopItemResult workshopResult;
+            using (HttpClient httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsync(WorkshopItemResult.WorkshopItemsUrl(), WorkshopItemResult.BuildWorkshopItemsFormData(workshopItems.Select(w => w.UseableFileId).ToArray()));
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    workshopResult = await response.Content.ReadFromJsonAsync<WorkshopItemResult>();
+                }
+                else
+                {
+                    return StatusCode((int)response.StatusCode);
+                }
+            }
+
+            return Ok(workshopResult);
+        }
+
+        [Authorize]
+        [HttpPut("workshop")]
+        public async Task<IActionResult> PutProductWorkshopItemAsync([FromBody] MProductWorkshopItem workshopItem)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItem.ProductId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            try
+            {
+                await productsRepository.UpdateProductWorkshopItemAsync(workshopItem);
+                return Ok();
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627)
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                throw e;
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("workshop/{workshopId}")]
+        public async Task<IActionResult> DeleteProductWorkshopItemAsync(int workshopId)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductWorkshopItemSellerAsync(workshopId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.DeleteProductWorkshopItemAsync(workshopId);
             return Ok();
         }
 

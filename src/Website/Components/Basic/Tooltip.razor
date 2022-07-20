@@ -1,0 +1,17 @@
+﻿<div class="ctooltip-wrapper" style="@Style" @onclick="() => ShowTooltip = true" @onmouseout="() => ShowTooltip = false">
+    <div class="ctooltip rounded @(ShowTooltip ? "show" : "")">
+        @Text
+    </div>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+    [Parameter]
+    public string Text { get; set; }
+    [Parameter]
+    public string Style { get; set; }
+
+    private bool ShowTooltip { get; set; }
+}

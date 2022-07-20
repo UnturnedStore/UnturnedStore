@@ -12,6 +12,15 @@
     .bg-user {
         background-color: @User.BackgroundColor;
     }
+
+    .input-group > .ctooltip-wrapper > .form-control {
+        margin-left: -1px;
+        border-radius: 0;
+        padding: .25rem .5rem;
+        font-size: .875rem;
+        position: relative;
+        flex: 1 1 auto;
+    }
 </style>
 
 <div class="card">
@@ -32,11 +41,13 @@
         </div>
         <div class="dropdown-divider" />
         <div>
-            <div class="input-group input-group-sm">
+            <div class="input-group input-group-sm flex-nowrap">
                 <a href="@User.SteamProfileUrl" target="_blank" class="btn btn-secondary">
                     <i class="fab fa-steam-square"></i>
                 </a>
-                <input class="form-control border-custom text-center" onclick="this.select()" value="@User.SteamId" readonly />
+                <Tooltip Text="Copied!" Style="width: 100%;">
+                    <input class="form-control border-custom text-center" style="padding: .25rem .5rem; font-size: .875rem;" onclick="this.select(); document.execCommand('Copy');" value="@User.SteamId" readonly />
+                </Tooltip>
             </div>
         </div>
         <div class="dropdown-divider" />
@@ -70,7 +81,6 @@
         </div>
     </div>
 </div>
-
 
 @code {
     [Parameter]
