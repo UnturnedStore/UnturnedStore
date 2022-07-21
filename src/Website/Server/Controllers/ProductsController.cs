@@ -411,7 +411,7 @@ namespace Website.Server.Controllers
         [HttpPost("workshop/verify")]
         public async Task<IActionResult> VerifyProductWorkshopItemAsync([FromBody] List<MProductWorkshopItem> workshopItems)
         {
-            if (workshopItems == null || workshopItems.Count == 0 || workshopItems.Count == 1 && workshopItems[0].UseableFileId == 0)
+            if (workshopItems == null || workshopItems.Count == 0 || workshopItems.Count == 1 && workshopItems[0].WorkshopFileId == 0)
             {
                 return NoContent();
             }
@@ -429,7 +429,7 @@ namespace Website.Server.Controllers
             WorkshopItemResult workshopResult;
             using (HttpClient httpClient = new HttpClient())
             {
-                var response = await httpClient.PostAsync(WorkshopItemResult.WorkshopItemsUrl(), WorkshopItemResult.BuildWorkshopItemsFormData(workshopItems.Select(w => w.UseableFileId).ToArray()));
+                var response = await httpClient.PostAsync(WorkshopItemResult.WorkshopItemsUrl(), WorkshopItemResult.BuildWorkshopItemsFormData(workshopItems.Select(w => w.WorkshopFileId).ToArray()));
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     workshopResult = await response.Content.ReadFromJsonAsync<WorkshopItemResult>();

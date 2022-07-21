@@ -367,15 +367,15 @@ namespace Website.Data.Repositories
 
         public async Task<MProductWorkshopItem> AddProductWorkshopItemAsync(MProductWorkshopItem workshopItem)
         {
-            const string sql = "INSERT INTO dbo.ProductWorkshops (ProductId, WorkshopFileId, IsRequired) " +
-                "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.WorkshopFileId, INSERTED.IsRequired " +
-                "VALUES (@ProductId, @WorkshopFileId, @IsRequired);";
+            const string sql = "INSERT INTO dbo.ProductWorkshops (ProductId, DatabaseFileId, IsRequired) " +
+                "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.DatabaseFileId, INSERTED.IsRequired " +
+                "VALUES (@ProductId, @DatabaseFileId, @IsRequired);";
             return await connection.QuerySingleAsync<MProductWorkshopItem>(sql, workshopItem);
         }
 
         public async Task UpdateProductWorkshopItemAsync(MProductWorkshopItem workshopItem)
         {
-            const string sql = "UPDATE dbo.ProductWorkshops SET WorkshopFileId = @WorkshopFileId, IsRequired = @IsRequired " +
+            const string sql = "UPDATE dbo.ProductWorkshops SET DatabaseFileId = @DatabaseFileId, IsRequired = @IsRequired " +
                 "WHERE Id = @Id;";
             await connection.ExecuteAsync(sql, workshopItem);
         }

@@ -60,19 +60,19 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         {
             get
             {
-                if (Model.UseableFileId == default) return string.Empty; 
-                return Model.UseableFileId.ToString();
+                if (Model.WorkshopFileId == default) return string.Empty; 
+                return Model.WorkshopFileId.ToString();
             }
             set
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    Model.UseableFileId = 0;
+                    Model.WorkshopFileId = 0;
                     isVerifed = false;
                 }
                 else if (ulong.TryParse(value, out ulong fileId))
                 {
-                    Model.UseableFileId = fileId;
+                    Model.WorkshopFileId = fileId;
                     isVerifed = false;
                 }
             }
@@ -88,7 +88,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 WorkshopItemResult workshopResult = await response.Content.ReadFromJsonAsync<WorkshopItemResult>();
-                SuccessWorkshopItem = workshopResult.GetSuccessItem(Model.UseableFileId);
+                SuccessWorkshopItem = workshopResult.GetSuccessItem(Model.WorkshopFileId);
                 isVerifed = SuccessWorkshopItem != null;
                 if (!isVerifed)
                 {
@@ -130,7 +130,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
                     MProductWorkshopItem workshopItem = await response.Content.ReadFromJsonAsync<MProductWorkshopItem>();
                     await OnWorkshopItemAdded.InvokeAsync(workshopItem);
 
-                    AlertService.ShowAlert("product-workshop", $"Successfully created new workshop item with file id <strong>{workshopItem.UseableFileId}</strong>!", AlertType.Success);
+                    AlertService.ShowAlert("product-workshop", $"Successfully created new workshop item with file id <strong>{workshopItem.WorkshopFileId}</strong>!", AlertType.Success);
 
                     await JsRuntime.HideModalAsync(nameof(WorkshopItemModal));
                     Model = new MProductWorkshopItem();
@@ -156,7 +156,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
                 {
                     await OnWorkshopItemEdited.InvokeAsync(Model);
 
-                    AlertService.ShowAlert("product-workshop", $"Successfully edited workshop item with file id <strong>{Model.UseableFileId}</strong>!", AlertType.Success);
+                    AlertService.ShowAlert("product-workshop", $"Successfully edited workshop item with file id <strong>{Model.WorkshopFileId}</strong>!", AlertType.Success);
 
                     await JsRuntime.HideModalAsync(nameof(WorkshopItemModal));
                     Model = new MProductWorkshopItem();

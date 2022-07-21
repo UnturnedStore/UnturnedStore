@@ -8,13 +8,13 @@ namespace Website.Shared.Models.Database
         public int Id { get; set; }
         public int ProductId { get; set; }
         [Required]
-        public ulong UseableFileId
+        public ulong WorkshopFileId
         {
-            get => (ulong)(WorkshopFileId + long.MaxValue);
-            set => WorkshopFileId = (long)(value - long.MaxValue);
+            get => (ulong)(DatabaseFileId + long.MaxValue);
+            set => DatabaseFileId = (long)(value - long.MaxValue);
         }
         [JsonIgnore]
-        public long WorkshopFileId { get; set; } = (long.MinValue + 1);
+        public long DatabaseFileId { get; set; } = (long.MinValue + 1);
         public bool IsRequired { get; set; }
 
         public MProductWorkshopItem() { }
@@ -23,7 +23,7 @@ namespace Website.Shared.Models.Database
         {
             Id = workshopItem.Id;
             ProductId = workshopItem.ProductId;
-            WorkshopFileId = workshopItem.WorkshopFileId;
+            DatabaseFileId = workshopItem.DatabaseFileId;
             IsRequired = workshopItem.IsRequired;
         }
     }

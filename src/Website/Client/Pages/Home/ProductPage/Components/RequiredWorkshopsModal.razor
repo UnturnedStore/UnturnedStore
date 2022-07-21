@@ -17,9 +17,9 @@
                 </div>
                 @if (Product != null && WorkshopResult != null)
                 {
-                    @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.Where(w => w.IsRequired).OrderBy(w => w.UseableFileId))
+                    @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.Where(w => w.IsRequired).OrderBy(w => w.WorkshopFileId))
                     {
-                        <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.UseableFileId)" SellerSteamId="@Product.Seller.SteamId" />
+                        <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.WorkshopFileId)" SellerSteamId="@Product.Seller.SteamId" />
                     }
                 } else
                 {

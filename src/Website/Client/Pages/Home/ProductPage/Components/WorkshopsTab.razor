@@ -4,9 +4,9 @@
 {
     @if (WorkshopResult != null)
     {
-        @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.OrderByDescending(w => w.IsRequired).ThenBy(w => w.UseableFileId))
+        @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.OrderByDescending(w => w.IsRequired).ThenBy(w => w.WorkshopFileId))
         {
-            <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.UseableFileId)" SellerSteamId="@Product.Seller.SteamId" />
+            <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.WorkshopFileId)" SellerSteamId="@Product.Seller.SteamId" />
         }
     } else
     {

@@ -13,11 +13,11 @@
 </div>
 <div class="mb-3">    
     <ul class="list-group fs-5">
-        @foreach (var workshopItem in Product.WorkshopItems.OrderByDescending(w => w.IsRequired).ThenBy(w => w.UseableFileId))
+        @foreach (var workshopItem in Product.WorkshopItems.OrderByDescending(w => w.IsRequired).ThenBy(w => w.WorkshopFileId))
         {
             <li class="list-group-item d-flex align-items-center" style="justify-content: space-between;">
                 <div class="d-flex" style="gap: 0.35rem;">
-                    <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=@workshopItem.UseableFileId" target="_blank" title="View Workshop" class="text-decoration-none">@workshopItem.UseableFileId</a>
+                    <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=@workshopItem.WorkshopFileId" target="_blank" title="View Workshop" class="text-decoration-none">@workshopItem.WorkshopFileId</a>
                     @if (workshopItem.IsRequired)
                     {
                         <i class="bi bi-check-circle-fill text-muted small align-self-center" title="Required"></i>
