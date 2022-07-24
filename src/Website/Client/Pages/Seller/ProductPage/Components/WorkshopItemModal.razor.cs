@@ -34,6 +34,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
 
         private bool isEditing { get; set; }
         private bool isVerifed { get; set; }
+        private bool noContent => string.IsNullOrEmpty(WorkshopFileId);
 
         public async Task ShowAddAsync(int productId)
         {

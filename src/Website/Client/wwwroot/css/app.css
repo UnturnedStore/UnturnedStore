@@ -97,3 +97,20 @@ td {
     top: calc(50% - 1rem)!important;
     bottom: unset!important;
 }
+
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: unset;
+}
+
+@media (max-width: 575px) {
+    .mobile-only {
+        display: unset!important;
+    }
+    .desktop-only {
+        display: none!important;
+    }
+}
