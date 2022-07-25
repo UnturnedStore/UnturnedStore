@@ -383,7 +383,7 @@ namespace Website.Server.Controllers
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost("workshop")]
         public async Task<IActionResult> PostProductWorkshopItemAsync([FromBody] MProductWorkshopItem workshopItem)
         {
@@ -407,7 +407,6 @@ namespace Website.Server.Controllers
             }
         }
 
-        [Authorize]
         [HttpPost("workshop/verify")]
         public async Task<IActionResult> VerifyProductWorkshopItemAsync([FromBody] List<MProductWorkshopItem> workshopItems)
         {
@@ -419,11 +418,6 @@ namespace Website.Server.Controllers
             if (workshopItems.Count > 1 && !workshopItems.Skip(1).All(w => w.ProductId == workshopItems[0].ProductId))
             {
                 return BadRequest();
-            }
-
-            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItems[0].ProductId, int.Parse(User.Identity.Name)))
-            {
-                return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
             WorkshopItemResult workshopResult;
@@ -443,11 +437,11 @@ namespace Website.Server.Controllers
             return Ok(workshopResult);
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPut("workshop")]
         public async Task<IActionResult> PutProductWorkshopItemAsync([FromBody] MProductWorkshopItem workshopItem)
         {
-            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItem.ProductId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductWorkshopItemSellerAsync(workshopItem.Id, int.Parse(User.Identity.Name)))
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
@@ -468,7 +462,7 @@ namespace Website.Server.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpDelete("workshop/{workshopId}")]
         public async Task<IActionResult> DeleteProductWorkshopItemAsync(int workshopId)
         {
