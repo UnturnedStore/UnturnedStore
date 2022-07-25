@@ -77,7 +77,7 @@ namespace Website.Data.Repositories
 
         public async Task<bool> IsProductWorkshopItemSellerAsync(int workshopId, int userId)
         {
-            const string sql = "SELECT COUNT(*) FROM dbo.ProductWorkshops w JOIN dbo.Products p ON p.Id = m.ProductId " +
+            const string sql = "SELECT COUNT(*) FROM dbo.ProductWorkshops w JOIN dbo.Products p ON p.Id = w.ProductId " +
                 "WHERE w.Id = @workshopId AND p.SellerId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { workshopId, userId });
         }
