@@ -1,0 +1,76 @@
+﻿@using Website.Components.Alerts
+@using Website.Shared.Results;
+@if (WorkshopResult != null)
+{
+    <div class="card mb-3">
+            <div class="card-header">
+                <div class="d-flex flex-wrap align-items-center">
+                    <div class="fw-bold">
+                        <h5 class="m-0 d-flex text-nowrap" style="gap: 0.35rem;">
+                            @WorkshopResult.title
+                            @if (WorkshopItem != null && WorkshopItem.IsRequired)
+                            {
+                                <i class="bi bi-check-circle-fill text-muted small" title="Required" style="vertical-align: top;"></i>
+                            } 
+                        </h5>                       
+                    </div>
+                    <div class="ms-auto d-flex text-muted" style="gap: 0.35rem;">
+                    @if (WorkshopResult.creator == SellerSteamId)
+                    {
+                        <span class="text-success"><i class="bi bi-check-circle align-self-center"></i> Published by the Seller</span>
+                    } else
+                    {
+                        <span>3rd Party Workshop Item</span>
+                    }
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 d-flex flex-wrap align-items-start" style="gap: 1rem;">
+                    <div class="d-flex flex-column rounded workshop-item-image">
+                        <div class="align-self-center">
+                            <img src="@WorkshopResult.preview_url" class="rounded" style="max-height: 100%; max-width: 100%;" />
+                        </div>
+                        <div class="d-flex flex-column" style="padding: 0.35rem 0.5rem;">
+                            <div>
+                                <span class="fw-bold">@WorkshopResult.views</span> Unique Visitors
+                            </div>
+                            <div>
+                                <span class="fw-bold">@WorkshopResult.subscriptions</span> Current Subscribers
+                            </div>
+                            <div>
+                                <span class="fw-bold">@WorkshopResult.favorited</span> Current Favorites
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-muted overflow-hidden workshop-item-desc">
+                        <div>
+                            @((MarkupString)WorkshopResult.Description())
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap" style="justify-content: space-between; gap: 0.35rem;">
+                    <div class="text-muted align-self-center workshop-item-create-date" title="Create Date">
+                        @DateTimeOffset.FromUnixTimeSeconds(WorkshopResult.time_created).DateTime
+                    </div>
+                    <div class="input-group input-group-sm align-self-end flex-nowrap workshop-item-fileid">
+                        <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=@WorkshopResult.publishedfileid" target="_blank" class="btn btn-secondary">
+                            <i class="fab fa-steam"></i>
+                        </a>
+                        <Tooltip Text="Copied!">
+                            <input class="form-control border-custom text-center" onclick="this.select(); document.execCommand('Copy');" value="@WorkshopResult.publishedfileid" readonly />
+                        </Tooltip>
+                    </div>
+                </div>
+            </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public MProductWorkshopItem WorkshopItem { get; set; }
+    [Parameter]
+    public Publishedfiledetail WorkshopResult { get; set; }
+    [Parameter]
+    public string SellerSteamId { get; set; }
+}

@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
@@ -12,6 +16,7 @@ using Website.Shared.Extensions;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
+using Website.Shared.Results;
 
 namespace Website.Server.Controllers
 {
@@ -38,18 +43,18 @@ namespace Website.Server.Controllers
                 return Unauthorized();
             }
 
-            if (product.Status == ProductStatus.Released)
+            if (product.Status == ProductStatus.Released && parameters.Status != ProductStatus.Disabled)
             {
                 return BadRequest();
             }
 
             if (parameters.Status == ProductStatus.WaitingForApproval)
             {
-                if ((product.Status != ProductStatus.New && product.Status != ProductStatus.Rejected) || product.Price == 0)
+                if (((product.Status != ProductStatus.New && product.Status != ProductStatus.Rejected) || product.Price == 0 || product.Seller.IsVerifiedSeller) && product.Status != ProductStatus.Disabled)
                 {
                     return BadRequest();
                 }
-                
+
                 discordService.SendApproveRequestNotification(product);
             }
 
@@ -73,6 +78,16 @@ namespace Website.Server.Controllers
                 discordService.SendProductRelease(product);
             }
 
+            if (parameters.Status == ProductStatus.Disabled)
+            {
+                if (product.Status != ProductStatus.Released || !User.IsInRole(RoleConstants.AdminRoleId))
+                {
+                    return BadRequest();
+                }
+                parameters.AdminId = User.Id();
+                await productsRepository.SetProductEnabledAsync(product.Id, false);
+            }
+
             await productsRepository.UpdateStatusAsync(parameters);
             return Ok();
         }
@@ -82,7 +97,7 @@ namespace Website.Server.Controllers
         {
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
             var products = await productsRepository.GetProductsAsync(userId);
-                
+
             return Ok(products);
         }
 
@@ -100,7 +115,7 @@ namespace Website.Server.Controllers
         {
             int userId = User.Identity?.IsAuthenticated ?? false ? int.Parse(User.Identity.Name) : 0;
             var product = await productsRepository.GetProductAsync(productId, userId);
-            
+
             if (product == null)
             {
                 return NoContent();
@@ -211,13 +226,13 @@ namespace Website.Server.Controllers
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPut]
         public async Task<IActionResult> PutProductAsync([FromBody] MProduct product)
-        {            
+        {
             if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(product.Id, int.Parse(User.Identity.Name)))
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            if (product.IsLoaderEnabled && product.Price == 0) 
+            if (product.IsLoaderEnabled && product.Price == 0)
             {
                 return BadRequest();
             }
@@ -235,7 +250,7 @@ namespace Website.Server.Controllers
 
                 throw e;
             }
-            
+
             return Ok();
         }
 
@@ -326,7 +341,7 @@ namespace Website.Server.Controllers
             await productsRepository.DeleteProductCustomerAsync(customerId);
             return Ok();
         }
-        
+
         [Authorize]
         [HttpPost("reviews")]
         public async Task<IActionResult> PostProductReviewAsync([FromBody] MProductReview review)
@@ -365,6 +380,104 @@ namespace Website.Server.Controllers
             }
 
             await productsRepository.DeleteProductReviewAsync(reviewId);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("workshop")]
+        public async Task<IActionResult> PostProductWorkshopItemAsync([FromBody] MProductWorkshopItem workshopItem)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItem.ProductId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            try
+            {
+                return Ok(await productsRepository.AddProductWorkshopItemAsync(workshopItem));
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627)
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                throw e;
+            }
+        }
+
+        [Authorize]
+        [HttpPost("workshop/verify")]
+        public async Task<IActionResult> VerifyProductWorkshopItemAsync([FromBody] List<MProductWorkshopItem> workshopItems)
+        {
+            if (workshopItems == null || workshopItems.Count == 0 || workshopItems.Count == 1 && workshopItems[0].WorkshopFileId == 0)
+            {
+                return NoContent();
+            }
+
+            if (workshopItems.Count > 1 && !workshopItems.Skip(1).All(w => w.ProductId == workshopItems[0].ProductId))
+            {
+                return BadRequest();
+            }
+
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItems[0].ProductId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            WorkshopItemResult workshopResult;
+            using (HttpClient httpClient = new HttpClient())
+            {
+                var response = await httpClient.PostAsync(WorkshopItemResult.WorkshopItemsUrl(), WorkshopItemResult.BuildWorkshopItemsFormData(workshopItems.Select(w => w.WorkshopFileId).ToArray()));
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    workshopResult = await response.Content.ReadFromJsonAsync<WorkshopItemResult>();
+                }
+                else
+                {
+                    return StatusCode((int)response.StatusCode);
+                }
+            }
+
+            return Ok(workshopResult);
+        }
+
+        [Authorize]
+        [HttpPut("workshop")]
+        public async Task<IActionResult> PutProductWorkshopItemAsync([FromBody] MProductWorkshopItem workshopItem)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductSellerAsync(workshopItem.ProductId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            try
+            {
+                await productsRepository.UpdateProductWorkshopItemAsync(workshopItem);
+                return Ok();
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 2627)
+                {
+                    return StatusCode(StatusCodes.Status409Conflict);
+                }
+
+                throw e;
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("workshop/{workshopId}")]
+        public async Task<IActionResult> DeleteProductWorkshopItemAsync(int workshopId)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductWorkshopItemSellerAsync(workshopId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.DeleteProductWorkshopItemAsync(workshopId);
             return Ok();
         }
 

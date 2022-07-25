@@ -13,6 +13,7 @@ using Website.Client.Services;
 using Website.Components.Helpers;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
+using Website.Shared.Results;
 
 namespace Website.Client.Pages.Home.ProductPage
 {
@@ -44,6 +45,16 @@ namespace Website.Client.Pages.Home.ProductPage
         }
 
         private HttpStatusCode statusCode;
+
+        public WorkshopsTab WorkshopsTab { get; set; }
+        public RequiredWorkshopsModal RequiredWorkshopsModal { get; set; }
+        public WorkshopItemResult WorkshopResult => WorkshopsTab?.WorkshopResult;
+
+        private async Task ShowRequiredProductsAsync()
+        {
+            if (Product.WorkshopItems.Count == 0 || !Product.WorkshopItems.Any(w => w.IsRequired)) return;
+            await RequiredWorkshopsModal.ShowModalAsync();
+        }
 
         public ProductReviewModal ReviewModal { get; set; }
         public MProductReview Review { get; set; }

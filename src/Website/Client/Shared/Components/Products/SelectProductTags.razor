@@ -1,7 +1,7 @@
 ﻿
 @if (Tags != null && ProductTags != null)
 {
-    <div class="border-bottom border-1 position-relative" style="width: @(UseWidth ? widthString : "auto"); padding: 0.375rem;">
+    <div class="border-bottom border-1 position-relative" style="max-width: @(UseWidth ? widthString : "none"); padding: 0.375rem;">
         <ul class="d-flex flex-wrap m-0 p-0" style="gap: 0.25rem; min-height: 25px; list-style: none;">
             @foreach (MProductTag tag in Tags)
             {

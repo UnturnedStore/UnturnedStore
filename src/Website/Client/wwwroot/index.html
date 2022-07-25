@@ -60,19 +60,6 @@
     <script src="_content/Microsoft.AspNetCore.Components.Web.Extensions/headManager.js"></script>
 
     <script src="js/app.js"></script>
-
-    <script>
-        function BlazorScrollToId(id) {
-            const element = document.getElementById(id);
-            if (element instanceof HTMLElement) {
-                element.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start",
-                    inline: "nearest"
-                });
-            }
-        }
-    </script>
 </body>
 
 </html>

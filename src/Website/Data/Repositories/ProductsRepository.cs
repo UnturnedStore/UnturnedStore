@@ -75,6 +75,13 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { mediaId, userId });
         }
 
+        public async Task<bool> IsProductWorkshopItemSellerAsync(int workshopId, int userId)
+        {
+            const string sql = "SELECT COUNT(*) FROM dbo.ProductWorkshops w JOIN dbo.Products p ON p.Id = m.ProductId " +
+                "WHERE w.Id = @workshopId AND p.SellerId = @userId;";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { workshopId, userId });
+        }
+
         public async Task<bool> IsProductTabSellerAsync(int tabId, int userId)
         {
             const string sql = "SELECT COUNT(*) FROM dbo.ProductTabs t JOIN dbo.Products p ON p.Id = t.ProductId " +
@@ -147,12 +154,15 @@ namespace Website.Data.Repositories
             const string sql2 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
             product.Medias = (await connection.QueryAsync<MProductMedia>(sql2, product)).ToList();
 
-            const string sql3 = "SELECT b.*, v.Id, v.Name, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate FROM dbo.Branches b " +
+            const string sql3 = "SELECT * FROM dbo.ProductWorkshops WHERE ProductId = @Id;";
+            product.WorkshopItems = (await connection.QueryAsync<MProductWorkshopItem>(sql3, product)).ToList();
+
+            const string sql4 = "SELECT b.*, v.Id, v.Name, v.Changelog, v.DownloadsCount, v.IsEnabled, v.CreateDate FROM dbo.Branches b " +
                 "LEFT JOIN dbo.Versions v ON v.BranchId = b.Id AND v.IsEnabled = 1 WHERE b.ProductId = @Id AND b.IsEnabled = 1;";
 
             product.Branches = new List<MBranch>();
 
-            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql3, (b, v) => 
+            await connection.QueryAsync<MBranch, MVersion, MBranch>(sql4, (b, v) => 
             {
                 var branch = product.Branches.FirstOrDefault(x => x.Id == b.Id);
                 if (branch == null)
@@ -172,12 +182,12 @@ namespace Website.Data.Repositories
 
             if (userId != 0)
             {
-                const string sql4 = "SELECT * FROM dbo.ProductCustomers WHERE ProductId = @productId AND UserId = @userId;";
-                product.Customer = await connection.QuerySingleOrDefaultAsync<UserInfo>(sql4, new { productId, userId });
+                const string sql5 = "SELECT * FROM dbo.ProductCustomers WHERE ProductId = @productId AND UserId = @userId;";
+                product.Customer = await connection.QuerySingleOrDefaultAsync<UserInfo>(sql5, new { productId, userId });
             }
 
-            const string sql5 = "SELECT r.*, u.* FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
-            product.Reviews = (await connection.QueryAsync<MProductReview, UserInfo, MProductReview>(sql5, (r, u) =>
+            const string sql6 = "SELECT r.*, u.* FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
+            product.Reviews = (await connection.QueryAsync<MProductReview, UserInfo, MProductReview>(sql6, (r, u) =>
             {
                 r.User = u;
                 return r;
@@ -353,6 +363,27 @@ namespace Website.Data.Repositories
         {
             const string sql = "DELETE FROM dbo.ProductReviews WHERE Id = @reviewId;";
             await connection.ExecuteAsync(sql, new { reviewId });
+        }
+
+        public async Task<MProductWorkshopItem> AddProductWorkshopItemAsync(MProductWorkshopItem workshopItem)
+        {
+            const string sql = "INSERT INTO dbo.ProductWorkshops (ProductId, DatabaseFileId, IsRequired) " +
+                "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.DatabaseFileId, INSERTED.IsRequired " +
+                "VALUES (@ProductId, @DatabaseFileId, @IsRequired);";
+            return await connection.QuerySingleAsync<MProductWorkshopItem>(sql, workshopItem);
+        }
+
+        public async Task UpdateProductWorkshopItemAsync(MProductWorkshopItem workshopItem)
+        {
+            const string sql = "UPDATE dbo.ProductWorkshops SET DatabaseFileId = @DatabaseFileId, IsRequired = @IsRequired " +
+                "WHERE Id = @Id;";
+            await connection.ExecuteAsync(sql, workshopItem);
+        }
+
+        public async Task DeleteProductWorkshopItemAsync(int workshopId)
+        {
+            const string sql = "DELETE FROM dbo.ProductWorkshops WHERE Id = @workshopId;";
+            await connection.ExecuteAsync(sql, new { workshopId });
         }
 
         public async Task<IEnumerable<MProductCustomer>> GetMyProductsAsync(int userId)

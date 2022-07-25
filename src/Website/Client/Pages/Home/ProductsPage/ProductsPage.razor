@@ -66,18 +66,21 @@
                     <label class="form-label form-check-label m-0" for="verifiedselleronly-check">Verified Sellers Only</label>
                 </div>
             </div>
-            <div class="mb-2">
-                <label class="form-label text-muted small mb-1">Tags</label>
-                <ul class="m-0 small" style="list-style: none; padding-left: 0.5rem; column-gap: 0.25rem;">
-                    @foreach (MProductTag productTag in ProductTags)
-                    {
-                        <li>
-                            <input type="checkbox" class="form-check-input" id="@productTag.Title-tag-check" @oninput="(ChangeEventArgs e) => HandleSearchTag(productTag, (bool)e.Value)">
-                            <label class="form-label form-check-label" style="margin-bottom: 0.25rem;" for="@productTag.Title-tag-check">@productTag.Title</label>
-                        </li>
-                    }
-                </ul>
-            </div>
+            @if(ProductTags.Count > 0)
+            {
+                <div class="mb-2">
+                    <label class="form-label text-muted small mb-1">Tags</label>
+                    <ul class="m-0 small" style="list-style: none; padding-left: 0.5rem; column-gap: 0.25rem;">
+                        @foreach (MProductTag productTag in ProductTags)
+                        {
+                            <li>
+                                <input type="checkbox" class="form-check-input" id="@productTag.Title-tag-check" @oninput="(ChangeEventArgs e) => HandleSearchTag(productTag, (bool)e.Value)">
+                                <label class="form-label form-check-label" style="margin-bottom: 0.25rem;" for="@productTag.Title-tag-check">@productTag.Title</label>
+                            </li>
+                        }
+                    </ul>
+                </div>   
+            }
         </div>
         <div class="col-md-9">
             <div class="input-group">

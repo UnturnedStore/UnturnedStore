@@ -38,11 +38,21 @@
                     <div>
                         <img src="/api/images/@product.ImageId" width="30" height="30" />
                     </div>
-                    <div class="ms-2">
-                        <a href="/seller/products/@product.Id" class="text-decoration-none">
-                            @product.Name
-                        </a>
-                    </div>
+                    @if (product.IsEnabled)
+                    {
+                        <div class="ms-2">
+                            <a href="/seller/products/@product.Id" class="text-decoration-none">
+                                @product.Name
+                            </a>
+                        </div>
+                    } else
+                    {
+                        <div class="ms-2">
+                            <a href="/seller/products/@product.Id" class="text-decoration-none text-muted">
+                                @product.Name
+                            </a>
+                        </div>                        
+                    }
                 </div>
             </DataTableColumn>
             <DataTableColumn TItem="MProduct" Name="Price" Field="x => x.Price" Context="product" IsSearchable="false">

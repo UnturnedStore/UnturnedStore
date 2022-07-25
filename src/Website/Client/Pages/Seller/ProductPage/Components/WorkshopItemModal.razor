@@ -1,0 +1,81 @@
+﻿@using Website.Client.Shared.Components.Products
+@using Website.Components.Alerts
+<div class="modal fade" id="@nameof(WorkshopItemModal)" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @if (Model != null)
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title">@(isEditing ? "Edit" : "Add")</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+            
+                <EditForm Model="Model" OnValidSubmit="SubmitAsync">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Workshop File Id</label>
+                            <div class="d-flex text-nowrap" style="gap: 0.5rem;">
+                                <InputText class="form-control" @bind-Value="WorkshopFileId" placeholder="Workshop File Id" />
+                                @if (isVerifed)
+                                {
+                                    <button class="btn btn-primary" disabled>Verified</button>   
+                                }
+                                else
+                                {
+                                    if (isLoading2)
+                                    {
+                                        <LoadingButton />
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-primary" @onclick="VerifyAsync" disabled=@noContent>Verify</button>   
+                                    }
+                                }
+                            </div>
+                            <div class="form-text">The workshop file id can usually be found at the end of a workshop page's link</div>
+                        </div>
+                        
+                        @if (isVerifed)
+                        {
+                            if (SuccessWorkshopItem != null)
+                            {
+                                <ProductWorkshopItemCard WorkshopItem="Model" WorkshopResult="SuccessWorkshopItem" SellerSteamId="@SellerSteamId" />      
+                            } else
+                            {
+                                <Progressbar />
+                            }
+                        } else
+                        {
+                            <AlertBox ID="product-workshop-modal" Group="productpage" />
+                        }
+
+                        <div class="form-check form-switch">
+                            <label class="form-check-label" for="workshop-modal-required-check">
+                                <InputCheckbox class="form-check-input" id="workshop-modal-required-check" @bind-Value="Model.IsRequired" />
+                                Required
+                            </label>
+                        </div>
+                        <div class="mb-3 form-text">Required workshop items will be displayed to the customer on download</div>
+
+                        <div class="mb-3">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        @if (isLoading)
+                        {
+                            <LoadingButton />
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary" disabled="@(!isVerifed)">@(isEditing ? "Edit" : "Add")</button>
+                        }
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>
