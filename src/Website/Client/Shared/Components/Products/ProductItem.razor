@@ -2,7 +2,7 @@
 <div class="p-3 d-flex align-items-center bg-light border border-1 my-2">
     <div>
         <a href="/products/@Product.Id">
-            <img src="/api/images/@Product.ImageId" style="max-width: 90px;" />
+            <img src="/api/images/@Product.ImageId" width="90" height="90" class="rounded" />
         </a>        
     </div>
     <div class="ms-3 h-100">
@@ -13,21 +13,30 @@
                 <VerifiedSellerBadge Seller="Product.Seller" />
             </div>            
         </div>
-        <div class="d-flex align-items-end">
-            <div>
+        <div class="d-flex align-items-end flex-wrap" style="column-gap: 0.25rem;">
+            <div class="text-nowrap">
                 <ProductRating Product="Product" />
             </div>
             
             @if (!string.IsNullOrEmpty(Product.Category))
             {
-                <div class="small ms-1 text-muted" title="@Product.Category">
+                <div class="small text-muted" title="@Product.Category">
                     <i class="@ProductCategoryConstants.GetCategoryIcon(Product.Category)"></i>
                 </div>
             }
             @if (Product.IsLoaderEnabled)
             {
-                <div class="small ms-2 text-black-50" title="Loader Required">
+                <div class="small text-black-50" title="Loader Required">
                     <i class="fas fa-cloud-download-alt"></i>
+                </div>
+            }
+            @if (Product.Tags.Count > 0)
+            {
+                <div class="d-flex flex-wrap" style="gap: 0.25rem;">
+                @foreach (MProductTag productTag in Product.Tags)
+                {
+                    <ProductTag Tag="productTag" />
+                }
                 </div>
             }
         </div>

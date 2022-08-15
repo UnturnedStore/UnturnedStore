@@ -80,6 +80,9 @@
     <Build Include="procedures\GetHomeStatistics.sql" />
     <Build Include="procedures\GetPromotedProducts.sql" />
     <Build Include="procedures\GetProduct.sql" />
+    <Build Include="tables\Tags.sql" />
+    <Build Include="tables\ProductTags.sql" />
+    <Build Include="tables\ProductWorkshops.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

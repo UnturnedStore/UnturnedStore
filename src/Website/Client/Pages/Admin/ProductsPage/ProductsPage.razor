@@ -1,13 +1,30 @@
 ﻿@page "/admin/products"
+@using Website.Client.Pages.Admin.ProductsPage.Components
+@using Website.Client.Shared.Components.Products
+@using Website.Components.Alerts
+@using Website.Components.AnchorNavigation
 @using Website.Components.DataTable
 
 <Title Value="@($"Manage Products - Unturned Store")"></Title>
 
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" class="position-relative">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Admin</li>
         <li class="breadcrumb-item active" aria-current="page">Products</li>
     </ol>
+    <div class="position-absolute" style="right: 0; top: 0;">
+        <button class="btn btn-sm btn-primary" data-bs-toggle="dropdown"><i class="fas fa-compass" style="transform: translateY(7%);"></i></button>
+        <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute">
+            @foreach (string NavigableItem in (new string[] { "Products", "Tags" }))
+            {
+                <li>
+                    <a class="dropdown-item" style="cursor: pointer;" href="/admin/products/#@NavigableItem">
+                        @NavigableItem
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
 </nav>
 
 @if (Products != null && Products.Any(x => x.Status == ProductStatus.WaitingForApproval))
@@ -29,7 +46,7 @@
 <DataTable TItem="MProduct" Data="Products">
     <DataTableTitle TItem="MProduct">
         <div class="d-flex align-items-center">
-            <div class="fs-5">
+            <div class="fs-5" id="Products">
                 Products (@context.Items.Count())
             </div>
         </div>        
@@ -104,3 +121,65 @@
         </div>                
     </DataTableColumn>
 </DataTable>
+
+<div class="border-bottom border-1 mb-4 mt-5"></div>
+
+<AlertBox ID="product-tags-modal-main" Group="productspage" />
+
+<DataTable TItem="MProductTag" Data="ProductTags">
+    <DataTableTitle TItem="MProductTag">
+        <div class="d-flex align-items-center">
+            <div class="fs-5" id="Tags">
+                Tags (@context.Items.Count())
+            </div>
+            <div class="ms-2">
+                <button class="btn btn-sm btn-primary" @onclick="ShowModalAddTagAsync">
+                    Add Tag
+                </button>
+            </div>
+        </div>
+    </DataTableTitle>
+    <DataTableColumn TItem="MProductTag" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" />
+    <DataTableColumn TItem="MProductTag" Name="Title" Field="x => x.Title" IsSearchable="true" SearchType="ESearchType.Contains" Context="tag">
+        <span>@tag.Title</span>
+    </DataTableColumn>
+    <DataTableColumn TItem="MProductTag" Name="Color" Field="x => x.Color" Context="tag" IsSearchable="false">
+        <div class="d-flex align-items-center">
+            <div class="border border-1" style="height: 20px; width: 20px; background-color: @tag.Color;" />
+            <span class="ms-1">@tag.Color</span>
+        </div>
+    </DataTableColumn>
+    <DataTableColumn TItem="MProductTag" Name="BackgroundColor" Field="x => x.BackgroundColor" Context="tag" IsSearchable="false">
+        <div class="d-flex align-items-center">
+            <div class="border border-1" style="height: 20px; width: 20px; background-color: @tag.BackgroundColor;" />
+            <span class="ms-1">@tag.BackgroundColor</span>
+        </div>
+    </DataTableColumn>
+    <DataTableColumn TItem="MProductTag" Name="Preview" Field="x => x.Title" Context="tag" IsSearchable="false">
+        <ProductTag Tag="@tag" />
+    </DataTableColumn>
+    <DataTableColumn TItem="MProductTag" Name="Products" Field="x => Products.Where(p => p.Tags.Contains(x)).Count()" Context="tag" IsSearchable="false">
+        <span>@Products.Where(p => p.Tags.Contains(tag)).Count()</span>
+    </DataTableColumn>
+    <DataTableColumn TItem="MProductTag" Name="" Context="tag" Field="x => string.Empty" IsSearchable="false">
+        <div class="d-flex">
+            <div>
+                <a class="btn btn-outline-success btn-sm" @onclick:preventDefault @onclick="() => ShowModalEditTagAsync(tag)">
+                    <i class="fas fa-edit"></i>
+                </a>
+            </div>
+            <div class="ms-2">
+                <a class="btn btn-outline-danger btn-sm" @onclick:preventDefault @onclick="() => ShowDeleteTagAsync(tag)">
+                    <i class="bi bi-trash-fill"></i>
+                </a>
+            </div>
+        </div>                
+    </DataTableColumn>
+</DataTable>
+
+<AnchorNavigation />
+
+<ConfirmModal @ref="ConfirmDeleteTag" TItem="MProductTag" Title="Confirm delete tag" BtnClass="btn btn-danger" BtnText="Delete" ModalId="ConfirmDeleteTagModal" OnConfirm="DeleteTagAsync">
+    Are you sure you want to delete tag <span class="fw-bold">@ConfirmDeleteTag.Item.Title</span>?
+</ConfirmModal>
+<ProductTagsModal @ref="Modal" OnTagAdded="AddTag" OnTagEdited="EditTag" />

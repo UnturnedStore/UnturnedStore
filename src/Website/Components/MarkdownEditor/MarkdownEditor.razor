@@ -17,15 +17,29 @@
                Preview
            </a>
         </li>
-        @if (EnableToolbar)
+        @if (EnableToolbar || HighlightPlaceholders)
         {
-            <li class="nav-item ms-auto">
-                <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
-                        @onclick="() => HandleBoldClick()"><i class="fas fa-bold"></i></button>
-                <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
-                        @onclick="() => HandleItalicClick()"><i class="fas fa-italic"></i></button>
-                <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
-                        @onclick="() => HandleListClick()"><i class="fas fa-list"></i></button>
+            <li class="nav-item ms-auto markdown-toolbar">
+                @if (EnableToolbar)
+                {
+                    <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
+                            @onclick="() => HandleBoldClick()"><i class="fas fa-bold"></i></button>
+                    <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
+                            @onclick="() => HandleItalicClick()"><i class="fas fa-italic"></i></button>
+                    <button class="btn btn-sm btn-secondary" @onclick:preventDefault 
+                            @onclick="() => HandleListClick()"><i class="fas fa-list"></i></button>   
+                }
+                @if (HighlightPlaceholders)
+                {
+                    <button class="btn btn-sm btn-secondary" data-bs-toggle="dropdown"><i class="fas fa-code"></i></button>
+                    <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute">
+                        @foreach (string placeholder in HighlightedPlaceholders)
+                       {
+                           <li><a class="dropdown-item" style="cursor: pointer;" @onclick:preventDefault 
+                            @onclick="() => HandlePlaceholderClick(placeholder)">@placeholder</a></li>   
+                       }
+                    </ul>   
+                }
             </li>
         }
     </ul>

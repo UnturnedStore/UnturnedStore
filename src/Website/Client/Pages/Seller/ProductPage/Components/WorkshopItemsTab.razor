@@ -1,0 +1,46 @@
+﻿@using Website.Client.Shared.Components.Products
+@using Website.Components.Alerts
+
+<AlertBox ID="product-workshop" Group="productpage" />
+
+<div class="mb-3 d-flex align-items-center">
+    <h5>All Workshop Items</h5>
+    <div class="ms-auto">
+        <button class="btn btn-primary" @onclick="HandleAddWorkshopItem">
+            Add Workshop Item
+        </button>
+    </div>
+</div>
+<div class="mb-3">    
+    <ul class="list-group fs-5">
+        @foreach (var workshopItem in Product.WorkshopItems.OrderByDescending(w => w.IsRequired).ThenBy(w => w.WorkshopFileId))
+        {
+            <li class="list-group-item d-flex align-items-center" style="justify-content: space-between;">
+                <div class="d-flex" style="gap: 0.35rem;">
+                    <a href="https://steamcommunity.com/sharedfiles/filedetails/?id=@workshopItem.WorkshopFileId" target="_blank" title="View Workshop" class="text-decoration-none">@workshopItem.WorkshopFileId</a>
+                    @if (workshopItem.IsRequired)
+                    {
+                        <i class="bi bi-check-circle-fill text-muted small align-self-center" title="Required"></i>
+                    }
+                </div>
+                <div class="d-flex" style="gap: 0.5rem;">
+                    <button class="btn btn-sm btn-outline-success" @onclick="() => HandleEditWorkshopItem(workshopItem)">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    @if (isLoading && removingWorkshopItem == workshopItem)
+                    {
+                        <LoadingButtonSmall ColorClass="btn-danger" />
+                    }
+                    else
+                    {
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => RemoveWorkshopItem(workshopItem)">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>   
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+
+<WorkshopItemModal @ref="WorkshopItemModal" OnWorkshopItemAdded="AddWorkshopItem" OnWorkshopItemEdited="EditWorkshopItem" SellerSteamId="@Product.Seller.SteamId" />

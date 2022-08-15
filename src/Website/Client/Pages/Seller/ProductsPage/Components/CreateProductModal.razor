@@ -1,5 +1,5 @@
 ﻿@using Website.Components.Alerts
-
+@using Website.Client.Shared.Components.Products;
 
 
 <div class="modal fade" id="@nameof(CreateProductModal)" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
@@ -33,6 +33,12 @@
                             }
                         </InputSelect>
                         <div class="form-text">Set the category of your product</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Tags</label>
+                        <SelectProductTags @bind-Tags="Model.Tags" ProductTags="ProductTags" Width="0" />
+                        <div class="form-text">Set the tags of your product</div>
                     </div>
 
                     <div class="mb-3">

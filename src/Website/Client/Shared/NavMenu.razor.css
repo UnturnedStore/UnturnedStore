@@ -19,6 +19,16 @@
     .navbar--right {
         flex-direction: row;
     }
+
+    .navbar-arrow-up::after {
+        right: 12px!important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .navbar-arrow-up::after {
+        right: 132px!important;
+    }
 }
 
 i {
@@ -46,11 +56,11 @@ i {
     display: block;
 }
 
-    .navbar-btn-avatar img {
-        height: 32px;
-        width: 32px;
-        border-radius: 4px;
-    }
+.navbar-btn-avatar img {
+    height: 32px;
+    width: 32px;
+    border-radius: 4px;
+}
 
 .navbar-arrow-up::after {
     content: "";

@@ -78,7 +78,7 @@
                             }
                         </div>
                         <div class="ms-auto">
-                            <button class="btn btn-secondary me-2" @onclick="CloseAsync"><i class="bi bi-exclamation-circle"></i> Close</button>
+                            <button class="btn btn-secondary me-2" @onclick="ShowCloseMessageAsync"><i class="bi bi-exclamation-circle"></i> Close</button>
 
                             @if (isLoading)
                             {
@@ -118,3 +118,7 @@ else
         <Progressbar />
     }
 }
+
+<ConfirmModal @ref="ConfirmClose" TItem="MMessage" Title="Confirm closing message" BtnClass="btn btn-danger" BtnText="@("<i class=\"bi bi-exclamation-circle\"></i> Close")" ModalId="ConfirmCloseModal" OnConfirm="CloseMessageAsync">
+    Are you sure you want to close this message?
+</ConfirmModal>

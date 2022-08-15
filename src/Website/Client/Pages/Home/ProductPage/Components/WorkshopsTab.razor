@@ -1,0 +1,15 @@
+﻿@using Website.Client.Shared.Components.Products
+
+@if (Product != null)
+{
+    @if (WorkshopResult != null)
+    {
+        @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.OrderByDescending(w => w.IsRequired).ThenBy(w => w.WorkshopFileId))
+        {
+            <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.WorkshopFileId)" SellerSteamId="@Product.Seller.SteamId" />
+        }
+    } else
+    {
+        <Progressbar />
+    }
+}

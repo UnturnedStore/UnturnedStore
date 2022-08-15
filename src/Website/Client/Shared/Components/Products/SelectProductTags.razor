@@ -1,0 +1,74 @@
+﻿
+@if (Tags != null && ProductTags != null)
+{
+    <div class="border-bottom border-1 position-relative" style="max-width: @(UseWidth ? widthString : "none"); padding: 0.375rem;">
+        <ul class="d-flex flex-wrap m-0 p-0" style="gap: 0.25rem; min-height: 25px; list-style: none;">
+            @foreach (MProductTag tag in Tags)
+            {
+                <ProductTag Tag="tag" RemoveButton="true" OnTagRemove="HandleRemoveTag" />
+            }
+            @if (Tags.Count == 0)
+            {
+                <li class="text-muted small p-0" style="cursor: default;"><i>No Tags Selected</i></li>
+            }
+        </ul>
+        <div class="position-absolute mb-1" style="right: 0; bottom: 0;" title="@(MaximumTagsReached ? "Maximum Tag Count Reached" : null)">
+            <button class="btn btn-sm btn-secondary" data-bs-toggle="dropdown" disabled=@MaximumTagsReached><i class="fas fa-tags" style="transform: translateY(7%);"></i></button>
+            <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute" style="padding-top: 0;">
+                <li><input type="text" placeholder="Search by Title" class="form-control" style="border: 0!important;" @bind="searchTagTitle" @bind:event="oninput" /></li>
+                <li><hr class="dropdown-divider" style="margin-top: 0!important;" /></li>
+                @foreach (MProductTag tag in searchedTags)
+                {
+                    <li><a class="dropdown-item" style="cursor: pointer;" @onclick:preventDefault 
+                     @onclick="() => HandleAddTag(tag)">@tag.Title</a></li>
+                }
+                @if (availableTags.Count() == 0)
+                {
+                    <li class="text-muted" style="padding: 0.25rem 1rem; cursor: default;"><i>All Tags Selected</i></li>
+                } else if (searchedTags.Count() == 0)
+                {
+                    <li class="text-muted" style="padding: 0.25rem 1rem; cursor: default;"><i>No Tags Found</i></li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<MProductTag> Tags { get; set; }
+    [Parameter]
+    public EventCallback<List<MProductTag>> TagsChanged { get; set; }
+
+    [Parameter]
+    public int MaxTags { get; set; } = ProductTagsConstants.MaximumTagsAllowed;
+    private bool MaximumTagsReached => MaxTags > 0 && Tags.Count >= MaxTags;
+
+    [Parameter]
+    public List<MProductTag> ProductTags { get; set; }
+    private IEnumerable<MProductTag> availableTags => ProductTags.Concat(Tags).GroupBy(t => t.Id).Where(g => g.Count() == 1).Select(t => t.FirstOrDefault());
+    private IEnumerable<MProductTag> searchedTags => availableTags.Where(t => string.IsNullOrEmpty(searchTagTitle) || t.Title.Contains(searchTagTitle, StringComparison.OrdinalIgnoreCase));
+    private string searchTagTitle { get; set; }
+
+    [Parameter]
+    public int Width { get; set; } = 600;
+    public bool UseWidth => Width > 0;
+
+    private string widthString => Width + "px";
+
+    private async Task HandleAddTag(MProductTag Tag)
+    {
+        if (MaximumTagsReached) return;
+        if (Tags.Contains(Tag)) return;
+        Tags.Add(Tag);
+        searchTagTitle = string.Empty;
+        await TagsChanged.InvokeAsync(Tags);
+    }
+
+    private async Task HandleRemoveTag(MProductTag Tag)
+    {
+        if (!Tags.Contains(Tag)) return;
+        Tags.Remove(Tag);
+        await TagsChanged.InvokeAsync(Tags);
+    }
+}

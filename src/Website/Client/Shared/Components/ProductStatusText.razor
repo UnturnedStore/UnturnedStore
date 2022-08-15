@@ -13,6 +13,9 @@
 } else if (Status == ProductStatus.Released)
 {
     <span class="text-primary text-uppercase">@Status</span>
+} else if (Status == ProductStatus.Disabled)
+{
+    <span class="text-danger text-uppercase">@Status</span>
 }
 
 @code {

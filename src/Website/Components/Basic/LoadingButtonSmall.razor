@@ -1,0 +1,8 @@
+﻿<button class="btn btn-sm @ColorClass" type="button" disabled>
+    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+</button>
+
+@code {
+    [Parameter]
+    public string ColorClass { get; set; } = "btn-primary";
+}

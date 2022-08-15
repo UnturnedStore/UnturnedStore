@@ -1,4 +1,6 @@
-﻿
+﻿@using Website.Components.Helpers;
+@using Website.Shared.Results
+
 @if (Product != null)
 {
     <div class="mb-3">
@@ -30,14 +32,14 @@
                     </div>                    
                 </div>
                 <div class="card-body">
-                    <p class="card-text">@version.Changelog</p>
+                    <p class="card-text">@((MarkupString)MarkdownHelper.ParseToHtml(version.Changelog, false))</p>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="text-muted">
                             @version.CreateDate
                         </div>
                         <div class="ms-auto">
                             <form method="get" action="api/versions/download/@version.Id">
-                                <button type="submit" class="btn btn-primary">Download this version</button>
+                                <button type="submit" class="btn btn-primary" @onclick="() => OnDownloadProduct.InvokeAsync()">Download this version</button>
                             </form>                            
                         </div>
                     </div>
@@ -53,6 +55,9 @@
 
     [Parameter]
     public MProduct Product { get; set; }
+
+    [Parameter]
+    public EventCallback OnDownloadProduct { get; set; }
 
     private int selectedBranchId;
 

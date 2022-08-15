@@ -1,0 +1,47 @@
+﻿@using System.Net
+@using Website.Client.Shared.Components.Products
+@using Website.Shared.Results
+
+<div class="modal fade" tabindex="-1" id="@nameof(RequiredWorkshopsModal)" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Required Workshop Items
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    This plugin also requires the following workshop items
+                </div>
+                @if (Product != null && WorkshopResult != null)
+                {
+                    @foreach (MProductWorkshopItem workshopItem in Product.WorkshopItems.Where(w => w.IsRequired).OrderBy(w => w.WorkshopFileId))
+                    {
+                        <ProductWorkshopItemCard WorkshopItem="workshopItem" WorkshopResult="WorkshopResult.GetSuccessItem(workshopItem.WorkshopFileId)" SellerSteamId="@Product.Seller.SteamId" />
+                    }
+                } else
+                {
+                    <Progressbar />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
+
+    [Parameter]
+    public MProduct Product { get; set; }
+
+    [Parameter]
+    public WorkshopItemResult WorkshopResult { get; set; }
+
+    public async Task ShowModalAsync()
+    {
+        await JSRuntime.ShowModalStaticAsync(nameof(RequiredWorkshopsModal));
+    }
+}

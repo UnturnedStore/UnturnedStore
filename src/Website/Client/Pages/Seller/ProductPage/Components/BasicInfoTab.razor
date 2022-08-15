@@ -1,4 +1,5 @@
-﻿@using Website.Components.Alerts
+﻿@using Website.Client.Shared.Components.Products
+@using Website.Components.Alerts
 
 <AlertBox ID="product-basicinfo" Group="productpage" />
 
@@ -24,6 +25,12 @@
             }
         </InputSelect>
         <div class="form-text">Set the category of your product</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tags</label>
+        <SelectProductTags @bind-Tags="Product.Tags" ProductTags="ProductTags" />
+        <div class="form-text">Set the tags of your product</div>
     </div>
 
     <div class="mb-3">

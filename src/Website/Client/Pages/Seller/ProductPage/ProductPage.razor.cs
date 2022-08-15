@@ -10,7 +10,6 @@ using Website.Components.Basic;
 using Website.Shared.Constants;
 using Website.Shared.Enums;
 using Website.Shared.Models;
-using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
 namespace Website.Client.Pages.Seller.ProductPage
@@ -33,6 +32,7 @@ namespace Website.Client.Pages.Seller.ProductPage
         private HttpStatusCode statusCode { get; set; }
 
         public ConfirmModal<ProductInfo> ConfirmRelease { get; set; }
+        public ConfirmModal<ProductInfo> ConfirmDisable { get; set; }
         public ConfirmModal<ProductInfo> ConfirmSubmit { get; set; }
         public ConfirmModal<ProductInfo> ConfirmReject { get; set; }
         public ConfirmModal<ProductInfo> ConfirmApprove { get; set; }
@@ -50,16 +50,21 @@ namespace Website.Client.Pages.Seller.ProductPage
             await ConfirmRelease.ShowAsync(Product);
         }
 
+        private async Task HandleDisable()
+        {
+            await ConfirmDisable.ShowAsync(Product);
+        }
+
         private async Task HandleSubmit()
         {
             await ConfirmSubmit.ShowAsync(Product);
         }
-        
+
         private async Task HandleReject()
         {
             await ConfirmReject.ShowAsync(Product);
         }
-        
+
         private async Task HandleApprove()
         {
             await ConfirmApprove.ShowAsync(Product);
@@ -69,7 +74,23 @@ namespace Website.Client.Pages.Seller.ProductPage
         {
             bool isSuccess = await ChangeStatusAsync(ProductStatus.Released);
             if (isSuccess)
+            {
+                Product.IsEnabled = true;
                 AlertService.ShowAlert("product-main", $"Successfully released <strong>{Product.Name}</strong>!", AlertType.Success);
+            }
+
+            StateHasChanged();
+        }
+
+        private async Task SubmitDisableAsync()
+        {
+            bool isSuccess = await ChangeStatusAsync(ProductStatus.Disabled);
+            if (isSuccess)
+            {
+                Product.IsEnabled = false;
+                AlertService.ShowAlert("product-main", $"Successfully disabled <strong>{Product.Name}</strong>!", AlertType.Success);
+            }
+
             StateHasChanged();
         }
 
@@ -79,7 +100,7 @@ namespace Website.Client.Pages.Seller.ProductPage
             if (isSuccess)
                 AlertService.ShowAlert("product-main", $"Successfully send approval request for <strong>{Product.Name}</strong>!", AlertType.Success);
 
-            StateHasChanged();           
+            StateHasChanged();
         }
 
         private async Task SubmitRejectAsync()
@@ -113,7 +134,8 @@ namespace Website.Client.Pages.Seller.ProductPage
             {
                 Product.Status = @params.Status;
                 return true;
-            } else
+            }
+            else
             {
                 AlertService.ShowAlert("product-main", $"An error occurated {response.StatusCode}", AlertType.Danger);
             }

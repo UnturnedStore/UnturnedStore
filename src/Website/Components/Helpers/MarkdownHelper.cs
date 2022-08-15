@@ -13,6 +13,7 @@ namespace Website.Components.Helpers
 
             MarkdownPipelineBuilder builder = new MarkdownPipelineBuilder()
                     .UseEmojiAndSmiley()
+                    .UseSoftlineBreakAsHardlineBreak()
                     .UseAdvancedExtensions()
                     .UseAutoLinks();
 
