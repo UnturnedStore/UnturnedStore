@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -75,6 +76,7 @@ namespace Website.Server.Controllers
                 }
 
                 await productsRepository.SetProductEnabledAsync(product.Id, true);
+                await productsRepository.SetProductReleaseDateAsync(product.Id, DateTime.Now);
                 discordService.SendProductRelease(product);
             }
 

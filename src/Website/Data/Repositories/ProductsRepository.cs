@@ -49,6 +49,12 @@ namespace Website.Data.Repositories
             }, new { productId })).FirstOrDefault();
         }
 
+        public async Task SetProductReleaseDateAsync(int productId, DateTime releaseDate)
+        {
+            const string sql = "UPDATE dbo.Products SET ReleaseDate = @releaseDate WHERE Id = @productId;";
+            await connection.ExecuteAsync(sql, new { productId, releaseDate });
+        }
+
         public async Task UpdateStatusAsync(ChangeProductStatusParams @params)
         {
             const string sql = "UPDATE dbo.Products SET Status = @Status, StatusUpdateDate = SYSDATETIME(), AdminId = @AdminId WHERE Id = @ProductId;";

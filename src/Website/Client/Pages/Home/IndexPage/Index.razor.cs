@@ -44,7 +44,7 @@ namespace Website.Client.Pages.Home.IndexPage
                     case EOrderBy.PriceDesc:
                         return SearchedProducts.OrderByDescending(x => x.Price);
                     default:
-                        return SearchedProducts.OrderByDescending(x => x.CreateDate);
+                        return SearchedProducts.OrderByDescending(x => x.ReleaseDate is null ? x.CreateDate : x.ReleaseDate);
                 }
             }
         }

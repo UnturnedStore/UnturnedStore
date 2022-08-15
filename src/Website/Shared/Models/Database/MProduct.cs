@@ -29,6 +29,7 @@ namespace Website.Shared.Models.Database
         public DateTime StatusUpdateDate { get; set; }
         public bool IsLoaderEnabled { get; set; }
         public bool IsEnabled { get; set; }
+        public DateTime? ReleaseDate { get; set; }
         public DateTime LastUpdate { get; set; }
         public DateTime CreateDate { get; set; }
 

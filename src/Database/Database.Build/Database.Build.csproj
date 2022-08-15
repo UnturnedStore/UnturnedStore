@@ -8,6 +8,10 @@
     <Content Include="..\tables\*.sql" />
     <Content Include="..\procedures\*.sql" />
   </ItemGroup>
+  
+  <ItemGroup>
+	<PostDeploy Include="..\scripts\Script.PostDeployment.sql" />
+  </ItemGroup>
 
 
 </Project>
