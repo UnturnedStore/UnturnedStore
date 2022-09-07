@@ -4,12 +4,12 @@ namespace Website.Shared.Enums
 {
     public enum ProductStatus
     {
-        New,
+        New = 0,
         [Description("Waiting For Approval")]
-        WaitingForApproval,
-        Approved,
-        Rejected,
-        Released,
-        Disabled
+        WaitingForApproval = 1,
+        Approved = 2,
+        Rejected = 3,
+        Released = 4,
+        Disabled = 5
     }
 }

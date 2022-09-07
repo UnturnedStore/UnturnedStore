@@ -46,7 +46,7 @@ namespace Website.Client.Pages.Home.ProductsPage
                     EOrderBy.BestRated => SearchedProducts.OrderByDescending(x => x.AverageRating).ThenByDescending(x => x.RatingsCount),
                     EOrderBy.PriceAsc => SearchedProducts.OrderBy(x => x.Price),
                     EOrderBy.PriceDesc => SearchedProducts.OrderByDescending(x => x.Price),
-                    _ => SearchedProducts.OrderByDescending(x => x.CreateDate)
+                    _ => SearchedProducts.OrderByDescending(x => x.ReleaseDate is null ? x.CreateDate : x.ReleaseDate)
                 };
 
                 return products.ToList();

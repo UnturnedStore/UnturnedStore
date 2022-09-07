@@ -52,6 +52,7 @@ AS
 		p.Price,
 		p.SellerId,
 		p.IsEnabled,
+		p.ReleaseDate,
 		p.LastUpdate,
 		p.CreateDate,
 		TotalDownloadsCount = ISNULL(d.TotalDownloadsCount, 0), 

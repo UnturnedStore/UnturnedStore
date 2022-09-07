@@ -39,6 +39,7 @@ BEGIN
 		p.SellerId,
 		p.IsEnabled,
 		p.IsLoaderEnabled,
+		p.ReleaseDate,
 		p.LastUpdate,
 		p.CreateDate,
 		TotalDownloadsCount = ISNULL(d.TotalDownloadsCount, 0), 
