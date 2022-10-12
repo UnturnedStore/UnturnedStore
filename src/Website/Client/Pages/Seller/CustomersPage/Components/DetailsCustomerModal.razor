@@ -1,0 +1,84 @@
+﻿<div class="modal fade" id="@nameof(DetailsCustomerModal)" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            @if (Model != null)
+            {
+                <div class="modal-body">
+                    
+                    <div class="mb-3 row">
+                        <label class="form-label">License Key</label>
+                        <div class="input-group input-group-sm flex-nowrap">
+                            <Tooltip Text="Copied!">
+                                <input class="form-control border-custom text-center" style="padding: .25rem .5rem; font-size: .875rem;" onclick="this.select(); document.execCommand('Copy');" value="@Model.LicenseKey" readonly />
+                            </Tooltip>
+
+                            <button class="btn btn-secondary" disabled>
+                                <i class="fas fa-key"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    @if (message != null)
+                    {
+                        <div class="mb-3">
+                            <div class="text-danger">@message</div>
+                        </div>
+                    }
+
+                </div>
+
+                <div class="modal-footer">
+
+                    @if (isSuspended)
+                    {
+                        <div class="me-auto btn-group" role="group">
+                            <button type="button" class="btn btn-success" @onclick="() => RestoreCustomer()">
+                                Restore
+                            </button>
+                            <button type="button" class="btn btn-outline-success" disabled>
+                                @if (Model.BlockDate.HasValue)
+                                {
+                                    <span>Suspended at <strong>@Model.BlockDate.Value.ToShortDateString()</strong></span>
+                                }
+                                else
+                                {
+                                    <span>Suspend</span>
+                                }
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="me-auto btn-group" role="group">
+                            <button type="button" class="btn btn-outline-danger" disabled>Restore</button>
+                            <button type="button" class="btn btn-danger" @onclick="() => SuspendCustomer()">
+                                Suspend
+                            </button>
+                        </div>
+                    }
+
+                    <button type="button" class="btn btn-secondary active" data-bs-dismiss="modal">Close</button>
+                    @if (Model.IsBlocked != isSuspended)
+                    {
+                        @if (isLoading)
+                        {
+                            <LoadingButton />
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-primary" @onclick="SubmitAsync">Confirm</button>
+                        }
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-primary" disabled>Confirm</button>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
