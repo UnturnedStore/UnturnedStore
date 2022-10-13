@@ -332,6 +332,19 @@ namespace Website.Server.Controllers
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
+        [HttpPut("customers")]
+        public async Task<IActionResult> PutProductCustomerAsync([FromBody] MProductCustomer customer)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductCustomerSellerAsync(customer.Id, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.UpdateProductCustomerAsync(customer);
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpDelete("customers/{customerId}")]
         public async Task<IActionResult> DeleteProductCustomerAsync(int customerId)
         {

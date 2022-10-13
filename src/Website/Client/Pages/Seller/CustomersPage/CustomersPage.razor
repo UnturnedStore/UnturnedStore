@@ -1,5 +1,6 @@
 ﻿@page "/seller/customers"
 @using Website.Client.Pages.Seller.CustomersPage.Components
+@using Website.Components.Alerts
 @using Website.Components.DataTable
 
 <Title Value="@($"Customers Seller - Unturned Store")"></Title>
@@ -14,6 +15,10 @@
 @if (Customers != null)
 {
     <div>
+        <AlertBox ID="customers-main" Group="productspage" />
+    </div>
+    
+    <div>
         <DataTable TItem="MProductCustomer" Data="OrderedCustomers">
             <DataTableTitle TItem="MProductCustomer" ValueFunc="@(x => $"Customers ({x.Items.Count()})")">
                 <div class="d-flex align-items-center">
@@ -21,13 +26,25 @@
                         Customers (@context.Items.Count())
                     </div>
                     <div class="ms-2">
-                        <button class="btn btn-sm btn-primary" @onclick="ShowModalAsync">
+                        <button class="btn btn-sm btn-primary" @onclick="ShowAddModalAsync">
                             Add Customer
                         </button>
                     </div>
                 </div>        
             </DataTableTitle>
-            <DataTableColumn TItem="MProductCustomer" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" Context="customer" />
+            <DataTableColumn TItem="MProductCustomer" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" Context="customer">
+                <div class="d-flex">
+                    <div>
+                        @customer.Id
+                    </div>
+                    @if (customer.IsBlocked)
+                    {
+                        <button class="ms-auto btn btn-danger btn-sm" disabled>
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </button>
+                    }
+                </div>
+            </DataTableColumn>
             <DataTableColumn TItem="MProductCustomer" Name="User" Field="x => x.User.Name" IsSearchable="true" SearchType="ESearchType.Contains" Context="customer">
                 <div class="d-flex align-items-center">
                     <div>
@@ -53,9 +70,18 @@
                 </div>
             </DataTableColumn>
             <DataTableColumn TItem="MProductCustomer" Name="" Context="customer" Field="x => string.Empty" IsSearchable="false">
-                <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteCustomerAsync(customer)">
-                    <i class="fas fa-trash-alt"></i>
-                </button>
+                <div class="d-flex">
+                    <div class="ms-2">
+                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowDetailsModalAsync(customer)">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                    <div class="ms-2">
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteCustomerAsync(customer)">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
             </DataTableColumn>
         </DataTable>
     </div>
@@ -63,7 +89,8 @@
     <ConfirmModal @ref="DeleteConfirmModal" Title="Delete customer?" TItem="MProductCustomer" ModalId="DeleteReviewConfirm" BtnClass="btn-outline-danger" BtnText="Delete" OnConfirm="DeleteCustomerAsync">
         Are you sure you want to delete customer <span class="fw-bold">@DeleteConfirmModal.Item.Id</span>
     </ConfirmModal>
-    <AddCustomerModal Customers="Customers" @ref="Modal" OnCustomerAdded="AddCustomer" />
+    <AddCustomerModal Customers="Customers" @ref="AddModal" OnCustomerAdded="AddCustomer" />
+    <DetailsCustomerModal Customers="Customers" @ref="DetailsModal" OnStateChanged="() => StateHasChanged()" />
 } else 
 {
     <Progressbar />
