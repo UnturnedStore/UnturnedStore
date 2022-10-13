@@ -1,4 +1,6 @@
-﻿CREATE PROCEDURE dbo.GetPromotedProducts
+﻿-- THIS PROCEDURE IS DEPRECATED
+
+CREATE PROCEDURE dbo.GetPromotedProducts
 	@UserId INT
 AS
 BEGIN

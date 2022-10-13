@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -75,6 +76,7 @@ namespace Website.Server.Controllers
                 }
 
                 await productsRepository.SetProductEnabledAsync(product.Id, true);
+                await productsRepository.SetProductReleaseDateAsync(product.Id, DateTime.Now);
                 discordService.SendProductRelease(product);
             }
 
@@ -327,6 +329,19 @@ namespace Website.Server.Controllers
             }
 
             return Ok(await productsRepository.AddProductCustomerAsync(customer));
+        }
+
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
+        [HttpPut("customers")]
+        public async Task<IActionResult> PutProductCustomerAsync([FromBody] MProductCustomer customer)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductCustomerSellerAsync(customer.Id, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.UpdateProductCustomerAsync(customer);
+            return Ok();
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]

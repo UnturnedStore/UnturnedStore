@@ -49,6 +49,12 @@ namespace Website.Data.Repositories
             }, new { productId })).FirstOrDefault();
         }
 
+        public async Task SetProductReleaseDateAsync(int productId, DateTime releaseDate)
+        {
+            const string sql = "UPDATE dbo.Products SET ReleaseDate = @releaseDate WHERE Id = @productId;";
+            await connection.ExecuteAsync(sql, new { productId, releaseDate });
+        }
+
         public async Task UpdateStatusAsync(ChangeProductStatusParams @params)
         {
             const string sql = "UPDATE dbo.Products SET Status = @Status, StatusUpdateDate = SYSDATETIME(), AdminId = @AdminId WHERE Id = @ProductId;";
@@ -319,10 +325,17 @@ namespace Website.Data.Repositories
         public async Task<MProductCustomer> AddProductCustomerAsync(MProductCustomer customer)
         {
             const string sql = "INSERT INTO dbo.ProductCustomers (ProductId, UserId) " +
-                "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.UserId, INSERTED.CreateDate " +
+                "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.UserId, INSERTED.CreateDate, INSERTED.LicenseKey " + // Auto getting LicenseKey on AddCustomerModel (made special to prevert reloading page)
                 "VALUES (@ProductId, @UserId);";
 
             return await connection.QuerySingleAsync<MProductCustomer>(sql, customer);
+        }
+
+        public async Task UpdateProductCustomerAsync(MProductCustomer customer)
+        {
+            const string sql = "UPDATE dbo.ProductCustomers SET IsBlocked = @IsBlocked, " +
+                "BlockDate = @BlockDate WHERE Id = @Id;";
+            await connection.ExecuteAsync(sql, customer);
         }
 
         public async Task DeleteProductCustomerAsync(int customerId)
