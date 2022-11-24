@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
@@ -119,7 +121,9 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetMessageReadAsync()
         {
             int userId = int.Parse(User.Identity.Name);
-            return Ok(await messagesRepository.GetNewMessagesAsync(userId));
+            IEnumerable<MMessageRead> newMessages = await messagesRepository.GetNewMessagesAsync(userId);
+            if (newMessages.Count() == 0) return Ok();
+            return Ok(newMessages);
         }
 
         [HttpPost("read")]
