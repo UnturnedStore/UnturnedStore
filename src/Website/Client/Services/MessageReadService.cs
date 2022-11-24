@@ -40,7 +40,6 @@ namespace Website.Client.Services
             if (!userService.IsAuthenticated) return;
 
             NewMessages = await httpClient.GetFromJsonAsync<List<MMessageRead>>("api/messages/read");
-            if (NewMessages == null) NewMessages = new List<MMessageRead>();
 
             if (NavMenu != null)
                 NavMenu.Refresh();
