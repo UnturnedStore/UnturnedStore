@@ -123,6 +123,17 @@ namespace Website.Client.Pages.Home.ProductPage
             Review = review;
         }
 
+        private void ReviewReplyChanged(MProductReview review)
+        {
+            if (review.Id == Review?.Id)
+            {
+                Review = review;
+                return;
+            }
+
+            Product.Reviews[Product.Reviews.FindIndex(r => r.Id == review.Id)] = review;
+        }
+
         private async Task DeleteReviewAsync(MProductReview review)
         {
             await HttpClient.DeleteAsync("api/products/reviews/" + review.Id);

@@ -1,4 +1,5 @@
 ﻿@page "/messages/{MessageId:int}"
+@using Website.Client.Pages.User.MessagePage.Components
 @using Website.Components.Helpers
 @using Website.Components.MarkdownEditor
 
@@ -30,6 +31,10 @@
 
     @foreach (var reply in Message.Replies.OrderBy(x => x.CreateDate))
     {
+        @if (NewReplyId.HasValue && reply.Id == NewReplyId)
+        {
+            <NewMessageHighlighter Hidden="IsHighlighterHidden" />
+        }
         <div class="mb-3">
             <div class="card">
                 <div class="card-header">

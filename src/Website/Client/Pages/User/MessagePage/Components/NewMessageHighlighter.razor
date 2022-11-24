@@ -1,0 +1,13 @@
+﻿<div class="border-bottom border-1 border-danger position-relative mb-3 @(Hidden ? "d-none" : "")">
+    <div class="position-absolute new-message-highlighter-NEW bg-danger cursor-pointer" title="Mark as Read" @onclick="() => { Hidden = true; }">
+        <b class="position-absolute top-50 translate-middle-y text-white" style="left: 8px;">
+            NEW
+        </b>
+        <div class="new-message-highlighter-arrow-right"></div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public bool Hidden { get; set; }
+}

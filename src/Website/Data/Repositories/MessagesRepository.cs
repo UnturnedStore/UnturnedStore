@@ -89,6 +89,15 @@ namespace Website.Data.Repositories
             return await connection.QuerySingleAsync<MMessageRead>(sql, read);
         }
 
+        public async Task<IEnumerable<MMessageRead>> GetNewMessagesAsync(int userId)
+        {
+            const string sql = "SELECT mr.* FROM dbo.MessagesRead mr " +
+                "JOIN dbo.Messages m ON m.Id = mr.MessageId AND m.IsClosed = 0 WHERE mr.UserId = @userId " +
+                "AND mr.ReadId != (SELECT TOP 1 Id FROM dbo.MessageReplies WHERE MessageId = mr.MessageId ORDER BY Id DESC);";
+
+            return await connection.QueryAsync<MMessageRead>(sql, new { userId });
+        }
+
         public async Task<MMessageRead> GetMessageReadAsync(int messageId, int userId)
         {
             const string sql = "SELECT mr.* FROM dbo.MessagesRead mr WHERE mr.MessageId = @messageId AND mr.UserId = @userId;";

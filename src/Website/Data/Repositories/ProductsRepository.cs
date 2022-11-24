@@ -68,10 +68,23 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { productId, userId });
         }
 
+        public async Task<bool> CanReplyReviewAsync(int reviewId, int userId)
+        {
+            const string sql = "SELECT COUNT(*) FROM dbo.Products p WHERE p.Id = (SELECT ProductId FROM dbo.ProductReviews r WHERE r.Id = @reviewId) AND " +
+                "@reviewId NOT IN (SELECT ReviewId FROM dbo.ProductReviewReplies) AND p.SellerId = @userId;";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { reviewId, userId });
+        }
+
         public async Task<bool> IsProductReviewOwnerAsync(int reviewId, int userId)
         {
             const string sql = "SELECT COUNT(*) FROM dbo.ProductReviews WHERE Id = @reviewId AND UserId = @userId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { reviewId, userId });
+        }
+
+        public async Task<bool> IsProductReviewReplyOwnerAsync(int replyId, int userId)
+        {
+            const string sql = "SELECT COUNT(*) FROM dbo.ProductReviewReplies WHERE Id = @replyId AND UserId = @userId;";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { replyId, userId });
         }
 
         public async Task<bool> IsProductMediaSellerAsync(int mediaId, int userId)
@@ -192,10 +205,19 @@ namespace Website.Data.Repositories
                 product.Customer = await connection.QuerySingleOrDefaultAsync<UserInfo>(sql5, new { productId, userId });
             }
 
-            const string sql6 = "SELECT r.*, u.* FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId WHERE ProductId = @productId;";
-            product.Reviews = (await connection.QueryAsync<MProductReview, UserInfo, MProductReview>(sql6, (r, u) =>
+            const string sql6 = "SELECT r.*, u.*, rp.*, rpu.* FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId " + 
+                "LEFT JOIN dbo.ProductReviewReplies rp ON rp.ReviewId = r.Id LEFT JOIN dbo.Users rpu ON rpu.Id = rp.UserId WHERE ProductId = @productId;";
+
+            product.Reviews = (await connection.QueryAsync<MProductReview, UserInfo, MProductReviewReply, UserInfo, MProductReview>(sql6, (r, u, rp, rpu) =>
             {
                 r.User = u;
+
+                if (rp != null)
+                {
+                    rp.User = rpu;
+                    r.Reply = rp;
+                }
+
                 return r;
             }, new { productId })).ToList();
 
@@ -353,6 +375,7 @@ namespace Website.Data.Repositories
             return await GetProductReviewAsync(await connection.ExecuteScalarAsync<int>(sql, review));
         }
 
+        // Doesnt Support Review Replies since this function is only used once by AddProductReviewAsync
         public async Task<MProductReview> GetProductReviewAsync(int reviewId)
         {
             const string sql = "SELECT r.*, u.* FROM dbo.ProductReviews r JOIN dbo.Users u ON u.Id = r.UserId " +
@@ -376,6 +399,27 @@ namespace Website.Data.Repositories
         {
             const string sql = "DELETE FROM dbo.ProductReviews WHERE Id = @reviewId;";
             await connection.ExecuteAsync(sql, new { reviewId });
+        }
+
+        public async Task<MProductReviewReply> AddProductReviewReplyAsync(MProductReviewReply reply)
+        {
+            const string sql = "INSERT INTO dbo.ProductReviewReplies (Body, ReviewId, UserId) " +
+                "OUTPUT INSERTED.Id, INSERTED.Body, INSERTED.ReviewId, INSERTED.UserId, INSERTED.LastUpdate, INSERTED.CreateDate " +
+                "VALUES (@Body, @ReviewId, @UserId);";
+
+            return await connection.QuerySingleAsync<MProductReviewReply>(sql, reply);
+        }
+
+        public async Task UpdateProductReviewReplyAsync(MProductReviewReply reply)
+        {
+            const string sql = "UPDATE dbo.ProductReviewReplies SET Body = @Body, LastUpdate = SYSDATETIME() WHERE Id = @Id;";
+            await connection.ExecuteAsync(sql, reply);
+        }
+
+        public async Task DeleteProductReviewReplyAsync(int replyId)
+        {
+            const string sql = "DELETE FROM dbo.ProductReviewReplies WHERE Id = @replyId;";
+            await connection.ExecuteAsync(sql, new { replyId });
         }
 
         public async Task<MProductWorkshopItem> AddProductWorkshopItemAsync(MProductWorkshopItem workshopItem)

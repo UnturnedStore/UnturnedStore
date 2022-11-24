@@ -25,6 +25,7 @@ namespace Website.Shared.Models.Database
         public DateTime CreateDate { get; set; }
 
         public UserInfo User { get; set; }
+        public MProductReviewReply Reply { get; set; }
 
         public MProductReview Clone()
         {
@@ -38,7 +39,8 @@ namespace Website.Shared.Models.Database
                 UserId = UserId,
                 LastUpdate = LastUpdate,
                 CreateDate = CreateDate,
-                User = User
+                User = User,
+                Reply = Reply
             };
         }
     }

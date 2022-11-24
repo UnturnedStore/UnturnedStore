@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Rating</label>
+                            <label class="form-label m-0">Rating</label>
                             <div class="d-flex">
                                 <i class="bi @GetRatingClass(1)" style="cursor: pointer;" @onclick="() => ChangeRating(1)"></i>
                                 <i class="bi @GetRatingClass(2)" style="cursor: pointer;" @onclick="() => ChangeRating(2)"></i>
@@ -134,7 +134,7 @@
     public async Task DeleteAsync()
     {
         isLoading2 = true;
-        await OnDeleteReview.InvokeAsync();
+        await OnDeleteReview.InvokeAsync(Model);
         isLoading2 = false;
         await JSRuntime.HideModalAsync(nameof(ProductReviewModal));
         Model = null;

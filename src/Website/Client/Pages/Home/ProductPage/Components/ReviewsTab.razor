@@ -1,5 +1,4 @@
-﻿
-@if (Product != null)
+﻿@if (Product != null)
 {
     @if (UserReview == null && Product.Reviews.Count == 0)
     {
@@ -8,81 +7,96 @@
 
     if (UserReview != null && UserReview.Id != 0)
     {
-        <div class="card mb-3">
-            <div class="card-header">
-                <div class="d-flex align-items-center">
-                    <div class="fw-bold">
-                        <div class="d-flex">
-                            @for (byte i = 1; i <= UserReview.Rating; i++)
-                            {
-                                <i class="bi bi-star-fill"></i>
-                            }
-                            @for (byte i = UserReview.Rating; i < 5; i++)
-                            {
-                                <i class="bi bi-star"></i>
-                            }
-                        </div>                        
+        <div>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <div class="fw-bold">
+                            <div class="d-flex">
+                                @for (byte i = 1; i <= UserReview.Rating; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                @for (byte i = UserReview.Rating; i < 5; i++)
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            </div>                        
+                        </div>
+                        <div class="ms-auto">
+                            You
+                        </div>
                     </div>
-                    <div class="ms-auto">
-                        You
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@UserReview.Title</h5>
+                    <div class="mb-3">
+                        @UserReview.Body
+                    </div>
+                    <div class="d-flex">
+                        <div class="text-muted">
+                            @UserReview.LastUpdate
+                        </div>                    
                     </div>
                 </div>
             </div>
-            <div class="card-body">
-                <h5 class="card-title">@UserReview.Title</h5>
-                <div class="mb-3">
-                    @UserReview.Body
-                </div>
-                <div class="d-flex">
-                    <div class="text-muted">
-                        @UserReview.LastUpdate
-                    </div>                    
-                </div>
-            </div>
+            <ProductReviewReply Review="UserReview" SellerId="Product.SellerId" OnDeleteReply="HandleDeleteReplyAsync" />
         </div>
     }
 
     @foreach (var review in Product.Reviews.OrderByDescending(x => x.CreateDate))
     {
-        <div class="card mb-3">
-            <div class="card-header">
-                <div class="d-flex align-items-center">
-                    <div class="fw-bold">
-                        <div class="d-flex">
-                            @for (byte i = 1; i <= review.Rating; i++)
-                            {
-                                <i class="bi bi-star-fill"></i>
-                            }
-                            @for (byte i = review.Rating; i < 5; i++)
-                            {
-                                <i class="bi bi-star"></i>
-                            }
+        <div>
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <div class="fw-bold">
+                            <div class="d-flex">
+                                @for (byte i = 1; i <= review.Rating; i++)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                @for (byte i = review.Rating; i < 5; i++)
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            </div>
                         </div>
-                    </div>
-                    <div class="ms-auto">
-                        @review.User.Name
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">@review.Title</h5>
-                <div class="mb-3">
-                    @review.Body
-                </div>
-                <div class="d-flex align-items-center">
-                    <div class="text-muted">
-                        @review.LastUpdate
-                    </div>
-                    @if (UserService.IsAdmin)
-                    {
                         <div class="ms-auto">
-                            <button class="btn btn-outline-danger" @onclick="() => AskDeleteReviewAsync(review)">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
+                            <a class="text-decoration-none text-dark" href="/users/@review.UserId">@review.User.Name</a>
                         </div>
-                    }
-                </div>                
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">@review.Title</h5>
+                    <div class="mb-3">
+                        @review.Body
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="text-muted">
+                            @review.LastUpdate
+                        </div>
+                        @if (UserService.IsAdmin || UserService.UserId == Product.SellerId && review.Reply == null)
+                        {
+                            <div class="ms-auto d-flex gap-2">
+                                @if (review.Reply == null)
+                                {
+                                    <button class="btn btn-sm btn-outline-primary" @onclick="() => HandleEditReplyAsync(review)">
+                                        <i class="far fa-comments" style="vertical-align: initial"></i> Reply
+                                    </button>   
+                                }
+                                @if(UserService.IsAdmin)
+                                {
+                                    <button class="btn btn-sm btn-outline-danger" @onclick="() => AskDeleteReviewAsync(review)">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>   
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
+            <ProductReviewReply Review="review" SellerId="Product.SellerId" OnEditReply="HandleEditReplyAsync" OnDeleteReply="HandleDeleteReplyAsync" />
         </div>
     }
 }
@@ -90,3 +104,9 @@
 <ConfirmModal @ref="DeleteReviewConfirm" TItem="MProductReview" ModalId="DeleteReviewConfirm" Title="Delete review?" BtnClass="btn-outline-danger" BtnText="Delete" OnConfirm="DeleteReviewAsync" >
     Are you sure you want to delete review for <span class="fw-bold">@Product.Name</span> by <span class="fw-bold">@DeleteReviewConfirm.Item.User.Name</span>?
 </ConfirmModal>
+
+<ConfirmModal @ref="DeleteReplyConfirm" TItem="MProductReview" ModalId="DeleteReplyConfirm" Title="Delete review reply?" BtnClass="btn-outline-danger" BtnText="Delete" OnConfirm="async (MProductReview review) => { await DeleteReplyAsync(review.Clone()); }"> @*Cloned to prevent null ref issues*@
+    Are you sure you want to delete this <span class="fw-bold">reply</span> by @(DeleteReplyConfirm.Item.Reply.UserId == UserService.UserId ? "you" : DeleteReplyConfirm.Item.Reply.User.Name) to <span class="fw-bold">@DeleteReplyConfirm.Item.Title</span> by <span class="fw-bold">@DeleteReplyConfirm.Item.User.Name</span>?
+</ConfirmModal>
+
+<ProductReviewReplyModal @ref="ReplyModal" ReplyChanged="EditReplyAsync" />
