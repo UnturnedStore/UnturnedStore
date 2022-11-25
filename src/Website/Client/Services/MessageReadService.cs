@@ -31,30 +31,28 @@ namespace Website.Client.Services
             this.userService = userService;
         }
 
-        public List<MMessage> Messages { get; set; }
+        public List<MMessageRead> NewMessages { get; set; }
 
-        public IEnumerable<MMessage> NewMessages => Messages.Where(m => !m.IsClosed && (m.Replies.Count == 0 ? 0 : m.Replies[m.Replies.Count - 1].Id) > (m.Read?.ReadId ?? -1));
+        public bool HasNewMessages => NewMessages != null && NewMessages.Count > 0;
 
         public async Task ReloadMessagesReadAsync()
         {
             if (!userService.IsAuthenticated) return;
 
-            Messages = await httpClient.GetFromJsonAsync<List<MMessage>>("api/messages");
+            NewMessages = await httpClient.GetFromJsonAsync<List<MMessageRead>>("api/messages/read");
 
             if (NavMenu != null)
                 NavMenu.Refresh();
         }
 
-        public bool HasNewMessage(int messageId)
+        public static bool HasNewMessage(MMessage message)
         {
-            return NewMessages.Any(m => m.Id == messageId);
+            return !message.IsClosed && (message.Replies.Count == 0 ? 0 : message.Replies[message.Replies.Count - 1].Id) > (message.Read?.ReadId ?? -1);
         }
 
         public void UpdateMessagesRead(MMessage message)
         {
-            var msg = Messages.FindIndex(m => m.Id == message.Id);
-            if (msg == -1) Messages.Add(message);
-            else Messages[msg] = message;
+            NewMessages.Remove(message.Read);
 
             if (NavMenu != null)
                 NavMenu.Refresh();
@@ -62,7 +60,7 @@ namespace Website.Client.Services
 
         public void UpdateMessagesRead(List<MMessage> messages)
         {
-            Messages = messages;
+            NewMessages = messages.Where(m => HasNewMessage(m)).Select(m => m.Read ?? new MMessageRead(m, userService.UserId)).ToList();
 
             if (NavMenu != null)
                 NavMenu.Refresh();

@@ -115,6 +115,13 @@ namespace Website.Server.Controllers
             return Ok();
         }
 
+        [HttpGet("read")]
+        public async Task<IActionResult> GetMessageReadAsync()
+        {
+            int userId = int.Parse(User.Identity.Name);
+            return Ok(await messagesRepository.GetNewMessagesAsync(userId));
+        }
+
         [HttpPost("read")]
         public async Task<IActionResult> PostMessageReadAsync([FromBody] MMessageRead read)
         {

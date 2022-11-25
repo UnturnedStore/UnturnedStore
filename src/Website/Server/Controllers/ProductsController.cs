@@ -399,6 +399,46 @@ namespace Website.Server.Controllers
         }
 
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
+        [HttpPost("reviews/replies")]
+        public async Task<IActionResult> PostProductReviewReplyAsync([FromBody] MProductReviewReply reply)
+        {
+            reply.UserId = int.Parse(User.Identity.Name);
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.CanReplyReviewAsync(reply.ReviewId, reply.UserId))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            reply = await productsRepository.AddProductReviewReplyAsync(reply);
+            return Ok(reply);
+        }
+
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
+        [HttpPut("reviews/replies")]
+        public async Task<IActionResult> PutProductReviewReplyAsync([FromBody] MProductReviewReply reply)
+        {
+            if (!await productsRepository.IsProductReviewReplyOwnerAsync(reply.Id, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.UpdateProductReviewReplyAsync(reply);
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
+        [HttpDelete("reviews/replies/{replyId}")]
+        public async Task<IActionResult> DeleteProductReviewReplyAsync(int replyId)
+        {
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductReviewReplyOwnerAsync(replyId, int.Parse(User.Identity.Name)))
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+
+            await productsRepository.DeleteProductReviewReplyAsync(replyId);
+            return Ok();
+        }
+
+        [Authorize(Roles = RoleConstants.AdminAndSeller)]
         [HttpPost("workshop")]
         public async Task<IActionResult> PostProductWorkshopItemAsync([FromBody] MProductWorkshopItem workshopItem)
         {

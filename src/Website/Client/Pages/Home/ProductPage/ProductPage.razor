@@ -120,7 +120,7 @@
                                 </div>   
                             }
                             <div class="tab-pane fade @(Product.Tabs.Count == 0 && Product.WorkshopItems.Count == 0 ? "show active" : "")" id="nav-reviews" role="tabpanel" aria-labelledby="nav-reviews-tab">
-                                <ReviewsTab Product="Product" UserReview="Review" OnDeleteReview="DeleteReviewAsync" />
+                                <ReviewsTab Product="Product" UserReview="Review" OnDeleteReview="DeleteReviewAsync" OnReviewReplyChanged="ReviewReplyChanged" />
                             </div>
                         </div>
                     </div>
@@ -262,6 +262,7 @@
     </div>
 
     <ProductReviewModal @ref="ReviewModal" Product="Product" ReviewChanged="OnReviewChanged" OnDeleteReview="DeleteReviewAsync" />
+    <RequiredWorkshopsModal @ref="RequiredWorkshopsModal" Product="Product" WorkshopResult="WorkshopResult" />
 }
 else
 {
@@ -278,5 +279,3 @@ else
         <Progressbar />
     }
 }
-
-<RequiredWorkshopsModal @ref="RequiredWorkshopsModal" Product="Product" WorkshopResult="WorkshopResult" />

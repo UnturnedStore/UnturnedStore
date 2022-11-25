@@ -11,6 +11,8 @@ using Website.Components.Basic;
 using Website.Components.Alerts;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
+using System.Linq;
+using Website.Client.Pages.User.MessagePage.Components;
 
 namespace Website.Client.Pages.User.MessagePage
 {
@@ -28,6 +30,9 @@ namespace Website.Client.Pages.User.MessagePage
         public MessageReadService MessageReadService { get; set; }
 
         public MMessage Message { get; set; }
+        
+        private int? NewReplyId { get; set; }
+        private bool IsHighlighterHidden { get; set; }
             
         private HttpStatusCode statusCode;
 
@@ -40,7 +45,7 @@ namespace Website.Client.Pages.User.MessagePage
                 Message = await response.Content.ReadFromJsonAsync<MMessage>();
                 SetDefault();
 
-                if (MessageReadService.HasNewMessage(Message.Id))
+                if (MessageReadService.HasNewMessage(Message))
                 {
                     if (Message.Read == null)
                     {
@@ -49,6 +54,8 @@ namespace Website.Client.Pages.User.MessagePage
                     }
                     else
                     {
+                        NewReplyId = Message.Replies.First(r => r.Id > Message.Read.ReadId).Id;
+
                         await HttpClient.PutAsJsonAsync("api/messages/read", newlyRead);
                         Message.Read = newlyRead;
                     }
@@ -88,6 +95,7 @@ namespace Website.Client.Pages.User.MessagePage
             }
 
             msg = null;
+            if (NewReplyId.HasValue) IsHighlighterHidden = true;
             isLoading = true;
 
             var response = await HttpClient.PostAsJsonAsync("api/messages/replies", Reply);

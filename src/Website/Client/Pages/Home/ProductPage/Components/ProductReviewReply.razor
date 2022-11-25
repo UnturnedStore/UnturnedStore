@@ -1,0 +1,64 @@
+﻿@if (Reply != null)
+{
+    <div class="card mb-3" style="margin-left: 2rem;">
+        <div class="review-reply-arrow-up"></div>
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <a class="text-decoration-none text-dark" href="/users/@Reply.UserId">@(Reply.UserId == UserService.UserId ? "You" : Reply.User.Name)</a>
+                @if (UserService.IsAdmin || UserService.UserId == SellerId)
+                {
+                    <div class="ms-auto d-flex gap-2">
+                        @if (Reply.UserId == UserService.UserId)
+                        {
+                            <button class="btn btn-sm btn-outline-success" @onclick="() => EditReplyAsync()">
+                                <i class="fas fa-edit" style="vertical-align: initial"></i>
+                            </button>   
+                        }
+                        <button class="btn btn-sm btn-outline-danger" @onclick="() => DeleteReplyAsync()">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>   
+                    </div>   
+                }
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                @Reply.Body
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="text-muted">
+                    @Reply.LastUpdate
+                </div>
+            </div>                
+        </div>
+    </div>
+}
+
+@code {
+    public MProductReviewReply Reply => Review.Reply;
+    [Parameter]
+    public MProductReview Review { get; set; }
+    [Parameter]
+    public int SellerId { get; set; }
+
+    [Parameter]
+    public EventCallback<MProductReview> OnEditReply { get; set; }
+    [Parameter]
+    public EventCallback<MProductReview> OnDeleteReply { get; set; }
+
+    [Inject]
+    public AuthenticatedUserService UserService { get; set; }
+
+    public ConfirmModal<MProductReview> EditReplyModal { get; set; }
+    public ConfirmModal<MProductReview> DeleteReplyConfirm { get; set; }
+
+    private async Task EditReplyAsync()
+    {
+        await OnEditReply.InvokeAsync(Review);
+    }
+
+    private async Task DeleteReplyAsync()
+    {
+        await OnDeleteReply.InvokeAsync(Review);
+    }
+}
