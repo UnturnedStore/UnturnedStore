@@ -93,7 +93,7 @@ namespace Website.Data.Repositories
         {
             const string sql = "SELECT mr.* FROM dbo.MessagesRead mr " +
                 "JOIN dbo.Messages m ON m.Id = mr.MessageId AND m.IsClosed = 0 WHERE mr.UserId = @userId " +
-                "AND mr.ReadId != (SELECT TOP 1 Id FROM dbo.MessageReplies WHERE MessageId = mr.MessageId ORDER BY Id DESC);";
+                "AND mr.ReadId < (SELECT TOP 1 Id FROM dbo.MessageReplies WHERE MessageId = mr.MessageId ORDER BY Id DESC);";
 
             return await connection.QueryAsync<MMessageRead>(sql, new { userId });
         }
