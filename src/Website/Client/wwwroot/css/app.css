@@ -114,6 +114,15 @@ td {
     border-bottom: 12px solid rgba(0,0,0,0.15);
 }
 
+.review-reply-line {
+    position: absolute;
+    left: -0.75rem;
+    height: 100%;
+    width: 0.25rem;
+    border-radius: 1rem;
+    background-color: rgba(0,0,0,0.15);
+}
+
 .mobile-only {
     display: none;
 }

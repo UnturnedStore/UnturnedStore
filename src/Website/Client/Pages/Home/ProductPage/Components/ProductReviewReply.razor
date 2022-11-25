@@ -1,7 +1,8 @@
 ﻿@if (Reply != null)
 {
-    <div class="card mb-3" style="margin-left: 2rem;">
-        <div class="review-reply-arrow-up"></div>
+    <div class="card mb-3" style="margin-left: 2.5rem;">
+        <div class="review-reply-line"></div>
+        @*<div class="review-reply-arrow-up"></div>*@
         <div class="card-header">
             <div class="d-flex align-items-center">
                 <a class="text-decoration-none text-dark" href="/users/@Reply.UserId">@(Reply.UserId == UserService.UserId ? "You" : Reply.User.Name)</a>
