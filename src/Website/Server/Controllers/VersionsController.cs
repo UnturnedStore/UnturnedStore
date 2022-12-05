@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Server.Services;
 using Website.Shared.Constants;
+using Website.Shared.Enums;
 using Website.Shared.Models.Database;
 
 namespace Website.Server.Controllers
@@ -35,7 +36,8 @@ namespace Website.Server.Controllers
 
             version = await versionsRepository.AddVersionAsync(version);
 
-            await discordService.SendVersionUpdateAsync(version);
+            if (await branchesRepository.GetProductStatusAsync(version.BranchId) == ProductStatus.Released)
+                await discordService.SendVersionUpdateAsync(version);
 
             return Ok(version);
         }

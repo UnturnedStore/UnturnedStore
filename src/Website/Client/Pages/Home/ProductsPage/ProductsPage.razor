@@ -66,7 +66,7 @@
                     <label class="form-label form-check-label m-0" for="verifiedselleronly-check">Verified Sellers Only</label>
                 </div>
             </div>
-            @if(ProductTags.Count > 0)
+            @if (ProductTags.Count > 0)
             {
                 <div class="mb-2">
                     <label class="form-label text-muted small mb-1">Tags</label>
@@ -79,13 +79,16 @@
                             </li>
                         }
                     </ul>
-                </div>   
+                </div>
             }
         </div>
         <div class="col-md-9">
             <div class="input-group">
                 <span class="input-group-text"><i class="fas fa-search"></i></span>
                 <input type="text" class="form-control" placeholder=" Search by Name, Description or Author" @bind="searchString" @bind:event="oninput" />
+                <button class="input-group-text btn-fuzzy" title="@(fuzzysearching ? "Disable Fuzzy Search" : "Enable Fuzzy Search")" @onclick="() => { fuzzysearching = !fuzzysearching; }">
+                    <i class="fas fa-bolt" style="@(fuzzysearching ? "color: #9e61ff;" : "")"></i>
+                </button>
             </div>   
             <Virtualize Items="OrderedProducts" Context="product">
                 <ProductItem Product="product" ProductTags="ProductTags" />

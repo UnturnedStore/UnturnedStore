@@ -55,7 +55,7 @@
                         @(new MarkupString(MarkdownHelper.ParseToHtml(reply.Content)))
                     </div>
                     <div class="text-muted">
-                        @reply.CreateDate
+                        <HoverableDateTime Time="reply.CreateDate" />
                     </div>
                 </div>
             </div>
