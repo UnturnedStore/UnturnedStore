@@ -1,4 +1,31 @@
-﻿/* To Remove Increase and Decrease Buttons for Input type Number */
+﻿.btn-fuzzy {
+    transition: all 0.125s;
+    cursor: pointer;
+}
+
+.btn-fuzzy > i {
+    transition: all 0.125s;
+}
+
+.btn-fuzzy:active {
+    border-color: #caa9ff;
+    z-index: 3;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem #9e61ff40;
+}
+
+.btn-fuzzy:active > i {
+    color: #73688d;
+}
+
+.btn-fuzzy:focus {
+    border-color: #9e61ff;
+    z-index: 3;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem #9e61ff40;
+}
+
+/* To Remove Increase and Decrease Buttons for Input type Number */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

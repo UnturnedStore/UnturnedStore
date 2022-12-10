@@ -35,7 +35,7 @@
                     <p class="card-text">@((MarkupString)MarkdownHelper.ParseToHtml(version.Changelog, false))</p>
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="text-muted">
-                            @version.CreateDate
+                            <HoverableDateTime Time="version.CreateDate" />
                         </div>
                         <div class="ms-auto">
                             <form method="get" action="api/versions/download/@version.Id">

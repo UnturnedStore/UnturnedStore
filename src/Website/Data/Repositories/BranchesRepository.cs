@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Website.Shared.Enums;
 using Website.Shared.Models.Database;
 
 namespace Website.Data.Repositories
@@ -29,6 +30,12 @@ namespace Website.Data.Repositories
         {
             const string sql = "SELECT IsEnabled FROM dbo.Branches WHERE Id = @branchId;";
             return await connection.ExecuteScalarAsync<bool>(sql, new { branchId });
+        }
+
+        public async Task<ProductStatus> GetProductStatusAsync(int branchId)
+        {
+            const string sql = "SELECT p.Status FROM dbo.Products p JOIN dbo.Branches b ON b.Id = @branchId WHERE p.Id = b.ProductId;";
+            return (ProductStatus)await connection.ExecuteScalarAsync<int>(sql, new { branchId });
         }
 
         public async Task<MBranch> AddBranchAsync(MBranch branch)

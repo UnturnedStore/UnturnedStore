@@ -1,0 +1,8 @@
+﻿<span title="@FormatedTime">@Time</span>
+
+@code {
+    [Parameter]
+    public DateTime Time { get; set; }
+
+    private string FormatedTime => Time.ToString("f");
+}

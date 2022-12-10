@@ -43,7 +43,7 @@
                                     </div>
                                     <div class="d-flex">
                                         <div class="text-muted">
-                                            @Review.LastUpdate
+                                            <HoverableDateTime Time="Review.LastUpdate" />
                                         </div>                    
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <div class="text-muted">
-                                            @(Model.Id == 0 ? DateTime.Now : Model.LastUpdate)
+                                            <HoverableDateTime Time="Model.Id == 0 ? DateTime.Now : Model.LastUpdate" />
                                         </div>
                                     </div>
                                 </div>

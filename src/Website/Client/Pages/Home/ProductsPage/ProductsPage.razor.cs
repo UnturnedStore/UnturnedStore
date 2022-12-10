@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Website.Client.Helpers;
 using Website.Client.Services;
 using Website.Shared.Constants;
 using Website.Shared.Models.Database;
@@ -34,7 +35,8 @@ namespace Website.Client.Pages.Home.ProductsPage
             .Where(x => string.IsNullOrEmpty(searchString)
             || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
-            || x.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase));
+            || x.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || fuzzysearching && searchString.Length > 2 && SearchHelper.FuzzyCompare(searchString, x.Name));
 
         private List<MProduct> OrderedProducts
         {
@@ -49,11 +51,15 @@ namespace Website.Client.Pages.Home.ProductsPage
                     _ => SearchedProducts.OrderByDescending(x => x.ReleaseDate is null ? x.CreateDate : x.ReleaseDate)
                 };
 
+                if (fuzzysearching && searchString.Length > 2)
+                    products = products.OrderBy(x => SearchHelper.FuzzyMap(searchString, x.Name));
+
                 return products.ToList();
             }
         }
 
         private string searchString = string.Empty;
+        private bool fuzzysearching = true;
         private string searchCategory = string.Empty;
         private HashSet<MProductTag> searchTagIds = new HashSet<MProductTag>();
         private decimal minPrice = 0.00M;
