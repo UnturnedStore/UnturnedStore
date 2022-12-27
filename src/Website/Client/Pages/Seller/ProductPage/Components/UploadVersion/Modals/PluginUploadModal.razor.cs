@@ -42,18 +42,14 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modal
             await JSRuntime.HideModalAsync(nameof(PluginUploadModal));
         }
 
-        private bool IsValidDll(string contentType)
+        private bool IsValidDll(IBrowserFile browserFile)
         {
-            return contentType switch
-            {
-                "application/octet-stream" or "application/x-msdownload" => true,
-                _ => false,
-            };
+            return browserFile.Name.EndsWith(".dll");
         }
 
         private void OnPluginFileChange(InputFileChangeEventArgs e)
         {
-            if (!IsValidDll(e.File.ContentType))
+            if (!IsValidDll(e.File))
             {
                 AlertService.ShowAlert("pluginuploadmodal-main", $"<strong>{e.File.Name}</strong> is not a valid .dll file", AlertType.Danger);
                 Plugin = null;
@@ -72,7 +68,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modal
 
             foreach (IBrowserFile file in files)
             {
-                if (!IsValidDll(file.ContentType))
+                if (!IsValidDll(file))
                 {
                     filesList.Remove(file);
                     invalidLibraries.Add(file.Name);
