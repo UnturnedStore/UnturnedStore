@@ -1,5 +1,6 @@
 ﻿@page "/checkout/{SellerId:int}"
 @using Website.Client.Pages.User.CheckoutPage.Components
+@using Website.Components.Alerts
 
 
 @if (OrderParams != null)
@@ -45,6 +46,17 @@
                         </div>
                     }
 
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="fs-5 mb-2">
+                    Coupon
+                </div>
+                <div class="input-group">
+                    <input type="text" class="form-control" @bind="CouponCode" @bind:event="oninput" @onchange="(ChangeEventArgs e) => GetCoupon(e.Value.ToString())" placeholder="Coupon Code" />
+                </div>
+                <div class="mt-2">
+                    <AlertBox ID="user-checkout-coupon" Group="checkoutpage" />
                 </div>
             </div>
             <div class="mb-3">

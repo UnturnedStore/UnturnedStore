@@ -26,6 +26,7 @@ namespace Website.Shared.Models.Database
         public int SellerId { get; set; }
         public int? AdminId { get; set; }
         public ProductStatus Status { get; set; }
+        public string StatusReason { get; set; }
         public DateTime StatusUpdateDate { get; set; }
         public bool IsLoaderEnabled { get; set; }
         public bool IsEnabled { get; set; }
@@ -40,6 +41,7 @@ namespace Website.Shared.Models.Database
 
         public Seller Seller { get; set; }
         public UserInfo Customer { get; set; }
+        public MProductSale Sale { get; set; }
 
         public List<MProductTab> Tabs { get; set; }
         public List<MProductMedia> Medias { get; set; }
@@ -55,12 +57,18 @@ namespace Website.Shared.Models.Database
             return Description;
         }
 
-        public string GetPrice()
+        public decimal DiscountedPrice()
         {
-            if (Price == 0)
-                return "Free";
-            return $"${Price.ToString("N2")}";
+            if (Sale == null) return Price;
+            else return Math.Round(Price * Sale.SaleMultiplier, 2);
         }
-        
+
+        public decimal DiscountedPrice(MProductCoupon coupon)
+        {
+            if (Sale == null && coupon == null) return Price;
+            else if (Sale != null && coupon == null) return Math.Round(Price * Sale.SaleMultiplier, 2);
+            else if (Sale == null && coupon != null) return Math.Round(Price * coupon.CouponMultiplier, 2);
+            else return Math.Round(Math.Round(Price * Sale.SaleMultiplier, 2) * coupon.CouponMultiplier, 2);
+        }
     }
 }

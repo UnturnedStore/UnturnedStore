@@ -1,0 +1,73 @@
+﻿@using Website.Client.Shared.Components.Products
+<div class="modal fade" id="@nameof(DetailsProductSaleModal)" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                @if (Model != null)
+                {
+                    <h5 class="modal-title">@Model.SaleName Details</h5>
+                }
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            @if (Model != null)
+            {
+                <div class="modal-body">
+                    
+                    <div class="mb-3 row">
+                        <label class="form-label">Product</label>
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center gap-3 p-2 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <img src="/api/images/@Model.Product.ImageId" width="30" height="30" />
+                                    <div class="ms-2">
+                                        @Model.Product.Name
+                                    </div>
+                                </div>
+                                <ProductPrice Sale="Model" UsePricePrefix="true" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 row">
+                        <label class="form-label">Duration</label>
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center gap-3 p-2 bg-light rounded">
+                                <div class="d-inline-flex flex-wrap flex-md-nowrap justify-content-center">
+                                    <div class="text-center">
+                                        <span>From</span>
+                                        <HoverableDateTime Time="Model.SaleStart" />
+                                    </div>
+                                    <div class="vertical-divider d-none d-md-block"></div>
+                                    <div class="dropdown-divider d-block d-md-none w-100"></div>
+                                    <div class="text-center">
+                                        <span>To</span>
+                                        <HoverableDateTime Time="Model.EndDate" />
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-column align-items-end text-nowrap">
+                                    <span>@((Model.EndDate - Model.SaleStart).TotalDays.ToString("N1")) days</span>
+                                    @if (Model.IsActive)
+                                    {
+                                        <span style="text-align: right;">
+                                            <span class="d-block d-md-inline">Ending in </span><span>@((Model.EndDate - DateTime.Now).TotalDays.ToString("N1")) days</span>
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <label class="form-label">Usage</label>
+                        <div>
+                            <div class="d-flex p-2 bg-light rounded">
+                                <div>@Model.SaleUsageCount Orders</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>

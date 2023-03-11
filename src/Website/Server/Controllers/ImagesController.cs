@@ -27,7 +27,8 @@ namespace Website.Server.Controllers
                 return NotFound();
             }
 
-            Response.Headers.Add("Content-Disposition", "inline; filename=" + image.Name);
+            //Response.Headers.Add("Content-Disposition", "inline; filename=" + image.Name);
+            Response.Headers.ContentDisposition = "inline; filename=" + image.Name; // Ö is an invalid char, ask MCrow
             return File(image.Content, image.ContentType);
         }
 

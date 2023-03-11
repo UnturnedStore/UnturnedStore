@@ -23,6 +23,6 @@ namespace Website.Shared.Params
         public Seller Seller { get; set; }
         [JsonIgnore]
         public bool IsAgree { get; set; }
-        public string GetTotalCost() => Items != null ? Items.Sum(x => x.Product.Price).ToString("N2") : string.Empty;
+        public string GetTotalCost() => Items != null ? Items.Sum(x => x.Product.DiscountedPrice(x.Coupon)).ToString("N2") : string.Empty;
     }
 }

@@ -15,15 +15,17 @@ namespace Website.Server.Services
     {
         private readonly OrdersRepository ordersRepository;
         private readonly ProductsRepository productsRepository;
+        private readonly OffersRepository offersRepository;
         private readonly UsersRepository usersRepository;
         private readonly ILogger<OrderService> logger;
         private readonly DiscordService discordService;
 
-        public OrderService(OrdersRepository ordersRepository, ProductsRepository productsRepository, UsersRepository usersRepository, 
-            ILogger<OrderService> logger, DiscordService discordService, PaymentGatewayClient paymentGatewayClient)
+        public OrderService(OrdersRepository ordersRepository, ProductsRepository productsRepository, OffersRepository offersRepository, 
+            UsersRepository usersRepository, ILogger<OrderService> logger, DiscordService discordService, PaymentGatewayClient paymentGatewayClient)
         {
             this.ordersRepository = ordersRepository;
             this.productsRepository = productsRepository;
+            this.offersRepository = offersRepository;
             this.usersRepository = usersRepository;
             this.logger = logger;
             this.discordService = discordService;
@@ -93,8 +95,21 @@ namespace Website.Server.Services
                     return null;
                 }
 
+                if (!string.IsNullOrEmpty(orderItem.CouponCode))
+                {
+                    orderItem.Coupon = await offersRepository.GetCouponFromCodeAsync(orderItem.CouponCode, orderItem.ProductId);
+                    
+                    if (orderItem.Coupon == null)
+                    {
+                        return null;
+                    }
+
+                    orderItem.CouponId = orderItem.Coupon.Id;
+                }
+
                 orderItem.ProductName = orderItem.Product.Name;
-                orderItem.Price = orderItem.Product.Price;
+                orderItem.Price = orderItem.Product.DiscountedPrice(orderItem.Coupon);
+                if (orderItem.Product.Sale != null) orderItem.SaleId = orderItem.Product.Sale.Id;
 
                 order.TotalPrice += orderItem.Price;
                 order.Items.Add(orderItem);

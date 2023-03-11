@@ -85,6 +85,8 @@
     <Build Include="tables\ProductTags.sql" />
     <Build Include="tables\ProductWorkshops.sql" />
     <Build Include="tables\ProductReviewReplies.sql" />
+    <Build Include="tables\ProductSales.sql" />
+    <Build Include="tables\ProductCoupons.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Database.publish.xml" />

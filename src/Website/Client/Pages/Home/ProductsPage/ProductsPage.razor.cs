@@ -24,12 +24,12 @@ namespace Website.Client.Pages.Home.ProductsPage
         public IEnumerable<MProduct> Products { get; set; }
         public List<MProductTag> ProductTags { get; set; }
 
-        private decimal HighestProductPrice => Products.OrderByDescending(x => x.Price).FirstOrDefault()?.Price ?? 0;
+        private decimal HighestProductPrice => Products.OrderByDescending(x => x.DiscountedPrice()).FirstOrDefault()?.DiscountedPrice() ?? 0;
 
         private IEnumerable<MProduct> SearchedProducts => Products
             .Where(x => string.IsNullOrEmpty(searchCategory) || x.Category == searchCategory)
             .Where(x => searchTagIds.Count == 0 || searchTagIds.All(t => x.Tags.Contains(t)))
-            .Where(x => x.Price >= (minPrice < maxPrice ? minPrice : maxPrice) && x.Price <= (minPrice < maxPrice ? maxPrice : minPrice))
+            .Where(x => x.DiscountedPrice() >= (minPrice < maxPrice ? minPrice : maxPrice) && x.DiscountedPrice() <= (minPrice < maxPrice ? maxPrice : minPrice))
             .Where(x => minRating == 0 || x.AverageRating >= minRating)
             .Where(x => !verifiedSellersOnly || x.Seller.IsVerifiedSeller)
             .Where(x => string.IsNullOrEmpty(searchString)
@@ -46,8 +46,8 @@ namespace Website.Client.Pages.Home.ProductsPage
                 {
                     EOrderBy.MostDownloads => SearchedProducts.OrderByDescending(x => x.TotalDownloadsCount + x.ServersCount),
                     EOrderBy.BestRated => SearchedProducts.OrderByDescending(x => x.AverageRating).ThenByDescending(x => x.RatingsCount),
-                    EOrderBy.PriceAsc => SearchedProducts.OrderBy(x => x.Price),
-                    EOrderBy.PriceDesc => SearchedProducts.OrderByDescending(x => x.Price),
+                    EOrderBy.PriceAsc => SearchedProducts.OrderBy(x => x.DiscountedPrice()),
+                    EOrderBy.PriceDesc => SearchedProducts.OrderByDescending(x => x.DiscountedPrice()),
                     _ => SearchedProducts.OrderByDescending(x => x.ReleaseDate is null ? x.CreateDate : x.ReleaseDate)
                 };
 

@@ -32,8 +32,8 @@ namespace Website.Data.Repositories
 
             order.Id = await connection.ExecuteScalarAsync<int>(sql, order);
 
-            const string sql1 = "INSERT INTO dbo.OrderItems (OrderId, ProductId, ProductName, Price) " +
-                "VALUES (@OrderId, @ProductId, @ProductName, @Price);";
+            const string sql1 = "INSERT INTO dbo.OrderItems (OrderId, ProductId, SaleId, CouponId, ProductName, Price) " +
+                "VALUES (@OrderId, @ProductId, @SaleId, @CouponId, @ProductName, @Price);";
             foreach (var item in order.Items)
             {
                 item.OrderId = order.Id;
@@ -45,11 +45,11 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MOrder>> GetOrdersAsync(int userId)
         {
-            const string sql = "SELECT o.*, u.*, i.*, p.* FROM dbo.Orders o JOIN dbo.Users u ON o.SellerId = u.Id " +
-                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id  WHERE o.BuyerId = @userId;";
+            const string sql = "SELECT o.*, u.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.CouponMultiplier, co.IsEnabled FROM dbo.Orders o JOIN dbo.Users u ON o.SellerId = u.Id " +
+                "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id LEFT JOIN dbo.ProductSales ps ON i.SaleId = ps.Id LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id WHERE o.BuyerId = @userId;";
 
             List<MOrder> orders = new List<MOrder>();
-            await connection.QueryAsync<MOrder, Seller, MOrderItem, MProduct, MOrder>(sql, (o, u, i, p) =>
+            await connection.QueryAsync<MOrder, Seller, MOrderItem, MProduct, MProductSale, MProductCoupon, MOrder>(sql, (o, u, i, p, ps, co) =>
             {
                 var order = orders.FirstOrDefault(x => x.Id == o.Id);
                 if (order == null)
@@ -63,6 +63,8 @@ namespace Website.Data.Repositories
                 if (i != null)
                 {
                     i.Product = p;
+                    i.Product.Sale = ps;
+                    i.Coupon = co;
                     order.Items.Add(i);
                 }
 
@@ -74,12 +76,14 @@ namespace Website.Data.Repositories
 
         public async Task<MOrder> GetOrderAsync(Guid paymentId)
         {
-            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.* " +
+            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.CouponMultiplier, co.IsEnabled " +
                 "FROM dbo.Orders o " +
                 "JOIN dbo.Users u ON o.SellerId = u.Id " +
                 "JOIN dbo.Users u2 ON o.BuyerId = u2.Id " +
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId " +
                 "JOIN dbo.Products p ON i.ProductId = p.Id " +
+                "LEFT JOIN dbo.ProductSales ps ON i.SaleId = ps.Id " +
+                "LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id" +
                 "WHERE o.PaymentId = @paymentId;";
 
             return await GetOrderSharedAsync(sql, new { paymentId });
@@ -87,12 +91,14 @@ namespace Website.Data.Repositories
 
         public async Task<MOrder> GetOrderAsync(int orderId)
         {
-            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.* " +
+            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.CouponMultiplier, co.IsEnabled " +
                 "FROM dbo.Orders o " +
                 "JOIN dbo.Users u ON o.SellerId = u.Id " +
                 "JOIN dbo.Users u2 ON o.BuyerId = u2.Id " + 
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId " +
                 "JOIN dbo.Products p ON i.ProductId = p.Id " +
+                "LEFT JOIN dbo.ProductSales ps ON i.SaleId = ps.Id " +
+                "LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id" +
                 "WHERE o.Id = @orderId;";
 
             return await GetOrderSharedAsync(sql, new { orderId });
@@ -101,7 +107,7 @@ namespace Website.Data.Repositories
         private async Task<MOrder> GetOrderSharedAsync(string sql, object param)
         {
             MOrder order = null;
-            await connection.QueryAsync<MOrder, Seller, UserInfo, MOrderItem, MProduct, MOrder>(sql, (o, u, u2, i, p) =>
+            await connection.QueryAsync<MOrder, Seller, UserInfo, MOrderItem, MProduct, MProductSale, MProductCoupon, MOrder>(sql, (o, u, u2, i, p, ps, co) =>
             {
                 if (order == null)
                 {
@@ -114,6 +120,8 @@ namespace Website.Data.Repositories
                 if (i != null)
                 {
                     i.Product = p;
+                    i.Product.Sale = ps;
+                    i.Coupon = co;
                     order.Items.Add(i);
                 }
 

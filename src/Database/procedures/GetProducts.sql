@@ -55,10 +55,18 @@ BEGIN
 		t.Id,
 		t.Title,
 		t.Color,
-		t.BackgroundColor
+		t.BackgroundColor,
+		ps.Id,
+		ps.ProductId,
+		ps.SaleName,
+		ps.SaleMultiplier,
+		ps.StartDate,
+		ps.EndDate,
+		ps.IsExpired
 	FROM dbo.Products p 
 	JOIN dbo.Users u ON p.SellerId = u.Id
 	LEFT JOIN dbo.Tags t ON t.Id IN (SELECT pt.TagId FROM dbo.ProductTags pt WHERE pt.ProductId = p.Id)
+	LEFT JOIN dbo.ProductSales ps ON ps.ProductId = p.Id AND ps.IsExpired = 0 AND ps.IsActive = 1
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
 	LEFT JOIN CTE_ProductServers s ON s.ProductId = p.Id

@@ -23,10 +23,18 @@ BEGIN
 		p.CreateDate,
 		TotalDownloadsCount = ISNULL(d.TotalDownloadsCount, 0), 
 		AverageRating = ISNULL(r.AverageRating, 0), 
-		RatingsCount = ISNULL(RatingsCount, 0)
+		RatingsCount = ISNULL(RatingsCount, 0),
+		ps.Id,
+		ps.ProductId,
+		ps.SaleName,
+		ps.SaleMultiplier,
+		ps.StartDate,
+		ps.EndDate,
+		ps.IsExpired
 	FROM dbo.Products p 
-	JOIN dbo.Users u ON p.SellerId = u.Id 
+	JOIN dbo.Users u ON p.SellerId = u.Id
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
+	LEFT JOIN dbo.ProductSales ps ON ps.ProductId = p.Id AND ps.IsExpired = 0 AND ps.IsActive = 1
 	WHERE p.SellerId = @UserId;
 END;

@@ -6,8 +6,22 @@
         <div class="ms-2">
             <span class="text-nowrap">@Item.Product.Name</span><br />
         </div>
-        <div class="ms-auto">
-            <small class="text-muted">$@Item.Product.Price</small>
+        <div class="d-flex flex-column align-items-end ms-auto" style="column-gap: .25rem;">
+            @if (Item.Product.Sale != null || Item.Coupon != null)
+            {
+                <div style="text-align: right;">
+                    @if (Item.Coupon != null)
+                    {
+                        <span class="ps-1 pe-1 me-1 bg-primary text-white rounded small" title="@Item.Coupon.CouponName">-@(((1M - Item.Coupon.CouponMultiplier) * 100).ToString("N0"))%</span>
+                    }
+                    @if (Item.Product.Sale != null)
+                    {
+                        <span class="ps-1 pe-1 me-1 bg-success text-white rounded small" title="@Item.Product.Sale.SaleName">-@(((1M - Item.Product.Sale.SaleMultiplier) * 100).ToString("N0"))%</span> 
+                    }
+                    <s class=" text-muted small">$@Item.Product.Price</s>
+                </div>
+            }
+            <small class="text-muted">$@Item.Product.DiscountedPrice(Item.Coupon)</small>
         </div>
 
     </div>

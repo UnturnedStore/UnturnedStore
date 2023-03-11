@@ -31,6 +31,8 @@ namespace Website.Client.Pages.Seller.ProductPage
 
         private HttpStatusCode statusCode { get; set; }
 
+        public string StatusReason { get; set; }
+
         public ConfirmModal<ProductInfo> ConfirmRelease { get; set; }
         public ConfirmModal<ProductInfo> ConfirmDisable { get; set; }
         public ConfirmModal<ProductInfo> ConfirmSubmit { get; set; }
@@ -84,9 +86,10 @@ namespace Website.Client.Pages.Seller.ProductPage
 
         private async Task SubmitDisableAsync()
         {
-            bool isSuccess = await ChangeStatusAsync(ProductStatus.Disabled);
+            bool isSuccess = await ChangeStatusAsync(ProductStatus.Disabled, StatusReason);
             if (isSuccess)
             {
+                StatusReason = null;
                 Product.IsEnabled = false;
                 AlertService.ShowAlert("product-main", $"Successfully disabled <strong>{Product.Name}</strong>!", AlertType.Success);
             }
@@ -105,9 +108,12 @@ namespace Website.Client.Pages.Seller.ProductPage
 
         private async Task SubmitRejectAsync()
         {
-            bool isSuccess = await ChangeStatusAsync(ProductStatus.Rejected);
+            bool isSuccess = await ChangeStatusAsync(ProductStatus.Rejected, StatusReason);
             if (isSuccess)
+            {
+                StatusReason = null;
                 AlertService.ShowAlert("product-main", $"Successfully rejected <strong>{Product.Name}</strong>!", AlertType.Success);
+            }
 
             StateHasChanged();
         }
@@ -121,12 +127,13 @@ namespace Website.Client.Pages.Seller.ProductPage
             StateHasChanged();
         }
 
-        private async Task<bool> ChangeStatusAsync(ProductStatus status)
+        private async Task<bool> ChangeStatusAsync(ProductStatus status, string reason = null)
         {
             ChangeProductStatusParams @params = new ChangeProductStatusParams()
             {
                 ProductId = ProductId,
-                Status = status
+                Status = status,
+                StatusReason = reason
             };
 
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/products/status", @params);
@@ -137,7 +144,7 @@ namespace Website.Client.Pages.Seller.ProductPage
             }
             else
             {
-                AlertService.ShowAlert("product-main", $"An error occurated {response.StatusCode}", AlertType.Danger);
+                AlertService.ShowAlert("product-main", $"An error occurred {response.StatusCode}", AlertType.Danger);
             }
             return false;
         }

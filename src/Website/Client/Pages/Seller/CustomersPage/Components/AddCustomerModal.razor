@@ -15,7 +15,7 @@
                                 <label class="form-label">Product</label>
                                 @if (Model.Product != null)
                                 {
-                                    <div class="d-flex aling-items-center border rounded boder-1 p-2" @onclick="ResetProduct" style="cursor: pointer;">
+                                    <div class="d-flex align-items-center border rounded border-1 p-2" @onclick="ResetProduct" style="cursor: pointer;">
                                         <div>
                                             <img src="/api/images/@Model.Product.ImageId" width="30" height="30" />
                                         </div>
@@ -42,7 +42,7 @@
                                 <label class="form-label">User</label>
                                 @if (Model.User != null)
                                 {
-                                    <div class="d-flex aling-items-center border rounded boder-1 p-2" @onclick="ResetUser" style="cursor: pointer;">
+                                    <div class="d-flex align-items-center border rounded border-1 p-2" @onclick="ResetUser" style="cursor: pointer;">
                                         <div>
                                             <img src="@Model.User.AvatarUrl()" width="30" height="30" />
                                         </div>

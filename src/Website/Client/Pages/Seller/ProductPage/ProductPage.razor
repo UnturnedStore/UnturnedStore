@@ -61,13 +61,25 @@
                     {
                         <div class="text-muted">
                             Rejected by: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Admin.Id">@Product.Admin.Name</a>
+                            @if (!string.IsNullOrEmpty(Product.StatusReason))
+                            {
+                                <div class="text-muted" style="max-width: 500px;">
+                                    Rejection Reason: <span class="fw-bold">@Product.StatusReason</span>
+                                </div>
+                            }
                         </div>
                     }
                     @if (Product.Status == ProductStatus.Disabled && Product.Admin != null)
                     {
                         <div class="text-muted">
                             Disabled by: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Admin.Id">@Product.Admin.Name</a>
-                        </div> 
+                        </div>
+                        @if (!string.IsNullOrEmpty(Product.StatusReason))
+                        {
+                            <div class="text-muted" style="max-width: 500px;">
+                                Disabled Reason: <span class="fw-bold">@Product.StatusReason</span>
+                            </div>
+                        }
                     }
                 </div>
             </div>
@@ -183,12 +195,26 @@
             <li>Still allow existing customers to download the product</li>
         </ul>
     </div>
+    <div class="dropdown-divider"></div>
+    <div>
+        <label class="form-label">Disabled Reason</label>
+        <textarea class="form-control" rows="3" maxlength="255" @bind="StatusReason" @bind:event="oninput" style="resize: none;" />
+        <div class="form-text">Optional, explain why the product was disabled</div>
+    </div>
 </ConfirmModal>
 <ConfirmModal @ref="ConfirmSubmit" TItem="ProductInfo" Title="Confirm submit for approval" BtnClass="btn btn-success" BtnText="Submit" ModalId="ConfirmSubmitModal" OnConfirm="SubmitRequestAsync">
     Are you sure you want to submit <span class="fw-bold">@Product.Name</span> for admin review?
 </ConfirmModal>
 <ConfirmModal @ref="ConfirmReject" TItem="ProductInfo" Title="Confirm reject" BtnClass="btn btn-danger" BtnText="Reject" ModalId="ConfirmRejectModal" OnConfirm="SubmitRejectAsync">
-    Are you sure you want to reject approval request for <span class="fw-bold">@Product.Name</span>?
+    <div>
+        Are you sure you want to reject approval request for <span class="fw-bold">@Product.Name</span>?
+    </div>
+    <div class="dropdown-divider"></div>
+    <div>
+        <label class="form-label">Rejection Reason</label>
+        <textarea class="form-control" rows="3" maxlength="255" @bind="StatusReason" @bind:event="oninput" style="resize: none;" />
+        <div class="form-text">Optional, explain why the product was rejected</div>
+    </div>
 </ConfirmModal>
 <ConfirmModal @ref="ConfirmApprove" TItem="ProductInfo" Title="Confirm approve" BtnClass="btn btn-success" BtnText="Approve" ModalId="ConfirmApproveModal" OnConfirm="SubmitApproveAsync">
     <div>Are you sure you want to reject approval request for <span class="fw-bold">@Product.Name</span>?</div>    

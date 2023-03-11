@@ -8,6 +8,7 @@ namespace Website.Shared.Params
     {
         public int ProductId { get; set; }
         public ProductStatus Status { get; set; }
+        public string StatusReason { get; set; }
 
         [JsonIgnore]
         public int? AdminId { get; set; }
