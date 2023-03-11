@@ -61,13 +61,13 @@
                     {
                         <div class="text-muted">
                             Rejected by: <a class="fw-bold text-muted text-decoration-none" href="/users/@Product.Admin.Id">@Product.Admin.Name</a>
-                            @if (!string.IsNullOrEmpty(Product.StatusReason))
-                            {
-                                <div class="text-muted" style="max-width: 500px;">
-                                    Rejection Reason: <span class="fw-bold">@Product.StatusReason</span>
-                                </div>
-                            }
                         </div>
+                        @if (!string.IsNullOrEmpty(Product.StatusReason))
+                        {
+                            <div class="text-muted" style="max-width: 500px;">
+                                Rejection Reason: <span class="fw-bold">@Product.StatusReason</span>
+                            </div>
+                        }
                     }
                     @if (Product.Status == ProductStatus.Disabled && Product.Admin != null)
                     {
