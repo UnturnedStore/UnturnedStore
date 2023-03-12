@@ -32,7 +32,7 @@ else
     [Parameter]
     public MProductSale Sale { get; set; }
 
-    private MProduct SetProduct => Product ?? Sale.Product;
+    private decimal SetProductPrice => Product?.Price ?? Sale.SetPrice;
     private MProductSale SetSale => Sale ?? Product.Sale;
 
     [Parameter]
@@ -46,7 +46,7 @@ else
     [Parameter]
     public string DiscountClass { get; set; }
 
-    public string Price => SetProduct.Price > 0 ? $"${SetProduct.Price.ToString("N2")}" : "Free";
+    public string Price => SetProductPrice > 0 ? $"${SetProductPrice.ToString("N2")}" : "Free";
     public string Discount => $"-{((1M - SetSale.SaleMultiplier) * 100).ToString("N0")}%";
-    public string DiscountPrice => $"${(SetProduct.Price * SetSale.SaleMultiplier).ToString("N2")}";
+    public string DiscountPrice => $"${(SetProductPrice * SetSale.SaleMultiplier).ToString("N2")}";
 }
