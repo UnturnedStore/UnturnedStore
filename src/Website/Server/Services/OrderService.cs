@@ -105,6 +105,7 @@ namespace Website.Server.Services
                     }
 
                     orderItem.CouponId = orderItem.Coupon.Id;
+                    orderItem.CouponMultiplier = orderItem.Coupon.CouponMultiplier;
                 }
 
                 orderItem.ProductName = orderItem.Product.Name;

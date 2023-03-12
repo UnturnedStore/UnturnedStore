@@ -6,5 +6,6 @@
 	SaleId INT NULL CONSTRAINT FK_OrderItems_SaleId FOREIGN KEY REFERENCES dbo.ProductSales(Id),
 	CouponId INT NULL CONSTRAINT FK_OrderItems_CouponId FOREIGN KEY REFERENCES dbo.ProductCoupons(Id),
 	ProductName NVARCHAR(255) NOT NULL,
-	Price DECIMAL(9, 2) NOT NULL
+	Price DECIMAL(9, 2) NOT NULL,
+	CouponMultiplier DECIMAL(9, 2) NULL
 )

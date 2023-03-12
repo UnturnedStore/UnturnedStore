@@ -16,6 +16,7 @@ namespace Website.Shared.Models.Database
         public int? CouponId { get; set; }
         public string ProductName { get; set; }
         public decimal Price { get; set; }
+        public decimal? CouponMultiplier { get; set; }
 
         public MProduct Product { get; set; }
         public string CouponCode { get; set; }

@@ -32,8 +32,8 @@ namespace Website.Data.Repositories
 
             order.Id = await connection.ExecuteScalarAsync<int>(sql, order);
 
-            const string sql1 = "INSERT INTO dbo.OrderItems (OrderId, ProductId, SaleId, CouponId, ProductName, Price) " +
-                "VALUES (@OrderId, @ProductId, @SaleId, @CouponId, @ProductName, @Price);";
+            const string sql1 = "INSERT INTO dbo.OrderItems (OrderId, ProductId, SaleId, CouponId, ProductName, Price, CouponMultiplier) " +
+                "VALUES (@OrderId, @ProductId, @SaleId, @CouponId, @ProductName, @Price, @CouponMultiplier);";
             foreach (var item in order.Items)
             {
                 item.OrderId = order.Id;
@@ -45,7 +45,7 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MOrder>> GetOrdersAsync(int userId)
         {
-            const string sql = "SELECT o.*, u.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.CouponMultiplier, co.IsEnabled FROM dbo.Orders o JOIN dbo.Users u ON o.SellerId = u.Id " +
+            const string sql = "SELECT o.*, u.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.IsEnabled FROM dbo.Orders o JOIN dbo.Users u ON o.SellerId = u.Id " +
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId JOIN dbo.Products p ON i.ProductId = p.Id LEFT JOIN dbo.ProductSales ps ON i.SaleId = ps.Id LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id WHERE o.BuyerId = @userId;";
 
             List<MOrder> orders = new List<MOrder>();
@@ -76,7 +76,7 @@ namespace Website.Data.Repositories
 
         public async Task<MOrder> GetOrderAsync(Guid paymentId)
         {
-            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.CouponMultiplier, co.IsEnabled " +
+            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.IsEnabled " +
                 "FROM dbo.Orders o " +
                 "JOIN dbo.Users u ON o.SellerId = u.Id " +
                 "JOIN dbo.Users u2 ON o.BuyerId = u2.Id " +
@@ -91,7 +91,7 @@ namespace Website.Data.Repositories
 
         public async Task<MOrder> GetOrderAsync(int orderId)
         {
-            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.CouponMultiplier, co.IsEnabled " +
+            const string sql = "SELECT o.*, u.*, u2.*, i.*, p.*, ps.*, co.Id, co.ProductId, co.CouponName, co.IsEnabled " +
                 "FROM dbo.Orders o " +
                 "JOIN dbo.Users u ON o.SellerId = u.Id " +
                 "JOIN dbo.Users u2 ON o.BuyerId = u2.Id " + 
