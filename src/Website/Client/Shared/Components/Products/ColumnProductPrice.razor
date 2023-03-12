@@ -14,10 +14,10 @@
     [Parameter]
     public MProductCoupon Coupon { get; set; }
 
-    private MProduct SetProduct => Product ?? Sale.Product;
+    private decimal SetProductPrice => Product?.Price ?? Sale.SetPrice;
     private decimal? SetMultiplier => Coupon?.CouponMultiplier ?? Sale?.SaleMultiplier ?? Product.Sale?.SaleMultiplier;
 
-    public string Price => SetProduct.Price > 0 ? $"${SetProduct.Price.ToString("N2")}" : "Free";
+    public string Price => SetProductPrice > 0 ? $"${SetProductPrice.ToString("N2")}" : "Free";
     public string Discount => $"-{((1M - SetMultiplier.Value) * 100).ToString("N0")}%";
-    public string DiscountPrice => $"${(SetProduct.Price * SetMultiplier.Value).ToString("N2")}";
+    public string DiscountPrice => $"${(SetProductPrice * SetMultiplier.Value).ToString("N2")}";
 }
