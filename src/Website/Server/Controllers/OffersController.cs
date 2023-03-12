@@ -108,6 +108,9 @@ namespace Website.Server.Controllers
         [HttpPost("coupons/{couponCode}")]
         public async Task<IActionResult> GetProductCoupon(string couponCode, [FromBody] List<OrderItemParams> orderItems)
         {
+            if (!await offersRepository.GetCouponFromCodeAsync(couponCode))
+                return NotFound();
+
             MProductCoupon coupon = await offersRepository.GetCouponFromCodeAsync(couponCode, orderItems);
 
             if (coupon == null)

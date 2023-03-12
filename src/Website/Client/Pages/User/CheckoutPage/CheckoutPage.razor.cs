@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -65,6 +67,12 @@ namespace Website.Client.Pages.User.CheckoutPage
 
         private string CouponCode { get; set; }
 
+        private async Task HandleCouponSubmit(KeyboardEventArgs e)
+        {
+            if (e.Code != "Enter" && e.Code != "NumpadEnter") return;
+            await GetCoupon(CouponCode);
+        }
+
         private async Task GetCoupon(string couponCode)
         {
             if (string.IsNullOrEmpty(couponCode))
@@ -95,7 +103,13 @@ namespace Website.Client.Pages.User.CheckoutPage
                 CouponCode = string.Empty;
             } else
             {
-                AlertService.ShowAlert("user-checkout-coupon", "Invalid coupon code", AlertType.Danger);
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    AlertService.ShowAlert("user-checkout-coupon", "Found a coupon but it doesn't affect any of your products in your cart", AlertType.Primary);
+                } else
+                {
+                    AlertService.ShowAlert("user-checkout-coupon", "Invalid coupon code", AlertType.Danger);
+                }
             }
         }
 

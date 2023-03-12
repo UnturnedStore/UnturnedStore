@@ -83,7 +83,7 @@ namespace Website.Data.Repositories
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId " +
                 "JOIN dbo.Products p ON i.ProductId = p.Id " +
                 "LEFT JOIN dbo.ProductSales ps ON i.SaleId = ps.Id " +
-                "LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id" +
+                "LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id " +
                 "WHERE o.PaymentId = @paymentId;";
 
             return await GetOrderSharedAsync(sql, new { paymentId });
@@ -98,7 +98,7 @@ namespace Website.Data.Repositories
                 "LEFT JOIN dbo.OrderItems i ON o.Id = i.OrderId " +
                 "JOIN dbo.Products p ON i.ProductId = p.Id " +
                 "LEFT JOIN dbo.ProductSales ps ON i.SaleId = ps.Id " +
-                "LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id" +
+                "LEFT JOIN dbo.ProductCoupons co ON i.CouponId = co.Id " +
                 "WHERE o.Id = @orderId;";
 
             return await GetOrderSharedAsync(sql, new { orderId });

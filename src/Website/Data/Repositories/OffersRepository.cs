@@ -114,6 +114,13 @@ namespace Website.Data.Repositories
             return await connection.ExecuteScalarAsync<bool>(sql, new { productCouponId, userId });
         }
 
+        public async Task<bool> GetCouponFromCodeAsync(string couponCode)
+        {
+            const string sql = "SELECT co.Id, co.ProductId, co.CouponName, co.CouponCode, co.CouponMultiplier FROM dbo.ProductCoupons co " +
+            "WHERE IsDeleted = 0 AND co.IsEnabled = 1 AND co.CouponCode = @couponCode AND (co.MaxUses = 0 OR (SELECT COUNT(o.Id) FROM dbo.OrderItems o WHERE o.CouponId = co.Id) < co.MaxUses);";
+            return await connection.ExecuteScalarAsync<bool>(sql, new { couponCode });
+        }
+
         public async Task<MProductCoupon> GetCouponFromCodeAsync(string couponCode, int productId)
         {
             const string sql = "SELECT co.Id, co.ProductId, co.CouponName, co.CouponCode, co.CouponMultiplier FROM dbo.ProductCoupons co " +
