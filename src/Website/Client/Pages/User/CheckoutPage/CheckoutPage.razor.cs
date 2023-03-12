@@ -105,7 +105,7 @@ namespace Website.Client.Pages.User.CheckoutPage
             {
                 if (response.StatusCode == HttpStatusCode.BadRequest)
                 {
-                    AlertService.ShowAlert("user-checkout-coupon", "Found a coupon but it doesn't affect any of your products in your cart", AlertType.Primary);
+                    AlertService.ShowAlert("user-checkout-coupon", "Found a coupon but it doesn't affect any of the products in your cart", AlertType.Primary);
                 } else
                 {
                     AlertService.ShowAlert("user-checkout-coupon", "Invalid coupon code", AlertType.Danger);
