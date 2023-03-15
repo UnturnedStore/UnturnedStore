@@ -127,7 +127,7 @@ namespace Website.Client.Pages.Seller.OffersPage
 
         public async Task ExpireSaleAsync(MProductSale Sale)
         {
-            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/offers/sales/expire", new ExpireProductSaleParams(Sale));
+            HttpResponseMessage response = await HttpClient.DeleteAsync("api/offers/sales/" + Sale.Id + "/expire");
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 Sale.IsActive = false;
