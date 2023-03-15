@@ -67,8 +67,8 @@ namespace Website.Data.Repositories
         public async Task<MProductSale> AddProductSaleAsync(MProductSale productSale)
         {
             const string sql = "INSERT INTO dbo.ProductSales (ProductId, SaleName, SaleMultiplier, StartDate, EndDate) " +
-            "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.SaleName, INSERTED.SaleMultiplier, INSERTED.StartDate, INSERTED.EndDate " +
-            "VALUES (@ProductId, @SaleName, @SaleMultiplier, @StartDate, @EndDate);";
+            "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.ProductPrice, INSERTED.SaleName, INSERTED.SaleMultiplier, INSERTED.StartDate, INSERTED.EndDate " +
+            "VALUES (@ProductId, (SELECT Price FROM dbo.Products p WHERE p.Id = @ProductId), @SaleName, @SaleMultiplier, @StartDate, @EndDate);";
 
             if (productSale.StartDate == null) productSale.StartDate = DateTime.Now;
             return await connection.QuerySingleAsync<MProductSale>(sql, productSale);
@@ -81,11 +81,17 @@ namespace Website.Data.Repositories
             if (productSale.StartDate == null) productSale.StartDate = DateTime.Now;
             await connection.ExecuteAsync(sql, productSale);
         }
-
-        public async Task EndProductSaleAsync(ExpireProductSaleParams parameters)
+        
+        public async Task UpdateProductSaleProductPriceAsync(int productId)
         {
-            const string sql = "UPDATE dbo.ProductSales SET EndDate = SYSDATETIME(), ProductPrice = @ProductPrice WHERE Id = @ProductSaleId;";
-            await connection.ExecuteAsync(sql, parameters);
+            const string sql = "UPDATE dbo.ProductSales SET ProductPrice = (SELECT Price FROM dbo.Products p WHERE p.Id = @productId) WHERE ProductId = @productId AND IsActive = 0 AND IsExpired = 0;";
+            await connection.ExecuteAsync(sql, new { productId });
+        }
+        
+        public async Task EndProductSaleAsync(int productSaleId)
+        {
+            const string sql = "UPDATE dbo.ProductSales SET EndDate = SYSDATETIME() WHERE Id = @productSaleId;";
+            await connection.ExecuteAsync(sql, new { productSaleId });
         }
 
         public async Task DeleteProductSaleAsync(int productSaleId)
