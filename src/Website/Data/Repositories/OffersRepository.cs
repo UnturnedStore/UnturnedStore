@@ -66,7 +66,7 @@ namespace Website.Data.Repositories
 
         public async Task<MProductSale> AddProductSaleAsync(MProductSale productSale)
         {
-            const string sql = "INSERT INTO dbo.ProductSales (ProductId, SaleName, SaleMultiplier, StartDate, EndDate) " +
+            const string sql = "INSERT INTO dbo.ProductSales (ProductId, ProductPrice, SaleName, SaleMultiplier, StartDate, EndDate) " +
             "OUTPUT INSERTED.Id, INSERTED.ProductId, INSERTED.ProductPrice, INSERTED.SaleName, INSERTED.SaleMultiplier, INSERTED.StartDate, INSERTED.EndDate " +
             "VALUES (@ProductId, (SELECT Price FROM dbo.Products p WHERE p.Id = @ProductId), @SaleName, @SaleMultiplier, @StartDate, @EndDate);";
 
