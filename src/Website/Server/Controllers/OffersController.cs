@@ -71,20 +71,20 @@ namespace Website.Server.Controllers
             return Ok();
         }
 
-        [HttpPost("sales/expire")]
-        public async Task<IActionResult> ExpireProductSale([FromBody] ExpireProductSaleParams parameters)
+        [HttpDelete("sales/{productSaleId}/expire")]
+        public async Task<IActionResult> ExpireProductSale(int productSaleId)
         {
-            if (!await offersRepository.IsProductSaleSellerAsync(parameters.ProductSaleId, int.Parse(User.Identity.Name)))
+            if (!await offersRepository.IsProductSaleSellerAsync(productSaleId, int.Parse(User.Identity.Name)))
             {
                 return Unauthorized();
             }
 
-            if (await offersRepository.CanUpdateProductSaleAsync(parameters.ProductSaleId) || await offersRepository.IsProductSaleExpiredAsync(parameters.ProductSaleId))
+            if (await offersRepository.CanUpdateProductSaleAsync(productSaleId) || await offersRepository.IsProductSaleExpiredAsync(productSaleId))
             {
                 return BadRequest();
             }
 
-            await offersRepository.EndProductSaleAsync(parameters);
+            await offersRepository.EndProductSaleAsync(productSaleId);
             return Ok();
         }
 
