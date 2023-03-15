@@ -2,13 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
 using System.Linq;
-using System.Resources;
-using System.Text;
 using System.Threading.Tasks;
-using Website.Shared.Constants;
-using Website.Shared.Models;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
 
@@ -56,13 +51,11 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MProductSale>> GetSellerProductSalesAsync(int userId)
         {
-            const string sql = "SELECT s.*, COUNT(o.Id) OVER (PARTITION BY s.Id) AS Id FROM dbo.ProductSales s " +
-            "JOIN dbo.Products p ON s.ProductId = p.Id AND p.SellerId = @userId LEFT JOIN dbo.OrderItems o ON o.SaleId = s.Id;";
-            return await connection.QueryAsync<MProductSale, int, MProductSale>(sql, (s, o) => 
-            {
-                s.SaleUsageCount = o;
-                return s;
-            }, param: new { userId });
+            const string sql = @"SELECT ps.*, (SELECT COUNT(*) FROM dbo.OrderItems oi WHERE oi.SaleId = ps.Id) AS SaleUsageCount 
+                FROM dbo.ProductSales ps
+                WHERE EXISTS (SELECT * FROM dbo.Products p WHERE p.Id = ps.ProductId AND p.SellerId = @userId)";
+
+            return await connection.QueryAsync<MProductSale>(sql, new { userId });
         }
 
         public async Task<DateTime> GetLastProductSaleEndDateAsync(int productSaleId, int productId)
@@ -130,21 +123,20 @@ namespace Website.Data.Repositories
 
         public async Task<MProductCoupon> GetCouponFromCodeAsync(string couponCode, List<OrderItemParams> orderItems)
         {
-            const string sql0 = "SELECT co.Id, co.ProductId, co.CouponName, co.CouponCode, co.CouponMultiplier, co.IsEnabled FROM dbo.ProductCoupons co " +
-            "WHERE IsDeleted = 0 AND co.IsEnabled = 1 AND co.ProductId IN (";
+            const string sql0 = @"SELECT co.Id, co.ProductId, co.CouponName, co.CouponCode, co.CouponMultiplier, co.IsEnabled 
+                FROM dbo.ProductCoupons co 
+                WHERE IsDeleted = 0 AND co.IsEnabled = 1 AND co.ProductId IN (";
             const string sql1 = ") AND co.CouponCode = @couponCode AND (co.MaxUses = 0 OR (SELECT COUNT(o.Id) FROM dbo.OrderItems o WHERE o.CouponId = co.Id) < co.MaxUses);";
             return await connection.QuerySingleOrDefaultAsync<MProductCoupon>(sql0 + string.Join(", ", orderItems.Select(i => i.ProductId)) + sql1, new { couponCode });
         }
 
         public async Task<IEnumerable<MProductCoupon>> GetSellerProductCouponsAsync(int userId)
         {
-            const string sql = "SELECT co.*, COUNT(o.Id) OVER (PARTITION BY co.Id) AS Id FROM dbo.ProductCoupons co " +
-            "JOIN dbo.Products p ON co.ProductId = p.Id AND p.SellerId = @userId LEFT JOIN dbo.OrderItems o ON o.CouponId = co.Id WHERE IsDeleted = 0;";
-            return await connection.QueryAsync<MProductCoupon, int, MProductCoupon>(sql, (co, o) =>
-            {
-                co.CouponUsageCount = o;
-                return co;
-            }, param: new { userId });
+            const string sql = @"SELECT pc.*, (SELECT COUNT(*) FROM dbo.OrderItems oi WHERE oi.CouponId = pc.Id) AS CouponUsageCount 
+                FROM dbo.ProductCoupons pc
+                WHERE EXISTS(SELECT* FROM dbo.Products p WHERE p.Id = pc.ProductId AND p.SellerId = @userId);";
+
+            return await connection.QueryAsync<MProductCoupon>(sql, new { userId });
         }
 
         public async Task<MProductCoupon> AddProductCouponAsync(MProductCoupon productCoupon)

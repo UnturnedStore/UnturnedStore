@@ -2,6 +2,20 @@
 	@ProductId INT
 AS
 BEGIN
+	WITH CTE_ProductSales AS (
+		SELECT
+			Id,
+			ProductId,
+			SaleName,
+			SaleMultiplier,
+			StartDate,
+			EndDate,
+			IsExpired,
+			IsActive,
+			ROWNUM = ROW_NUMBER() OVER (PARTITION BY ProductId ORDER BY Id)
+		FROM dbo.ProductSales 
+		WHERE IsExpired = 0 AND IsActive = 1
+	)
 
 	SELECT 
 		p.*,
@@ -13,8 +27,8 @@ BEGIN
 		dbo.Products p
 	JOIN
 		dbo.Users s ON s.Id = p.SellerId
-	LEFT JOIN
-		dbo.ProductSales ps ON ps.ProductId = p.Id AND ps.IsExpired = 0 AND ps.IsActive = 1
+	LEFT JOIN 
+		CTE_ProductSales ps ON ps.ProductId = p.Id AND ps.ROWNUM = 1
 	WHERE
 		p.Id = @ProductId;
 
