@@ -256,7 +256,9 @@ namespace Website.Server.Controllers
 
                 throw e;
             }
-
+            
+            await offersRepository.UpdateProductSaleProductPriceAsync(product.Id);
+            
             return Ok();
         }
 
