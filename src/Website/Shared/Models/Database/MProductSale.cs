@@ -16,9 +16,7 @@ namespace Website.Shared.Models.Database
         [Required]
         [Range(1, int.MaxValue)]
         public int ProductId { get; set; }
-        public decimal? ProductPrice { get; set; }
-        [JsonIgnore]
-        public decimal SetPrice => ProductPrice ?? Product?.Price ?? 0;
+        public decimal ProductPrice { get; set; }
 
         [Required]
         [MaxLength(30)]
