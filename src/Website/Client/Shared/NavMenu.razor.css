@@ -21,13 +21,19 @@
     }
 
     .navbar-arrow-up::after {
-        right: 12px!important;
+        right: 12px !important;
     }
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 575px) {
+    .navbar--right {
+        justify-content: space-evenly;
+    }
+}
+
+@media only screen and (max-width: 767px) and (min-width: 576px) {
     .navbar-arrow-up::after {
-        right: 132px!important;
+        right: 132px !important;
     }
 }
 

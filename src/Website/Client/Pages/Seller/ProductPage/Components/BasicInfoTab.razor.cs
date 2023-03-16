@@ -27,7 +27,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         [Inject]
         public AlertService AlertService { get; set; }
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task OnInitializedAsync()
         {
             ProductTags = await HttpClient.GetFromJsonAsync<List<MProductTag>>("api/products/tags");
         }

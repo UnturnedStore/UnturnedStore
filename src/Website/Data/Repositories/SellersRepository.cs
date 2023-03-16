@@ -63,16 +63,17 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MProduct>> GetProductsAsync(int userId)
         {
-            const string sql = "SELECT p.*, b.* FROM dbo.Products p LEFT JOIN dbo.Branches b ON p.Id = b.ProductId WHERE p.SellerId = @userId;";
+            const string sql = "SELECT p.*, b.*, ps.* FROM dbo.Products p LEFT JOIN dbo.Branches b ON p.Id = b.ProductId LEFT JOIN dbo.ProductSales ps ON p.Id = ps.ProductId AND ps.IsExpired = 0 AND ps.IsActive = 1 WHERE p.SellerId = @userId;";
 
             List<MProduct> products = new List<MProduct>();
-            await connection.QueryAsync<MProduct, MBranch, MProduct>(sql, (p, b) =>
+            await connection.QueryAsync<MProduct, MBranch, MProductSale, MProduct>(sql, (p, b, ps) =>
             {
                 var product = products.FirstOrDefault(x => x.Id == p.Id);
                 if (product == null)
                 {
                     product = p;
                     product.Branches = new List<MBranch>();
+                    product.Sale = ps;
                     products.Add(product);
                 }
 
@@ -87,20 +88,22 @@ namespace Website.Data.Repositories
 
         public async Task<SellerProduct> GetSellerProductAsync(int productId)
         {
-            const string sql = "SELECT p.*, s.*, a.*, t.* FROM dbo.Products p " +
+            const string sql = "SELECT p.*, s.*, a.*, ps.*, t.* FROM dbo.Products p " +
                 "JOIN dbo.Users s ON s.Id = p.SellerId " +
                 "LEFT JOIN dbo.Users a ON a.Id = p.AdminId " +
+                "LEFT JOIN dbo.ProductSales ps ON p.Id = ps.ProductId AND ps.IsExpired = 0 AND ps.IsActive = 1 " +
                 "LEFT JOIN dbo.ProductTabs t ON p.Id = t.ProductId " +
                 "WHERE p.Id = @productId;";
 
             SellerProduct product = null;
-            await connection.QueryAsync<SellerProduct, Seller, UserInfo, MProductTab, SellerProduct>(sql, (p, s, a, t) =>
+            await connection.QueryAsync<SellerProduct, Seller, UserInfo, MProductSale, MProductTab, SellerProduct>(sql, (p, s, a, ps, t) =>
             {
                 if (product == null)
                 {
                     product = p;
                     p.Seller = s;
                     p.Admin = a;
+                    p.Sale = ps;
                     product.Tabs = new List<MProductTab>();
                 }
 

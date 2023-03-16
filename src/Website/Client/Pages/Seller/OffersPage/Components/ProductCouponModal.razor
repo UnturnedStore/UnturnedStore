@@ -1,0 +1,107 @@
+﻿@using Website.Client.Shared.Components.Products
+@using Website.Components.Alerts
+
+<div class="modal fade" id="@nameof(ProductCouponModal)" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            @if (Model != null)
+            {
+                <div class="modal-header">
+                    <h5 class="modal-title">@(isEditing ? "Edit" : "Add") Coupon</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <EditForm Model="Model" OnValidSubmit="SubmitAsync">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <InputText class="form-control" @bind-Value="Model.CouponName" placeholder="Coupon Name" />
+                            <div class="form-text">The name should be short, up to 30 characters</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Coupon Code</label>
+                            <div class="input-group flex-nowrap">
+                                <button class="btn btn-secondary" title="Generate new code" @onclick:preventDefault @onclick="GenerateNewCouponCode"><i class="fas fa-key"></i></button>
+                                <InputText class="form-control" @bind-Value="Model.CouponCode" placeholder="Coupon Code" maxlength="16" />
+                            </div>
+                            <div class="form-text">Must be unique in combination with the product and have a maximum of 16 characters</div>
+                        </div>
+
+                        <div class="d-flex flex-wrap flex-md-nowrap" style="column-gap: .25rem;">
+                            <div class="col-12 col-md-6 mb-3">
+                                <div class="dropdown w-100">
+                                    <label class="form-label">Product</label>
+                                    @if (Model.Product != null)
+                                    {
+                                        <div class="d-flex align-items-center border rounded border-1" title="Reset Product" @onclick="ResetProduct" style="cursor: pointer; padding: .375rem .75rem;">
+                                            <img src="/api/images/@Model.Product.ImageId" width="24" height="24" />
+                                            <div class="ms-2">
+                                                @Model.Product.Name
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input class="form-control" type="text" @bind="searchProduct" @bind:event="oninput" placeholder="Search product by Name" />
+                                        <div class="dropdown-menu @(searchProduct.Length > 0 ? "show" : "")">
+                                            @foreach (var product in SearchedProducts)
+                                            {
+                                                <a class="dropdown-item" @onclick="() => ChangeProduct(product)" href="javascript:void(0)">
+                                                    <img src="/api/images/@product.ImageId" width="30" height="30" /> @product.Name
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                                <div class="form-text">Pick a product this coupon will apply to</div>
+                            </div>
+
+                            <div class="w-100 mb-3">
+                                <label class="form-label">Discount</label>
+                                <SalePriceInput ProductPrice="Model.Product?.Price ?? 0" @bind-PriceMultiplier="Model.CouponMultiplier" />
+                                <div class="form-text">Set either the new reduced price in USD ($) or the discount %</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label">Maximum Uses</label>
+                            <input type="text" class="form-control" @bind="MaxUses" @bind:event="oninput" placeholder="No Limit" style="max-width: 150px;" />
+                            <div class="mb-3 form-text">Pick maximum coupon use limit, leave empty for no limit</div>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <label class="form-check-label" for="workshop-modal-required-check">
+                                <InputCheckbox class="form-check-input" id="workshop-modal-required-check" @bind-Value="Model.IsEnabled" />
+                                @if (Model.IsEnabled)
+                                {
+                                    <span>Enabled</span>
+                                } else
+                                {
+                                    <span>Disabled</span>
+                                }
+                            </label>
+                        </div>
+
+                        <div class="mb-3">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        @if (isLoading)
+                        {
+                            <LoadingButton />
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary">@(isEditing ? "Edit" : "Add")</button>
+                        }
+                    </div>
+                </EditForm>
+            }
+        </div>
+    </div>
+</div>

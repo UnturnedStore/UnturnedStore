@@ -11,8 +11,11 @@ namespace Website.Shared.Params
     public class OrderItemParams
     {
         public int ProductId { get; set; }
+        public string CouponCode { get; set; }
 
         [JsonIgnore]
         public MProduct Product { get; set; }
+        [JsonIgnore]
+        public MProductCoupon Coupon { get; set; }
     }
 }

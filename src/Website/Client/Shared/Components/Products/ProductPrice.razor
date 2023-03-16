@@ -1,13 +1,52 @@
-﻿@if (Product.Price > 0)
+﻿@if (SingleLine)
 {
-    <span>Price: $@Product.Price</span>
+    @if (SetSale != null)
+    {
+        <div class="@DiscountClass">
+            <span class="ps-1 pe-1 bg-success bg-success text-white rounded" title="@SetSale.SaleName">@Discount</span> <span>@(UsePricePrefix ? "Price: " : "")@DiscountPrice</span>
+        </div>
+    }
+    else
+    {
+        <span>@(UsePricePrefix ? "Price: " : "")@Price</span>
+    }
 }
 else
 {
-    <span>Price: Free</span>
+    @if (SetSale != null)
+    {
+        <div class="d-flex flex-column @(AlignCenter ? "align-items-center" : "align-items-end") text-nowrap">
+            <div class="@DiscountClass"><span class="ps-1 pe-1 bg-success bg-success text-white rounded" title="@SetSale.SaleName">@Discount</span> <s class="text-muted">@Price</s></div>
+            <div class="@PriceClass">@(UsePricePrefix ? "Price: " : "")@DiscountPrice</div>
+        </div>
+    }
+    else
+    {
+        <span class="@PriceClass">@(UsePricePrefix ? "Price: " : "")@Price</span>
+    }
 }
 
 @code {
     [Parameter]
     public MProduct Product { get; set; }
+    [Parameter]
+    public MProductSale Sale { get; set; }
+
+    private decimal SetProductPrice => Product?.Price ?? Sale.ProductPrice;
+    private MProductSale SetSale => Sale ?? Product.Sale;
+
+    [Parameter]
+    public bool SingleLine { get; set; }
+    [Parameter]
+    public bool AlignCenter { get; set; }
+    [Parameter]
+    public bool UsePricePrefix { get; set; }
+    [Parameter]
+    public string PriceClass { get; set; }
+    [Parameter]
+    public string DiscountClass { get; set; }
+
+    public string Price => SetProductPrice > 0 ? $"${SetProductPrice.ToString("N2")}" : "Free";
+    public string Discount => $"-{((1M - SetSale.SaleMultiplier) * 100).ToString("N0")}%";
+    public string DiscountPrice => $"${(SetProductPrice * SetSale.SaleMultiplier).ToString("N2")}";
 }

@@ -30,6 +30,20 @@ AS
 		JOIN dbo.OrderItems i ON o.Id = i.OrderId
 		WHERE u.Id = @UserId AND o.Status = 'Completed'
 		GROUP BY u.Id
+	),
+	CTE_ProductSales AS (
+		SELECT
+			Id,
+			ProductId,
+			SaleName,
+			SaleMultiplier,
+			StartDate,
+			EndDate,
+			IsExpired,
+			IsActive,
+			ROWNUM = ROW_NUMBER() OVER (PARTITION BY ProductId ORDER BY Id)
+		FROM dbo.ProductSales 
+		WHERE IsExpired = 0 AND IsActive = 1
 	)
 
 	SELECT
@@ -57,9 +71,18 @@ AS
 		p.CreateDate,
 		TotalDownloadsCount = ISNULL(d.TotalDownloadsCount, 0), 
 		AverageRating = ISNULL(r.AverageRating, 0), 
-		RatingsCount = ISNULL(RatingsCount, 0)	
+		RatingsCount = ISNULL(RatingsCount, 0),
+		ps.Id,
+		ps.ProductId,
+		ps.SaleName,
+		ps.SaleMultiplier,
+		ps.StartDate,
+		ps.EndDate,
+		ps.IsActive,
+		ps.IsExpired
 	FROM dbo.Users u 
 	LEFT JOIN dbo.Products p ON p.SellerId = u.Id AND p.IsEnabled = 1
+	LEFT JOIN CTE_ProductSales ps ON ps.ProductId = p.Id AND ps.ROWNUM = 1
 	LEFT JOIN CTE_ProductDownloads d ON d.ProductId = p.Id
 	LEFT JOIN CTE_ProductRating r ON r.ProductId = p.Id
 	LEFT JOIN CTE_UserSales us ON us.UserId = u.Id

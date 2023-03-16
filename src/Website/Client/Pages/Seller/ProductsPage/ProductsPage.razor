@@ -2,6 +2,7 @@
 @using Website.Client.Pages.Seller.ProductsPage.Components
 @using Website.Components.Alerts
 @using Website.Components.DataTable
+@using Website.Client.Shared.Components.Products
 
 <Title Value="@($"Products Seller - Unturned Store")"></Title>
 
@@ -55,14 +56,8 @@
                     }
                 </div>
             </DataTableColumn>
-            <DataTableColumn TItem="MProduct" Name="Price" Field="x => x.Price" Context="product" IsSearchable="false">
-                @if (product.Price == 0)
-                {
-                    <span>Free</span>
-                } else
-                {
-                    <span>@product.Price</span>
-                }
+            <DataTableColumn TItem="MProduct" Name="Price" Field="x => x.DiscountedPrice()" Context="product" IsSearchable="false">
+                <ColumnProductPrice Product="product" />
             </DataTableColumn>
             <DataTableColumn TItem="MProduct" Name="Status" Field="x => x.Status" Context="product" IsSearchable="true" SearchType="ESearchType.Exact">
                 <ProductStatusText Status="product.Status" />

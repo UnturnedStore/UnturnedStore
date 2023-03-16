@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -26,11 +27,13 @@ namespace Website.Server.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductsRepository productsRepository;
+        private readonly OffersRepository offersRepository;
         private readonly DiscordService discordService;
 
-        public ProductsController(ProductsRepository productsRepository, DiscordService discordService)
+        public ProductsController(ProductsRepository productsRepository, OffersRepository offersRepository, DiscordService discordService)
         {
             this.productsRepository = productsRepository;
+            this.offersRepository = offersRepository;
             this.discordService = discordService;
         }
 
@@ -88,6 +91,7 @@ namespace Website.Server.Controllers
                 }
                 parameters.AdminId = User.Id();
                 await productsRepository.SetProductEnabledAsync(product.Id, false);
+                await offersRepository.CancelProductSales(product.Id);
             }
 
             await productsRepository.UpdateStatusAsync(parameters);
@@ -234,7 +238,7 @@ namespace Website.Server.Controllers
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
 
-            if (product.IsLoaderEnabled && product.Price == 0)
+            if ((product.IsLoaderEnabled && product.Price == 0) || !await offersRepository.CanUpdateProductWithSale(product.Id, product.Price, product.IsEnabled))
             {
                 return BadRequest();
             }
@@ -252,7 +256,9 @@ namespace Website.Server.Controllers
 
                 throw e;
             }
-
+            
+            await offersRepository.UpdateProductSaleProductPriceAsync(product.Id);
+            
             return Ok();
         }
 

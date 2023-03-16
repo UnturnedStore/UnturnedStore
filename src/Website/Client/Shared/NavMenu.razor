@@ -12,38 +12,40 @@
         </button>
 
         <div id="navbar-collapse-main" class="collapse navbar-collapse">
-            <ul class="navbar-nav fs-6">
-                <li class="nav-item">
-                    <a href="/" class="nav-link">
-                        <i class="fas fa-home"></i> Home
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/products" class="nav-link">
-                        <i class="fas fa-store"></i> Products
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/discord" target="_blank" class="nav-link">
-                        <i class="fab fa-discord"></i> Discord
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/loader" class="nav-link">
-                        <i class="fas fa-cloud-download-alt"></i> Loader
-                    </a>
-                </li>
-				<li class="nav-item">
-                    <a href="https://pinehosting.com/clientarea/aff.php?aff=130&page=unturned" target="_blank" class="nav-link">
-                        <i class="fas fa-server"></i> Hosting
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/about" class="nav-link">
-                        <i class="fas fa-info-circle"></i> About
-                    </a>
-                </li>
-            </ul>
+            <div class="desktop-only">
+                <ul class="navbar-nav fs-6">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/products" class="nav-link">
+                            <i class="fas fa-store"></i> Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/discord" target="_blank" class="nav-link">
+                            <i class="fab fa-discord"></i> Discord
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/loader" class="nav-link">
+                            <i class="fas fa-cloud-download-alt"></i> Loader
+                        </a>
+                    </li>
+			    	<li class="nav-item">
+                        <a href="https://pinehosting.com/clientarea/aff.php?aff=130&page=unturned" target="_blank" class="nav-link">
+                            <i class="fas fa-server"></i> Hosting
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/about" class="nav-link">
+                            <i class="fas fa-info-circle"></i> About
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
             <ul class="navbar-nav ms-auto fs-4 align-items-center navbar--right">
                 <AuthorizeView>
@@ -89,7 +91,7 @@
                             <a href="#" class="navbar-btn-avatar nav-link" data-bs-toggle="dropdown">
                                 <Avatar User="UserService.UserInfo" Width="40" Height="40" Class="border border-2 m-auto" />
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-sm-start dropdown-menu-md-end position-absolute">
 				                <div class="navbar-arrow-up"></div>
                                 <AuthorizeView Context="context2" Roles="@RoleConstants.AdminRoleId">
                                     <Authorized>
@@ -102,6 +104,7 @@
                                     <Authorized>
                                         <li><a class="dropdown-item" href="/seller/statistics">Your Statistics</a></li>
                                         <li><a class="dropdown-item" href="/seller/products">Your Products</a></li>
+                                        <li><a class="dropdown-item" href="/seller/offers">Your Offers</a></li>
                                         <li><a class="dropdown-item" href="/seller/customers">Your Customers</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     </Authorized>
@@ -157,5 +160,50 @@
                 
             </div>
         </div>*@
+
     </div>
+
+    <div class="navbar navbar-expand-lg bg-light border-2 border-top fixed-bottom mobile-only">
+        <div class="container d-block">
+            <ul class="navbar-nav flex-row flex-wrap fs-6 justify-content-around">
+                <li class="nav-item">
+                    <a href="/" class="nav-link d-flex flex-column align-items-center">
+                        <i class="fas fa-home fs-4"></i>
+                        <span class="small">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/products" class="nav-link d-flex flex-column align-items-center">
+                        <i class="fas fa-store fs-4"></i>
+                        <span class="small">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/discord" target="_blank" class="nav-link  d-flex flex-column align-items-center">
+                        <i class="fab fa-discord fs-4"></i>
+                        <span class="small">Discord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/loader" class="nav-link d-flex flex-column align-items-center">
+                        <i class="fas fa-cloud-download-alt fs-4"></i>
+                        <span class="small">Loader</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://pinehosting.com/clientarea/aff.php?aff=130&page=unturned" target="_blank" class="nav-link d-flex flex-column align-items-center">
+                        <i class="fas fa-server fs-4"></i>
+                        <span class="small">Hosting</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/about" class="nav-link d-flex flex-column align-items-center">
+                        <i class="fas fa-info-circle fs-4"></i>
+                        <span class="small">About</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
 </nav>

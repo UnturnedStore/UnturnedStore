@@ -1,0 +1,291 @@
+﻿@page "/seller/offers"
+@using Website.Client.Pages.Seller.OffersPage.Components
+@using Website.Components.Alerts
+@using Website.Components.AnchorNavigation
+@using Website.Components.DataTable
+@using Website.Client.Shared.Components.Products
+
+<Title Value="@($"Offers Seller - Unturned Store")"></Title>
+
+<nav aria-label="breadcrumb" class="position-relative">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Seller</li>
+        <li class="breadcrumb-item active"><a href="/seller/products">Offers</a></li>
+    </ol>
+    <div class="position-absolute" style="right: 0; top: 0;">
+        <button class="btn btn-sm btn-primary" data-bs-toggle="dropdown"><i class="fas fa-compass" style="transform: translateY(7%);"></i></button>
+        <ul class="dropdown-menu dropdown-menu-start dropdown-menu-md-end position-absolute">
+            @foreach (string NavigableItem in (new string[] { "Sales", "Coupons" }))
+            {
+                <li>
+                    <a class="dropdown-item" style="cursor: pointer;" href="/seller/offers/#@NavigableItem">
+                        @NavigableItem
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+</nav>
+
+<div class="mt-2">
+    @if (ProductSales != null)
+    {
+        <div>
+            <AlertBox ID="product-sales-main" Group="offerspage" />
+        </div>
+
+        <DataTable TItem="MProductSale" Data="ProductSales.OrderByDescending(s => s.Status)">
+            <DataTableTitle TItem="MProductSale">
+                <div class="d-md-flex d-block align-items-center">
+                    <div class="fs-5" id="Sales">
+                        Product Sales (@context.Items.Count())
+                    </div>
+                    <div class="ms-2">
+                        <button class="btn btn-sm btn-primary" @onclick="ShowModalAddSaleAsync">
+                            Add Sale
+                        </button>
+                    </div>
+                </div>
+            </DataTableTitle>
+            <DataTableColumn TItem="MProductSale" Name="Status" Field="x => x.Status" IsSearchable="false" Context="productSale">
+                <ProductSaleStatusText Status="productSale.Status" />
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductSale" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" />
+            <DataTableColumn TItem="MProductSale" Name="Name" Field="x => x.SaleName" IsSearchable="true" SearchType="ESearchType.Contains" Context="productSale">
+                <div class="d-flex align-items-center">
+                    @if (productSale.IsActive)
+                    {
+                        <div class="ms-2">
+                            <a href="/seller/products/@productSale.ProductId" title="Active" class="text-decoration-none">
+                                <i class="fas fa-clock"></i>
+                                @productSale.SaleName
+                            </a>
+                        </div>
+                    }
+                    else if (productSale.IsExpired)
+                    {
+                        <div class="ms-2">
+                            <a href="/seller/products/@productSale.ProductId" title="Expired" class="text-decoration-none text-muted">
+                                <i class="fas fa-hourglass-end"></i>
+                                @productSale.SaleName
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="ms-2">
+                            <a href="/seller/products/@productSale.ProductId" title="Upcoming" class="text-decoration-none text-muted fw-bold">
+                                <i class="fas fa-calendar"></i>
+                                @productSale.SaleName
+                            </a>
+                        </div>
+                    }
+                </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductSale" Name="Product" Field="x => x.Product.Name" IsSearchable="true" SearchType="ESearchType.Contains" Context="productSale">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <img src="/api/images/@productSale.Product.ImageId" width="30" height="30" />
+                    </div>
+                    <div class="ms-2">
+                        <a href="/products/@productSale.ProductId" class="text-decoration-none">
+                            @productSale.Product.Name
+                        </a>
+                    </div>
+                </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductSale" Name="Discount" Field="x => (1 - x.SaleMultiplier)" Context="productSale" IsSearchable="false">
+                <ColumnProductPrice Sale="productSale" />
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductSale" Name="Duration" Field="x => x.StartDate" Context="productSale" IsSearchable="false">
+                @if (productSale.IsActive)
+                {
+                    <span>Ending in: @((productSale.EndDate - DateTime.Now).TotalDays.ToString("N1")) days</span>
+                }
+                else if (productSale.IsExpired)
+                {
+                    <span>Duration: @((productSale.EndDate - productSale.SaleStart).TotalDays.ToString("N1")) days</span>
+                }
+                else
+                {
+                    <span>Starting in: @((productSale.SaleStart - DateTime.Now).TotalDays.ToString("N1")) days</span>
+                }
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductSale" Name="" Context="productSale" Field="x => string.Empty" IsSearchable="false">
+                <div class="d-flex">
+                    @if (!productSale.IsActive && !productSale.IsExpired)
+                    {
+                        <div>
+                            <button class="btn btn-outline-success btn-sm" @onclick="() => ShowModalEditSaleAsync(productSale)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="ms-2">
+                            <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteSaleAsync(productSale)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    } else
+                    {
+                        <div>
+                            <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowDetailsModalSaleAsync(productSale)">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+
+                        @if (productSale.IsActive)
+                        {
+                            <div class="ms-2">
+                                <button class="btn btn-outline-danger btn-sm" style="width: 31px;" @onclick="() => ShowExpireSaleAsync(productSale)">
+                                    <i class="fas fa-hourglass-half"></i>
+                                </button>
+                            </div>
+                        }
+                    }
+                </div>
+            </DataTableColumn>
+        </DataTable>
+    }
+    else
+    {
+        <Progressbar />
+    }
+
+    <div class="border-bottom border-1 mb-4 mt-5"></div>
+
+    @if (ProductCoupons != null)
+    {
+        <div>
+            <AlertBox ID="product-coupons-main" Group="offerspage" />
+        </div>
+
+        <DataTable TItem="MProductCoupon" Data="ProductCoupons.OrderByDescending(s => s.Id)">
+            <DataTableTitle TItem="MProductCoupon">
+                <div class="d-md-flex d-block align-items-center">
+                    <div class="fs-5" id="Coupons">
+                        Product Coupons (@context.Items.Count())
+                    </div>
+                    <div class="ms-2">
+                        <button class="btn btn-sm btn-primary" @onclick="ShowModalAddCouponAsync">
+                            Add Coupon
+                        </button>
+                    </div>
+                </div>
+            </DataTableTitle>
+            <DataTableColumn TItem="MProductCoupon" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" />
+            <DataTableColumn TItem="MProductCoupon" Name="Name" Field="x => x.CouponName" IsSearchable="true" SearchType="ESearchType.Contains" Context="productCoupon">
+                <div class="d-flex align-items-center">
+                    @if (productCoupon.IsEnabled)
+                    {
+                        <div class="ms-2">
+                            <a href="/seller/products/@productCoupon.ProductId" title="Enabled" class="text-decoration-none">
+                                @productCoupon.CouponName
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="ms-2">
+                            <a href="/seller/products/@productCoupon.ProductId" title="Disabled" class="text-decoration-none text-muted">
+                                @productCoupon.CouponName
+                            </a>
+                        </div>
+                    }
+                </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCoupon" Name="Product" Field="x => x.Product.Name" IsSearchable="true" SearchType="ESearchType.Contains" Context="productCoupon">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <img src="/api/images/@productCoupon.Product.ImageId" width="30" height="30" />
+                    </div>
+                    <div class="ms-2">
+                        <a href="/products/@productCoupon.ProductId" class="text-decoration-none">
+                            @productCoupon.Product.Name
+                        </a>
+                    </div>
+                </div>
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCoupon" Name="Code" Field="x => string.Empty" Context="productCoupon" IsSearchable="false">
+                @if (showCouponCodes.Contains(productCoupon.Id))
+                {
+                    <span>@productCoupon.CouponCode</span>
+                }
+                else
+                {
+                    <a class="text-decoration-none" href="javascript:void(0)" @onclick="() => ShowCouponCode(productCoupon.Id)">
+                        Show Coupon Code
+                    </a>
+                }
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCoupon" Name="Discount" Field="x => (1 - x.CouponMultiplier)" Context="productCoupon" IsSearchable="false">
+                <ColumnProductPrice Coupon="productCoupon" Product="productCoupon.Product" />
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCoupon" Name="Public" Field="x => x.IsEnabled" Context="productCoupon" IsSearchable="false">
+                @if (productCoupon.IsEnabled)
+                {
+                    <span>Enabled</span>
+                }
+                else
+                {
+                    <span class="text-muted">Disabled</span>
+                }
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCoupon" Name="Usage" Field="x => x.CouponUsageCount" Context="productCoupon" IsSearchable="false">
+                <span>@productCoupon.CouponUsageCount Orders</span>
+                @if (productCoupon.MaxUses > 0)
+                {
+                    <span> / @productCoupon.MaxUses Total</span>
+                }
+            </DataTableColumn>
+            <DataTableColumn TItem="MProductCoupon" Name="" Context="productCoupon" Field="x => string.Empty" IsSearchable="false">
+                <div class="d-flex">
+                    <div>
+                        <button class="btn btn-outline-success btn-sm" @onclick="() => ShowModalEditCouponAsync(productCoupon)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="ms-2">
+                        <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteCouponAsync(productCoupon)">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </DataTableColumn>
+        </DataTable>
+    }
+    else
+    {
+        <Progressbar />
+    }
+</div>
+
+<style>
+    i.fa-clock {
+        vertical-align: unset;
+    }
+</style>
+
+<AnchorNavigation />
+
+<ConfirmModal @ref="ConfirmDeleteSale" TItem="MProductSale" Title="Confirm delete sale" BtnClass="btn btn-danger" BtnText="Delete" ModalId="ConfirmDeleteSaleModal" OnConfirm="DeleteSaleAsync">
+    Are you sure you want to delete sale <span class="fw-bold">@ConfirmDeleteSale.Item.SaleName</span> for <span class="fw-bold">@ConfirmDeleteSale.Item.Product.Name</span>?
+</ConfirmModal>
+<ConfirmModal @ref="ConfirmExpireSale" TItem="MProductSale" Title="Confirm expire sale" BtnClass="btn btn-danger" BtnText="Expire" ModalId="ConfirmExpireSaleModal" OnConfirm="ExpireSaleAsync">
+    <div>
+        Are you sure you want to expire sale <span class="fw-bold">@ConfirmExpireSale.Item.SaleName</span> for <span class="fw-bold">@ConfirmExpireSale.Item.Product.Name</span>?
+    </div>
+    <div>
+        Expiring this sale will:
+        <ul>
+            <li>Immediately stop the sale</li>
+            <li>Add a 2 months sales cooldown for this product</li>
+        </ul>
+    </div>
+</ConfirmModal>
+<ProductSaleModal @ref="SaleModal" Products="Products" ProductSales="ProductSales" OnSaleAdded="AddSale" OnSaleEdited="EditSale" />
+<DetailsProductSaleModal @ref="DetailsSaleModal" />
+
+<ConfirmModal @ref="ConfirmDeleteCoupon" TItem="MProductCoupon" Title="Confirm delete coupon" BtnClass="btn btn-danger" BtnText="Delete" ModalId="ConfirmDeleteCouponModal" OnConfirm="DeleteCouponAsync">
+    Are you sure you want to delete coupon <span class="fw-bold">@ConfirmDeleteCoupon.Item.CouponName</span> for <span class="fw-bold">@ConfirmDeleteCoupon.Item.Product.Name</span>?
+</ConfirmModal>
+<ProductCouponModal @ref="CouponModal" Products="Products" OnCouponAdded="AddCoupon" OnCouponEdited="EditCoupon" />

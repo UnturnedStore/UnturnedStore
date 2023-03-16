@@ -29,7 +29,10 @@ namespace Website.Client.Pages.Seller.ProductPage.Components
         private void CreateTab()
         {
             Tab = new MProductTab()
-            {IsEnabled = true};
+            {
+                IsEnabled = true,
+                Content = string.Empty
+            };
         }
 
         private bool isLoading2;

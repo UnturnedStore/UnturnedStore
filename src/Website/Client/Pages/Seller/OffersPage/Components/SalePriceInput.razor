@@ -1,0 +1,74 @@
+﻿<div class="d-flex gap-1 align-items-baseline">
+    <span class="fs-5">$</span>
+    <input type="text" class="form-control" placeholder="Price" disabled="@IsDisabled" @bind-value="NewPrice" />
+    <span class="fs-5">-</span>
+    <input type="text" class="form-control" placeholder="Discount" @bind-value="Discount" />
+    <span class="fs-5">%</span>
+</div>
+
+@code {
+    [Parameter]
+    public decimal ProductPrice { get; set; }
+
+    [Parameter]
+    public decimal PriceMultiplier { get; set; }
+
+    [Parameter]
+    public EventCallback<decimal> PriceMultiplierChanged { get; set; }
+
+    private bool IsDisabled => ProductPrice == 0;
+
+    private string Discount
+    {
+        get
+        {
+            if (PriceMultiplier == 1) return string.Empty;
+            else return ((1 - PriceMultiplier) * 100).ToString("N0");
+        }
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                PriceMultiplier = 1u;
+                PriceMultiplierChanged.InvokeAsync(PriceMultiplier);
+            }
+            else if (int.TryParse(value, out int result))
+            {
+                if (result <= 0) PriceMultiplier = 1;
+                else if (result >= 100) PriceMultiplier = 0;
+                else PriceMultiplier = (1 - ((decimal)result / 100));
+
+                PriceMultiplierChanged.InvokeAsync(PriceMultiplier);
+            }
+        }
+    }
+
+    private string NewPrice
+    {
+        get
+        {
+            if (ProductPrice == 0) return string.Empty;
+            else return (ProductPrice * PriceMultiplier).ToString("N2");
+        }
+        set
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                PriceMultiplier = 1u;
+                PriceMultiplierChanged.InvokeAsync(PriceMultiplier);
+            }
+            else if (decimal.TryParse(value, out decimal result))
+            {
+                if (result <= 0) PriceMultiplier = 0;
+                else if (result >= ProductPrice) PriceMultiplier = 1;
+                else
+                {
+                    PriceMultiplier = result / ProductPrice;
+                    PriceMultiplier = decimal.Round(PriceMultiplier, 2);
+                }
+
+                PriceMultiplierChanged.InvokeAsync(PriceMultiplier);
+            }
+        }
+    }
+}

@@ -9,8 +9,7 @@
         <div>
             <a class="text-decoration-none fs-5" href="/products/@Product.Id">@Product.Name</a> 
             <div class="d-md-inline d-block">
-                by <a class="text-decoration-none fw-bold text-muted" href="/users/@Product.SellerId">@Product.Seller.Name</a>
-                <VerifiedSellerBadge Seller="Product.Seller" />
+                by <a class="text-decoration-none fw-bold text-muted" href="/users/@Product.SellerId">@Product.Seller.Name</a><VerifiedSellerBadge Seller="Product.Seller" />
             </div>            
         </div>
         <div class="d-flex align-items-end flex-wrap" style="column-gap: 0.25rem;">
@@ -46,8 +45,8 @@
     </div>
     <div class="ms-auto text-end">
         <div class="text-nowrap">
-            <div class="">
-                <span class="fs-5">@Product.GetPrice()</span>
+            <div>
+                <ProductPrice Product="Product" PriceClass="fs-5" />
             </div>
             <div class="d-md-block d-none text-muted small">
                 @if (Product.IsLoaderEnabled)

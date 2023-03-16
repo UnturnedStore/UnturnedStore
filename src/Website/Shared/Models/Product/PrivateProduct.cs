@@ -11,5 +11,6 @@ namespace Website.Shared.Models
     {
         public int? AdminId { get; set; }
         public ProductStatus Status { get; set; }
+        public string StatusReason { get; set; }
     }
 }
