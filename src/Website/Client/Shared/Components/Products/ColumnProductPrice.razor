@@ -14,7 +14,7 @@
     [Parameter]
     public MProductCoupon Coupon { get; set; }
 
-    private decimal SetProductPrice => Product?.Price ?? Sale.SetPrice;
+    private decimal SetProductPrice => Product?.Price ?? Sale.ProductPrice;
     private decimal? SetMultiplier => Coupon?.CouponMultiplier ?? Sale?.SaleMultiplier ?? Product.Sale?.SaleMultiplier;
 
     public string Price => SetProductPrice > 0 ? $"${SetProductPrice.ToString("N2")}" : "Free";
