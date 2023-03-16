@@ -50,7 +50,7 @@
 
                             <div class="w-100 mb-3">
                                 <label class="form-label">Discount</label>
-                                <SalePriceInput ProductPrice="Model.SetPrice" @bind-PriceMultiplier="Model.SaleMultiplier" />
+                                <SalePriceInput ProductPrice="Model.Product?.Price ?? 0" @bind-PriceMultiplier="Model.SaleMultiplier" />
                                 <div class="form-text">Set either the new reduced price in USD ($) or the discount %</div>
                             </div>
                         </div>
