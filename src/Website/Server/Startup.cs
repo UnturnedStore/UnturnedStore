@@ -10,11 +10,11 @@ using RestoreMonarchy.PaymentGateway.Client;
 using SteamWebAPI2.Utilities;
 using System;
 using System.Data.SqlClient;
-using System.IO;
 using Website.Data.Extensions;
 using Website.Server.Helpers;
 using Website.Server.Options;
 using Website.Server.Services;
+using Website.Server.Prerender;
 
 namespace Website.Server
 {
@@ -63,13 +63,14 @@ namespace Website.Server
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddSingleton<ICrawlerIdentifier>(new FileBasedCrawlerIdentifier("CrawlerInfo.json"));
             services.AddHttpContextAccessor();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment environment)
         {
             if (environment.IsDevelopment())
             {
@@ -95,12 +96,20 @@ namespace Website.Server
 
             app.UseAuthorization();
 
+            app.UsePrerenderMiddleware();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapFallbackToPage("/_Host");
             });
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var crawlerIdentifier = scope.ServiceProvider.GetRequiredService<ICrawlerIdentifier>();
+                await crawlerIdentifier.Initilize();
+            }
         }
     }
 }

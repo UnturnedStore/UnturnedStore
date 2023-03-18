@@ -26,9 +26,9 @@ namespace Website.Shared.Constants
         private static readonly Dictionary<string, string> CategoryIcons = new Dictionary<string, string>()
         {
             { RocketPlugin, "fas fa-rocket" },
-            { OpenModPlugin, "fas fa-plug" },            
+            { OpenModPlugin, "fas fa-plug" },
             { UScriptPlugin, "fas fa-scroll" },
-            { ClientModule, "fas fa-file-code" }
+            { ClientModule, "fas fa-cube" }
         };
 
         public static string GetCategoryIcon(string category)
