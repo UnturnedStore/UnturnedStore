@@ -11,6 +11,7 @@ namespace Website.Shared.Constants
         public const string OpenModPlugin = "OpenMod Plugin";
         public const string RocketPlugin = "Rocket Plugin";
         public const string UScriptPlugin = "UScript Plugin";
+        public const string ClientModule = "Client Module";
 
         public const string DefaultCategory = RocketPlugin;
 
@@ -18,14 +19,16 @@ namespace Website.Shared.Constants
         {
             RocketPlugin,
             OpenModPlugin,            
-            UScriptPlugin
+            UScriptPlugin,
+            ClientModule
         };
 
         private static readonly Dictionary<string, string> CategoryIcons = new Dictionary<string, string>()
         {
             { RocketPlugin, "fas fa-rocket" },
             { OpenModPlugin, "fas fa-plug" },            
-            { UScriptPlugin, "fas fa-scroll" }
+            { UScriptPlugin, "fas fa-scroll" },
+            { ClientModule, "fas fa-file-code" }
         };
 
         public static string GetCategoryIcon(string category)
