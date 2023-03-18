@@ -11,7 +11,7 @@ namespace Website.Server.Pages.Prerender
         public PrerenderedMetaTags() { }
         public PrerenderedMetaTags(MProduct Product)
         {
-            Title = Product.Name + " - " + Title;
+            Title = Product.Name;
             Description = Product.Description;
             Image = "api/images/" + Product.ImageId;
         }
