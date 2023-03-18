@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 using Website.Data.Repositories;
 using Website.Shared.Constants;
@@ -111,12 +112,12 @@ namespace Website.Server.Controllers
             if (!await offersRepository.GetCouponFromCodeAsync(couponCode))
                 return NotFound();
 
-            MProductCoupon coupon = await offersRepository.GetCouponFromCodeAsync(couponCode, orderItems);
+            IEnumerable<MProductCoupon> coupons = await offersRepository.GetCouponFromCodeAsync(couponCode, orderItems);
 
-            if (coupon == null)
+            if (coupons.Count() == 0)
                 return BadRequest();
 
-            return Ok(coupon);
+            return Ok(coupons);
         }
 
         [HttpGet("coupons")]
@@ -138,19 +139,12 @@ namespace Website.Server.Controllers
                 return BadRequest();
             }
 
-            try
+            if (!await offersRepository.IsProductCouponUnique(productCoupon))
             {
-                return Ok(await offersRepository.AddProductCouponAsync(productCoupon));
+                return Conflict();
             }
-            catch (SqlException e)
-            {
-                if (e.Number == 2627)
-                {
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
 
-                throw e;
-            }
+            return Ok(await offersRepository.AddProductCouponAsync(productCoupon));
         }
 
         [HttpPut("coupons")]
@@ -166,20 +160,12 @@ namespace Website.Server.Controllers
                 return BadRequest();
             }
 
-            try
+            if (!await offersRepository.IsProductCouponUnique(productCoupon))
             {
-                await offersRepository.UpdateProductCouponAsync(productCoupon);
-            }
-            catch (SqlException e)
-            {
-                if (e.Number == 2627)
-                {
-                    return StatusCode(StatusCodes.Status409Conflict);
-                }
-
-                throw e;
+                return Conflict();
             }
 
+            await offersRepository.UpdateProductCouponAsync(productCoupon);
             return Ok();
         }
 

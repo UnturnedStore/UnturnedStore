@@ -7,6 +7,5 @@
 	CouponMultiplier DECIMAL(9, 2) NOT NULL,
 	MaxUses INT NOT NULL,
 	IsEnabled BIT NOT NULL,
-	IsDeleted BIT NOT NULL CONSTRAINT DF_ProductCoupons_IsDeleted DEFAULT 0,
-	CONSTRAINT UK_ProductCoupons UNIQUE (ProductId, CouponCode)
+	IsDeleted BIT NOT NULL CONSTRAINT DF_ProductCoupons_IsDeleted DEFAULT 0
 )

@@ -89,17 +89,24 @@ namespace Website.Client.Pages.User.CheckoutPage
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/offers/coupons/" + couponCode, OrderParams.Items);
             if (response.IsSuccessStatusCode)
             {
-                MProductCoupon coupon = await response.Content.ReadFromJsonAsync<MProductCoupon>();
-                for (int i = 0; i < OrderParams.Items.Count; i++)
-                    if (OrderParams.Items[i].ProductId == coupon.ProductId)
-                    {
-                        OrderParams.Items[i].CouponCode = coupon.CouponCode;
-                        OrderParams.Items[i].Coupon = coupon;
-                        coupon.Product = OrderParams.Items[i].Product;
-                        break;
-                    }
+                List<MProductCoupon> coupons = await response.Content.ReadFromJsonAsync<List<MProductCoupon>>();
+                foreach (MProductCoupon coupon in coupons)
+                {
+                    for (int i = 0; i < OrderParams.Items.Count; i++)
+                        if (OrderParams.Items[i].ProductId == coupon.ProductId)
+                        {
+                            OrderParams.Items[i].CouponCode = coupon.CouponCode;
+                            OrderParams.Items[i].Coupon = coupon;
+                            coupon.Product = OrderParams.Items[i].Product;
+                            break;
+                        }
+                }
 
-                AlertService.ShowAlert("user-checkout-coupon", $"Successfully found and applied coupon {coupon.CouponName} to {coupon.Product.Name}", AlertType.Success);
+                if (coupons.Count == 1)
+                    AlertService.ShowAlert("user-checkout-coupon", $"Successfully found and applied coupon {coupons[0].CouponName} to {coupons[0].Product.Name}", AlertType.Success);
+                else
+                    AlertService.ShowAlert("user-checkout-coupon", $"Successfully found and applied coupons; {string.Join(", ", coupons.Select(c => $"{c.CouponName} to {c.Product.Name}"))}", AlertType.Success);
+
                 CouponCode = string.Empty;
             } else
             {
