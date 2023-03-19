@@ -13,7 +13,7 @@ namespace Website.Server.Pages.Prerender
         {
             Title = Product.Name;
             Description = Product.Description;
-            Image = "api/images/" + Product.ImageId;
+            Image = "/api/images/" + Product.ImageId;
         }
     }
 }
