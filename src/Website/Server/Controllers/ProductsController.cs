@@ -54,7 +54,7 @@ namespace Website.Server.Controllers
 
             if (parameters.Status == ProductStatus.WaitingForApproval)
             {
-                if (((product.Status != ProductStatus.New && product.Status != ProductStatus.Rejected) || product.Price == 0 || product.Seller.IsVerifiedSeller) && product.Status != ProductStatus.Disabled)
+                if (((product.Status != ProductStatus.New && product.Status != ProductStatus.Rejected) || (product.Price == 0 && product.Category != ProductCategoryConstants.ClientModule) || product.Seller.IsVerifiedSeller) && product.Status != ProductStatus.Disabled)
                 {
                     return BadRequest();
                 }
@@ -73,7 +73,7 @@ namespace Website.Server.Controllers
 
             if (parameters.Status == ProductStatus.Released)
             {
-                if (product.Price > 0 && !product.Seller.IsVerifiedSeller && product.Status != ProductStatus.Approved)
+                if ((product.Price > 0 || product.Category == ProductCategoryConstants.ClientModule) && !product.Seller.IsVerifiedSeller && product.Status != ProductStatus.Approved)
                 {
                     return BadRequest();
                 }
