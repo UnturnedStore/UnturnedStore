@@ -33,19 +33,21 @@ namespace Website.Data.Repositories
 
         public async Task<IEnumerable<MProduct>> GetProductsAsync()
         {
-            const string sql = "SELECT p.*, u.*, t.* FROM dbo.Products p " +
+            const string sql = "SELECT p.*, u.*, t.*, ps.* FROM dbo.Products p " +
                 "JOIN dbo.Users u ON p.SellerId = u.Id " +
-                "LEFT JOIN dbo.Tags t ON t.Id IN (SELECT TagId FROM dbo.ProductTags WHERE ProductId = p.Id);";
+                "LEFT JOIN dbo.Tags t ON t.Id IN (SELECT TagId FROM dbo.ProductTags WHERE ProductId = p.Id)" +
+                "LEFT JOIN dbo.ProductSales ps ON ps.ProductId = p.Id AND ps.IsActive = 1 AND ps.IsExpired = 0;";
 
             var productDictionary = new Dictionary<int, MProduct>();
 
-            return (await connection.QueryAsync<MProduct, Seller, MProductTag, MProduct>(sql, (p, s, t) => 
+            return (await connection.QueryAsync<MProduct, Seller, MProductTag, MProductSale, MProduct>(sql, (p, s, t, ps) => 
             {
                 if (!productDictionary.TryGetValue(p.Id, out MProduct mappedProduct))
                 {
                     mappedProduct = p;
                     mappedProduct.Seller = s;
                     mappedProduct.Tags = new List<MProductTag>();
+                    mappedProduct.Sale = ps;
                     productDictionary.Add(mappedProduct.Id, mappedProduct);
                 }
 

@@ -67,6 +67,7 @@
 
     protected override void OnParametersSet()
     {
-        selectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
+        if (selectedBranchId == 0)
+            selectedBranchId = Product.Branches.FirstOrDefault()?.Id ?? 0;
     }
 }

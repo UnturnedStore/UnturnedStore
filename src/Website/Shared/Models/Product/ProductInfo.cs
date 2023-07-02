@@ -1,4 +1,5 @@
 ﻿using System;
+using Website.Shared.Models.Database;
 
 namespace Website.Shared.Models
 {
@@ -18,6 +19,7 @@ namespace Website.Shared.Models
         public DateTime CreateDate { get; set; }
 
         public Seller Seller { get; set; }
+        public MProductSale Sale { get; set; }
 
         public string GetShortDescription()
         {

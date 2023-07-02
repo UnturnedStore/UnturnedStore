@@ -28,6 +28,7 @@ namespace Website.Shared.Models
                 ImageId = ImageId,
                 SellerId = Seller.Id,
                 Status = Status,
+                StatusReason = StatusReason,
                 AdminId = AdminId,
                 IsLoaderEnabled = IsLoaderEnabled,
                 IsEnabled = IsEnabled,

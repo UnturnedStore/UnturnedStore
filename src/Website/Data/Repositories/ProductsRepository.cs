@@ -57,7 +57,7 @@ namespace Website.Data.Repositories
 
         public async Task UpdateStatusAsync(ChangeProductStatusParams @params)
         {
-            const string sql = "UPDATE dbo.Products SET Status = @Status, StatusUpdateDate = SYSDATETIME(), AdminId = @AdminId WHERE Id = @ProductId;";
+            const string sql = "UPDATE dbo.Products SET Status = @Status, StatusReason = @StatusReason, StatusUpdateDate = SYSDATETIME(), AdminId = @AdminId WHERE Id = @ProductId;";
             await connection.ExecuteAsync(sql, @params);
         }
 
@@ -131,33 +131,44 @@ namespace Website.Data.Repositories
         {
             var productDictionary = new Dictionary<int, MProduct>();
 
-            return (await connection.QueryAsync<MProduct, Seller, MProductTag, MProduct>("dbo.GetProducts", (p, u, t) => 
+            IEnumerable<MProduct> products = (await connection.QueryAsync<MProduct, Seller, MProductTag, MProductSale, MProduct>("dbo.GetProducts", (p, u, t, ps) => 
             {
                 if (!productDictionary.TryGetValue(p.Id, out MProduct mappedProduct))
                 {
                     mappedProduct = p;
                     mappedProduct.Seller = u;
                     mappedProduct.Tags = new List<MProductTag>();
+                    mappedProduct.Sale = ps;
+
                     productDictionary.Add(mappedProduct.Id, mappedProduct);
                 }
 
                 mappedProduct.Tags.Add(t);
                 return mappedProduct;
             }, new { UserId = userId }, commandType: CommandType.StoredProcedure)).Distinct();
+
+            return products;
         }
 
         public async Task<IEnumerable<MProduct>> GetUserProductsAsync(int userId)
         {
-            return await connection.QueryAsync<MProduct>("dbo.GetUserProducts", new { UserId = userId }, commandType: CommandType.StoredProcedure);
+            IEnumerable<MProduct> products = await connection.QueryAsync<MProduct, MProductSale, MProduct>("dbo.GetUserProducts", (p, ps) => 
+            {
+                p.Sale = ps;
+                return p;
+            }, new { UserId = userId }, commandType: CommandType.StoredProcedure);
+
+            return products;
         }
 
         public async Task<MProduct> GetProductAsync(int productId, int userId)
         {
             const string sql = "dbo.GetProduct";
 
-            MProduct product = (await connection.QueryAsync<MProduct, Seller, MProduct>(sql, (p, s) => 
+            MProduct product = (await connection.QueryAsync<MProduct, Seller, MProductSale, MProduct>(sql, (p, s, ps) => 
             {
                 p.Seller = s;
+                p.Sale = ps;
                 return p;
             }, new { ProductId = productId }, commandType: CommandType.StoredProcedure)).FirstOrDefault();
 
@@ -167,7 +178,7 @@ namespace Website.Data.Repositories
             const string sql0 = "SELECT * FROM dbo.Tags WHERE Id IN (SELECT TagId FROM dbo.ProductTags WHERE ProductId = @Id);";
             product.Tags = (await connection.QueryAsync<MProductTag>(sql0, product)).ToList();
 
-            const string sql1 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id;";
+            const string sql1 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id AND IsEnabled = 1;";
             product.Tabs = (await connection.QueryAsync<MProductTab>(sql1, product)).ToList();
 
             const string sql2 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
@@ -307,7 +318,7 @@ namespace Website.Data.Repositories
             return tags;
         }
 
-        private string ProductTagsInsertMultiple(List<MProductTag> tags)
+        private static string ProductTagsInsertMultiple(List<MProductTag> tags)
         {
             List<string> tagsInsert = new List<string>();
 

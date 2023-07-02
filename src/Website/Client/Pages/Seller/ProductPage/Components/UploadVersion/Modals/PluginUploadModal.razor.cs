@@ -61,7 +61,7 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modal
 
         private void OnPluginLibraryFileChange(InputFileChangeEventArgs e)
         {
-            IReadOnlyList<IBrowserFile> files = e.GetMultipleFiles(50);
+            IReadOnlyList<IBrowserFile> files = e.GetMultipleFiles(100);
             List<IBrowserFile> filesList = files.ToList();
 
             List<string> invalidLibraries = new List<string>();

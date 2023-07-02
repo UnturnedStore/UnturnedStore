@@ -39,10 +39,14 @@
         <div class="form-text">Enables a GitHub link on product page</div>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3 position-relative">
         <label class="form-label">Price</label>
-        <input type="number" class="form-control" @bind="Product.Price" @bind:event="oninput" style="max-width: 150px;" />
+        <input type="number" step=".01" disabled="@(Product.Sale != null)" class="form-control" @bind="Product.Price" @bind:event="oninput" style="max-width: 150px;">
         <div class="form-text">Price of your product in USD ($)</div>
+        @if (Product.Sale != null)
+        {
+            <div class="small text-danger">You can't change this value while a sale is active.</div>
+        }
     </div>
 
     <div class="mb-3">
@@ -68,10 +72,14 @@
     {
         <div class="mb-3 form-check form-switch">                        
             <label class="form-check-label">
-                <InputCheckbox @bind-Value="Product.IsEnabled" class="form-check-input" />
-                @(Product.IsEnabled ? "Enabled" : "Disabled")
+                <InputCheckbox @bind-Value="Product.IsEnabled" disabled="@(Product.Sale != null)" class="form-check-input" />
+                @(Product.IsEnabled ? "Visible" : "Hidden")
             </label>
-            <div class="form-text">When your product is disabled it cannot be purchased and can only be downloaded by existing customers.</div>
+            <div class="form-text">When your product is hidden it cannot be purchased and can only be downloaded by existing customers.</div>
+            @if (Product.Sale != null)
+            {
+                <div class="small text-danger">You can't change this value while a sale is active.</div>
+            }
         </div>
     }
 

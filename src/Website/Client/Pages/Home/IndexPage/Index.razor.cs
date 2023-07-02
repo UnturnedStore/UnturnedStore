@@ -40,9 +40,9 @@ namespace Website.Client.Pages.Home.IndexPage
                     case EOrderBy.BestRated:
                         return SearchedProducts.OrderByDescending(x => x.AverageRating).ThenByDescending(x => x.RatingsCount);
                     case EOrderBy.PriceAsc:
-                        return SearchedProducts.OrderBy(x => x.Price);
+                        return SearchedProducts.OrderBy(x => x.DiscountedPrice());
                     case EOrderBy.PriceDesc:
-                        return SearchedProducts.OrderByDescending(x => x.Price);
+                        return SearchedProducts.OrderByDescending(x => x.DiscountedPrice());
                     default:
                         return SearchedProducts.OrderByDescending(x => x.ReleaseDate is null ? x.CreateDate : x.ReleaseDate);
                 }

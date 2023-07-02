@@ -55,6 +55,10 @@ td {
     vertical-align: middle;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}
+
 @media (max-width: 980px) {
     .table-hide {
         display: none !important;
@@ -121,6 +125,13 @@ td {
     width: 0.25rem;
     border-radius: 1rem;
     background-color: rgba(0,0,0,0.15);
+}
+
+.vertical-divider {
+    width: 0;
+    margin: 0 .5rem;
+    overflow: hidden;
+    border-left: 1px solid rgba(0,0,0,.15);
 }
 
 .mobile-only {

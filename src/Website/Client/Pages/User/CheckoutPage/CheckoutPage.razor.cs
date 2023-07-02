@@ -1,10 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Website.Client.Services;
+using Website.Components.Alerts;
 using Website.Components.Helpers;
 using Website.Shared.Models.Database;
 using Website.Shared.Params;
@@ -21,6 +25,8 @@ namespace Website.Client.Pages.User.CheckoutPage
         public HttpClient HttpClient { get; set; }
         [Inject]
         public CartService CartService { get; set; }
+        [Inject]
+        public AlertService AlertService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
@@ -57,6 +63,61 @@ namespace Website.Client.Pages.User.CheckoutPage
             if (OrderParams.PaymentMethod == paymentProvider)
                 return true;
             return false;
+        }
+
+        private string CouponCode { get; set; }
+
+        private async Task HandleCouponSubmit(KeyboardEventArgs e)
+        {
+            if (e.Code != "Enter" && e.Code != "NumpadEnter") return;
+            await GetCoupon(CouponCode);
+        }
+
+        private async Task GetCoupon(string couponCode)
+        {
+            if (string.IsNullOrEmpty(couponCode))
+            {
+                AlertService.HideAlert("user-checkout-coupon");
+                return;
+            }
+            else if (couponCode.Length > 16)
+            {
+                AlertService.ShowAlert("user-checkout-coupon", "Invalid coupon code", AlertType.Danger);
+                return;
+            }
+
+            HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/offers/coupons/" + couponCode, OrderParams.Items);
+            if (response.IsSuccessStatusCode)
+            {
+                List<MProductCoupon> coupons = await response.Content.ReadFromJsonAsync<List<MProductCoupon>>();
+                foreach (MProductCoupon coupon in coupons)
+                {
+                    for (int i = 0; i < OrderParams.Items.Count; i++)
+                        if (OrderParams.Items[i].ProductId == coupon.ProductId)
+                        {
+                            OrderParams.Items[i].CouponCode = coupon.CouponCode;
+                            OrderParams.Items[i].Coupon = coupon;
+                            coupon.Product = OrderParams.Items[i].Product;
+                            break;
+                        }
+                }
+
+                if (coupons.Count == 1)
+                    AlertService.ShowAlert("user-checkout-coupon", $"Successfully found and applied coupon {coupons[0].CouponName} to {coupons[0].Product.Name}", AlertType.Success);
+                else
+                    AlertService.ShowAlert("user-checkout-coupon", $"Successfully found and applied coupons; {string.Join(", ", coupons.Select(c => $"{c.CouponName} to {c.Product.Name}"))}", AlertType.Success);
+
+                CouponCode = string.Empty;
+            } else
+            {
+                if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    AlertService.ShowAlert("user-checkout-coupon", "Found a coupon but it doesn't affect any of the products in your cart", AlertType.Primary);
+                } else
+                {
+                    AlertService.ShowAlert("user-checkout-coupon", "Invalid coupon code", AlertType.Danger);
+                }
+            }
         }
 
         private string BtnDisabled => !OrderParams.IsAgree ? "disabled" : string.Empty;

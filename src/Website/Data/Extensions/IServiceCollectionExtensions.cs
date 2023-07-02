@@ -12,6 +12,7 @@ namespace Website.Data.Extensions
             services.AddScoped<ProductsRepository>();
             services.AddScoped<BranchesRepository>();
             services.AddScoped<VersionsRepository>();
+            services.AddScoped<OffersRepository>();
             services.AddScoped<SellersRepository>();
             services.AddScoped<OrdersRepository>();
             services.AddScoped<MessagesRepository>();

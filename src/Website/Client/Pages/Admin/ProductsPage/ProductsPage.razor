@@ -86,13 +86,7 @@
         </div>
     </DataTableColumn>
     <DataTableColumn TItem="MProduct" Name="Price" Field="x => x.Price" Context="product" IsSearchable="false">
-        @if (product.Price == 0)
-        {
-            <span>Free</span>
-        } else
-        {
-            <span>@product.Price</span>
-        }
+        <ColumnProductPrice Product="product" />
     </DataTableColumn>
     <DataTableColumn TItem="MProduct" Name="Status" Field="x => x.Status" Context="product" IsSearchable="true" SearchType="ESearchType.Exact">
         <ProductStatusText Status="product.Status" />
@@ -100,10 +94,10 @@
     <DataTableColumn TItem="MProduct" Name="Public" Field="x => x.IsEnabled" Context="product" IsSearchable="false">
         @if (product.IsEnabled)
         {
-            <span>Enabled</span>
+            <span>Visible</span>
         } else
         {
-            <span class="text-muted">Disabled</span>
+            <span class="text-muted">Hidden</span>
         }
     </DataTableColumn>
     <DataTableColumn TItem="MProduct" Name="" Context="product" Field="x => string.Empty" IsSearchable="false">

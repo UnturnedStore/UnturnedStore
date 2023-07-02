@@ -35,5 +35,18 @@ namespace Website.Components.Alerts
 
             box.Show(text, alertType);
         }
+
+        public void HideAlert(string boxId) 
+        {
+            AlertBox box = alertBoxes.FirstOrDefault(x => x.ID == boxId);
+
+            if (box == null)
+            {
+                Console.WriteLine($"Box with ID {boxId} now found");
+                return;
+            }
+
+            box.Hide();
+        }
     }
 }

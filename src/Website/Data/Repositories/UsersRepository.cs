@@ -24,7 +24,7 @@ namespace Website.Data.Repositories
 
             UserProfile user = null;
 
-            await connection.QueryAsync<UserProfile, MProduct, UserProfile>(sql, (u, p) => 
+            await connection.QueryAsync<UserProfile, MProduct, MProductSale, UserProfile>(sql, (u, p, ps) => 
             { 
                 if (user == null)
                 {
@@ -34,6 +34,7 @@ namespace Website.Data.Repositories
 
                 if (p != null)
                 {
+                    p.Sale = ps;
                     user.Products.Add(p);
                 }
 

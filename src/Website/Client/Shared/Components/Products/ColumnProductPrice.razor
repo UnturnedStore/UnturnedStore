@@ -1,0 +1,23 @@
+﻿@if (SetMultiplier.HasValue)
+{
+    <span><s>@Price</s> <b>@Discount</b> (@DiscountPrice)</span>
+} else
+{
+    <span>@Price</span>
+}
+
+@code {
+    [Parameter]
+    public MProduct Product { get; set; }
+    [Parameter]
+    public MProductSale Sale { get; set; }
+    [Parameter]
+    public MProductCoupon Coupon { get; set; }
+
+    private decimal SetProductPrice => Product?.Price ?? Sale.ProductPrice;
+    private decimal? SetMultiplier => Coupon?.CouponMultiplier ?? Sale?.SaleMultiplier ?? Product.Sale?.SaleMultiplier;
+
+    public string Price => SetProductPrice > 0 ? $"${SetProductPrice.ToString("N2")}" : "Free";
+    public string Discount => $"-{((1M - SetMultiplier.Value) * 100).ToString("N0")}%";
+    public string DiscountPrice => $"${(SetProductPrice * SetMultiplier.Value).ToString("N2")}";
+}

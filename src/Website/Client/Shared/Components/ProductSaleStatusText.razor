@@ -1,0 +1,18 @@
+﻿@if (Status == ProductSaleStatus.Expired)
+{
+    <span class="text-muted text-uppercase">@Status</span>
+}
+else if (Status == ProductSaleStatus.Upcoming)
+{
+    <span class="text-muted fw-bold text-uppercase">@Status</span>
+}
+else if (Status == ProductSaleStatus.Active)
+{
+    <span class="text-primary text-uppercase">@Status</span>
+}
+
+@code {
+    [Parameter]
+    public ProductSaleStatus Status { get; set; }
+
+}
