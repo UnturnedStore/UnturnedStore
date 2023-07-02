@@ -178,7 +178,7 @@ namespace Website.Data.Repositories
             const string sql0 = "SELECT * FROM dbo.Tags WHERE Id IN (SELECT TagId FROM dbo.ProductTags WHERE ProductId = @Id);";
             product.Tags = (await connection.QueryAsync<MProductTag>(sql0, product)).ToList();
 
-            const string sql1 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id;";
+            const string sql1 = "SELECT * FROM dbo.ProductTabs WHERE ProductId = @Id AND IsEnabled = 1;";
             product.Tabs = (await connection.QueryAsync<MProductTab>(sql1, product)).ToList();
 
             const string sql2 = "SELECT * FROM dbo.ProductMedias WHERE ProductId = @Id;";
