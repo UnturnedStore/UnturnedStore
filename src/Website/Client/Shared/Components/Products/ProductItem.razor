@@ -1,5 +1,5 @@
 ﻿@using Website.Client.Shared.Components.Badges
-<div class="p-3 d-flex align-items-center bg-light border border-1 my-2">
+<div class="p-3 d-flex align-items-center bg-light border border-1 @GetClass() my-2">
     <div>
         <a href="/products/@Product.Id">
             <img src="/api/images/@Product.ImageId" width="90" height="90" class="rounded" />
@@ -25,7 +25,7 @@
             }
             @if (Product.IsLoaderEnabled)
             {
-                <div class="small text-black-50" title="Loader Required">
+                <div class="small text-loader" title="Loader Required">
                     <i class="fas fa-cloud-download-alt"></i>
                 </div>
             }

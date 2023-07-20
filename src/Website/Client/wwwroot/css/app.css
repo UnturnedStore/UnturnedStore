@@ -150,3 +150,42 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         display: none!important;
     }
 }
+
+
+/* Loader */
+
+.border-loader {
+    border-color: slategray !important;
+}
+
+.text-loader {
+    color: slategray !important;
+}
+
+.weapon {
+    position: relative !important;
+}
+
+.weapon-img {
+    background-color: rgb(45, 45, 45) !important;
+}
+
+.weapon-img-preview {
+    background-color: rgb(45, 45, 45) !important;
+    width: 100%;
+}
+
+.weapon-title {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-align: center;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+}

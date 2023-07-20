@@ -11,5 +11,15 @@ namespace Website.Client.Shared.Components.Products
 
         [Parameter]
         public List<MProductTag> ProductTags { get; set; }
+
+        public string GetClass()
+        {
+            if (Product.IsLoaderEnabled)
+            {
+                return "border-loader";
+            }
+
+            return string.Empty;
+        }
     }
 }

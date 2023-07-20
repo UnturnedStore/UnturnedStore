@@ -79,7 +79,8 @@ BEGIN
 		ps.StartDate,
 		ps.EndDate,
 		ps.IsExpired,
-		ps.IsActive
+		ps.IsActive,
+		s.ServersCount
 	FROM dbo.Products p 
 	JOIN dbo.Users u ON p.SellerId = u.Id
 	LEFT JOIN dbo.Tags t ON t.Id IN (SELECT pt.TagId FROM dbo.ProductTags pt WHERE pt.ProductId = p.Id)

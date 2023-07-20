@@ -32,6 +32,7 @@ namespace Website.Client.Pages.Home.ProductsPage
             .Where(x => x.DiscountedPrice() >= (minPrice < maxPrice ? minPrice : maxPrice) && x.DiscountedPrice() <= (minPrice < maxPrice ? maxPrice : minPrice))
             .Where(x => minRating == 0 || x.AverageRating >= minRating)
             .Where(x => !verifiedSellersOnly || x.Seller.IsVerifiedSeller)
+            .Where(x => showLoaderPlugins || !x.IsLoaderEnabled)
             .Where(x => string.IsNullOrEmpty(searchString)
             || x.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
             || x.Seller.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)
@@ -66,6 +67,7 @@ namespace Website.Client.Pages.Home.ProductsPage
         private decimal maxPrice = 0.00M;
         private byte minRating = 0;
         private bool verifiedSellersOnly = false;
+        private bool showLoaderPlugins = true;
 
         private void HandleSearchTag(MProductTag Tag, bool Value)
         {
