@@ -62,8 +62,15 @@
             <div class="mb-2">
                 <label class="form-label text-muted small mb-1">Products from</label>
                 <div class="form-check form-switch">
-                    <input type="checkbox" class="form-check-input" id="verifiedselleronly-check" @bind-value="@verifiedSellersOnly">
+                    <input type="checkbox" class="form-check-input" id="verifiedselleronly-check" @bind="@verifiedSellersOnly">
                     <label class="form-label form-check-label m-0" for="verifiedselleronly-check">Verified Sellers Only</label>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="form-label text-muted small mb-1">Loader required</label>
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="loaderplugins-check" @bind="@showLoaderPlugins">
+                    <label class="form-label form-check-label m-0" for="loaderplugins-check">Show Loader Plugins</label>
                 </div>
             </div>
             @if (ProductTags.Count > 0)
