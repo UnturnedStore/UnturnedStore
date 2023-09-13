@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.JSInterop;
 using System.Threading.Tasks;
 
 namespace Website.Client.Extensions
 {
     public static class IJSRuntimeExtensions
     {
+        public static async Task ClearModalBackdropAsync(this IJSRuntime jsRuntime)
+        {
+            await jsRuntime.InvokeVoidAsync("ClearModalBackdrop");
+        }
+
         public static async Task ShowModalAsync(this IJSRuntime jsRuntime, string modalId)
         {
             await jsRuntime.InvokeVoidAsync("ShowModal", modalId);

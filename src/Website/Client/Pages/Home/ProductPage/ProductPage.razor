@@ -222,7 +222,7 @@
                             {
                                 if (Product.IsLoaderEnabled)
                                 {
-                                    <button class="btn btn-info">
+                                    <button class="btn btn-info" @onclick="ShowLoaderConfigurationModalAsync">
                                         <i class="fas fa-code"></i> Show Configuration
                                     </button>
                                 }
@@ -270,6 +270,8 @@
 
     <ProductReviewModal @ref="ReviewModal" Product="Product" ReviewChanged="OnReviewChanged" OnDeleteReview="DeleteReviewAsync" />
     <RequiredWorkshopsModal @ref="RequiredWorkshopsModal" Product="Product" WorkshopResult="WorkshopResult" />
+    <LoaderConfigurationModal @ref="LoaderConfigurationModal" Product="Product" Branch="DefaultBranch" ProductLicense="ProductLicense" />    
+    
 }
 else
 {

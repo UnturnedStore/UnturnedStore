@@ -1,4 +1,11 @@
-﻿function HighlightAll() {
+﻿function ClearModalBackdrop() {
+    const elements = document.getElementsByClassName("modal-backdrop");
+    while (elements.length > 0) {
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+}
+
+function HighlightAll() {
     document.querySelectorAll('pre').forEach((block) => {
         hljs.highlightBlock(block);
     });
