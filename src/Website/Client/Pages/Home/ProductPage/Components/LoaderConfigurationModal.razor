@@ -1,0 +1,82 @@
+﻿@using System.Net
+@using System.Xml.Serialization;
+@using System.IO;
+@using Website.Client.Helpers;
+@using Website.Client.Models;
+@using Website.Client.Shared.Components.Products
+@using Website.Shared.Results
+
+<div class="modal fade" tabindex="-1" id="@nameof(LoaderConfigurationModal)" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Loader Configuration
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>
+                        Install <a href="/loader" target="_blank">UnturnedStoreLoader</a> plugin and libraries on your server.
+                    </li>
+                    <li>
+                        <div class="mb-3">
+                            Add the following to the loader configuration file:
+                        </div>
+
+                        <ul class="list-unstyled">
+                            @if (Product.Category == ProductCategoryConstants.RocketPlugin)
+                            {
+                                <li>
+                                    <div class="bg-light rounded-top p-2 border border-bottom-0 d-flex align-items-center">
+                                        <div>
+                                            <i class="fas fa-rocket"></i>
+                                        </div>
+                                        <div class="ms-2 small">
+                                            UnturnedStore.Loader.RocketMod.configuration.xml
+                                        </div>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(ConfigurationStringXml))
+                                    {
+                                        <pre class="rounded-bottom border">
+                                        <code class="language-xml">
+                                                @ConfigurationStringXml
+                                                </code>
+                                            </pre>
+                                    }
+                                </li>
+                            }
+                            
+                            @if (Product.Category == ProductCategoryConstants.OpenModPlugin)
+                            {
+                                <li>
+                                    <div class="bg-light rounded-top p-2 border border-bottom-0 d-flex align-items-center">
+                                        <div>
+                                            <i class="fas fa-plug"></i>
+                                        </div>
+                                        <div class="ms-2 small">
+                                            UnturnedStore.Loader.OpenMod.configuration.yml
+                                        </div>
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(ConfigurationStringYaml))
+                                    {
+                                        <pre class="rounded-bottom border">
+                                            <code class="language-yml">
+                                                @ConfigurationStringYaml
+                                            </code>
+                                        </pre>
+                                    }
+                                </li>
+                            }                            
+                        </ul>
+                    </li>                    
+                </ol>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Never share your license key with anyone!
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

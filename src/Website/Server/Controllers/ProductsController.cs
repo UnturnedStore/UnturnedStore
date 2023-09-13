@@ -17,6 +17,7 @@ using Website.Shared.Enums;
 using Website.Shared.Extensions;
 using Website.Shared.Models;
 using Website.Shared.Models.Database;
+using Website.Shared.Models.Product;
 using Website.Shared.Params;
 using Website.Shared.Results;
 
@@ -541,6 +542,16 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> GetUserProductsAsync()
         {
             return Ok(await productsRepository.GetMyProductsAsync(int.Parse(User.Identity.Name)));
+        }
+
+        [Authorize]
+        [HttpGet("{productId}/license")]
+        public async Task<IActionResult> GetUserProductLicenseAsync(int productId)
+        {
+            int userId = int.Parse(User.Identity.Name);
+            ProductLicense productLicense = await productsRepository.GetProductLicenseByUserIdAsync(productId, userId);
+
+            return Ok(productLicense);
         }
     }
 }
