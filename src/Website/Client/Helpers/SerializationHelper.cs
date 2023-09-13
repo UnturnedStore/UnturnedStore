@@ -10,12 +10,12 @@ namespace Website.Client.Helpers
     {
         public static string SerializeObjectToXML<T>(T obj)
         {
-            var ns = new XmlSerializerNamespaces();
+            XmlSerializerNamespaces ns = new();
             ns.Add("", "");
-            var s1 = new XmlSerializer(typeof(T));
-            var builder = new StringBuilder();
-            var xmlws = new XmlWriterSettings { OmitXmlDeclaration = true, Indent = true };
-            using (var writer = XmlWriter.Create(builder, xmlws))
+            XmlSerializer s1 = new(typeof(T));
+            StringBuilder builder = new();
+            XmlWriterSettings xmlws = new() { OmitXmlDeclaration = true, Indent = true };
+            using (XmlWriter writer = XmlWriter.Create(builder, xmlws))
             {
                 s1.Serialize(writer, obj, ns);
             }
