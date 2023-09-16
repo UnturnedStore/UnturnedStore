@@ -48,6 +48,11 @@ namespace Website.Server.Controllers
         public async Task<IActionResult> PostMessageAsync([FromBody] MMessage message)
         {
             int userId = int.Parse(User.Identity.Name);
+            if (userId == message.ToUserId)
+            {
+                return BadRequest();
+            }
+
             message.FromUserId = userId;
             foreach (var reply in message.Replies)
             {
