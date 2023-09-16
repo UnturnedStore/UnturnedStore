@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using Website.Shared.Constants;
 using Website.Shared.Extensions;
 using Website.Shared.Models;
-using Website.Shared.Models.Database;   
+using Website.Shared.Models.Database;
+using Website.Shared.Models.Product;
 using Website.Shared.Params;
 
 namespace Website.Data.Repositories
@@ -465,6 +466,13 @@ namespace Website.Data.Repositories
                 c.Product.Seller = u;
                 return c;
             }, new { userId });
+        }
+
+        public async Task<ProductLicense> GetProductLicenseByUserIdAsync(int productId, int userId)
+        {
+            const string sql = "SELECT * FROM dbo.ProductCustomers WHERE ProductId = @productId AND UserId = @userId;";
+
+            return await connection.QueryFirstOrDefaultAsync<ProductLicense>(sql, new { productId, userId });
         }
     }
 }

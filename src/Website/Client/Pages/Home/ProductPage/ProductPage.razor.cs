@@ -12,6 +12,7 @@ using Website.Client.Providers;
 using Website.Client.Services;
 using Website.Components.Helpers;
 using Website.Shared.Models.Database;
+using Website.Shared.Models.Product;
 using Website.Shared.Params;
 using Website.Shared.Results;
 
@@ -48,6 +49,7 @@ namespace Website.Client.Pages.Home.ProductPage
 
         public WorkshopsTab WorkshopsTab { get; set; }
         public RequiredWorkshopsModal RequiredWorkshopsModal { get; set; }
+        public LoaderConfigurationModal LoaderConfigurationModal { get; set; }
         public WorkshopItemResult WorkshopResult => WorkshopsTab?.WorkshopResult;
 
         private async Task ShowRequiredProductsAsync()
@@ -58,6 +60,8 @@ namespace Website.Client.Pages.Home.ProductPage
 
         public ProductReviewModal ReviewModal { get; set; }
         public MProductReview Review { get; set; }
+        
+        public ProductLicense ProductLicense { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -82,6 +86,16 @@ namespace Website.Client.Pages.Home.ProductPage
                 if (Product.RatingsCount > 0)
                 {
                     Product.AverageRating = (byte)(Product.Reviews.Sum(x => x.Rating) / Product.Reviews.Count);
+                }
+
+                if (Product.IsLoaderEnabled)
+                {
+                    HttpResponseMessage response2 = await HttpClient.GetAsync($"api/products/{ProductId}/license");
+
+                    if (response2.StatusCode == HttpStatusCode.OK)
+                    {
+                        ProductLicense = await response2.Content.ReadFromJsonAsync<ProductLicense>();
+                    }
                 }
             }
 
@@ -116,6 +130,11 @@ namespace Website.Client.Pages.Home.ProductPage
         private async Task ShowReviewModalAsync()
         {
             await ReviewModal.ShowModalAsync(Review);
+        }
+
+        private async Task ShowLoaderConfigurationModalAsync()
+        {
+            await LoaderConfigurationModal.ShowModalAsync();
         }
 
         private void OnReviewChanged(MProductReview review)
