@@ -67,10 +67,16 @@ namespace Website.Client.Pages.User.CreateMessagePage
             Message.Replies.Add(Reply);
 
             HttpResponseMessage response = await HttpClient.PostAsJsonAsync("api/messages", Message);
-            MMessage msg = await response.Content.ReadFromJsonAsync<MMessage>();
-
-            SetDefault();
-            NavigationManager.NavigateTo($"/messages/{msg.Id}");
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                MMessage msg = await response.Content.ReadFromJsonAsync<MMessage>();
+                SetDefault();
+                NavigationManager.NavigateTo($"/messages/{msg.Id}");
+            }
+            else
+            {
+                message = $"An error occurred {response.StatusCode}";
+            }
 
             isLoading = false;
         }
