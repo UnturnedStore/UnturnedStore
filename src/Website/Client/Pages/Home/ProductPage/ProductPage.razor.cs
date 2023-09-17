@@ -88,7 +88,7 @@ namespace Website.Client.Pages.Home.ProductPage
                     Product.AverageRating = (byte)(Product.Reviews.Sum(x => x.Rating) / Product.Reviews.Count);
                 }
 
-                if (Product.IsLoaderEnabled)
+                if (UserService.IsAuthenticated && Product.IsLoaderEnabled)
                 {
                     HttpResponseMessage response2 = await HttpClient.GetAsync($"api/products/{ProductId}/license");
 
