@@ -10,7 +10,7 @@ namespace Website.Shared.Constants
     {
         public const string OpenModPlugin = "OpenMod Plugin";
         public const string RocketPlugin = "Rocket Plugin";
-        public const string UScriptPlugin = "UScript Plugin";
+        public const string UScriptPlugin = "UScript Script";
         public const string ClientModule = "Client Module";
 
         public const string DefaultCategory = RocketPlugin;
