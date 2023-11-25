@@ -11,6 +11,8 @@
 	PayPalAddress NVARCHAR(255) NULL,
 	IsNanoEnabled BIT NOT NULL CONSTRAINT DF_Users_IsNanoEnabled DEFAULT 0,
 	NanoAddress NVARCHAR(255) NULL,
+	IsStripeEnabled BIT NOT NULL CONSTRAINT DF_Users_IsStripeEnabled DEFAULT 0,
+	StripeAccountId NVARCHAR(255) NULL,
 	DiscordWebhookUrl NVARCHAR(255) NULL,
 	TermsAndConditions NVARCHAR(4000) NULL,
 	Biography NVARCHAR(4000) NULL,

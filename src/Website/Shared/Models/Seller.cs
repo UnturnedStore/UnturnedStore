@@ -8,6 +8,9 @@ namespace Website.Shared.Models
         public string PayPalAddress { get; set; }
         public bool IsNanoEnabled { get; set; }
         public string NanoAddress { get; set; }
+        public bool IsStripeEnabled { get; set; }
+        public string StripeAccountId { get; set; }
+
         [JsonIgnore]
         public string DiscordWebhookUrl { get; set; }
         public string TermsAndConditions { get; set; }

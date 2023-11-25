@@ -35,6 +35,7 @@ namespace Website.Shared.Models.Database
                 PaymentProviders.PayPal => Seller.PayPalAddress,
                 PaymentProviders.Nano => Seller.NanoAddress,
                 PaymentProviders.Mock => Seller.Name,
+                
                 _ => null,
             };
         }
