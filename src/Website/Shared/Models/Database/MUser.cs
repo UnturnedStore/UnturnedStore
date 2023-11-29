@@ -54,7 +54,7 @@ namespace Website.Shared.Models.Database
             }
             if (IsStripeEnabled)
             {
-                paymentMethods.Add(PaymentProviders.Nano);
+                paymentMethods.Add(PaymentProviders.Stripe);
             }
             if (isMockEnabled)
             {
