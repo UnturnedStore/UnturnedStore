@@ -35,7 +35,7 @@ namespace Website.Shared.Models.Database
                 PaymentProviders.PayPal => Seller.PayPalAddress,
                 PaymentProviders.Nano => Seller.NanoAddress,
                 PaymentProviders.Mock => Seller.Name,
-                
+                PaymentProviders.Stripe => Seller.StripeAccountId,
                 _ => null,
             };
         }
