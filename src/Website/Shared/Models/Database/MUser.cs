@@ -19,9 +19,9 @@ namespace Website.Shared.Models.Database
         public bool IsPayPalEnabled { get; set; }
         [StringLength(255)]
         public string PayPalAddress { get; set; }
-        public bool IsNanoEnabled { get; set; }
+        public bool IsStripeEnabled { get; set; }
         [StringLength(255)]
-        public string NanoAddress { get; set; }
+        public string StripeAccountId { get; set; }
         [StringLength(255)]
         public string DiscordWebhookUrl { get; set; }
         [StringLength(4000)]
@@ -52,9 +52,9 @@ namespace Website.Shared.Models.Database
             {
                 paymentMethods.Add(PaymentProviders.PayPal);
             }
-            if (IsNanoEnabled)
+            if (IsStripeEnabled)
             {
-                paymentMethods.Add(PaymentProviders.Nano);
+                paymentMethods.Add(PaymentProviders.Stripe);
             }
             if (isMockEnabled)
             {
@@ -75,8 +75,8 @@ namespace Website.Shared.Models.Database
                 Color = user.Color,
                 IsPayPalEnabled = user.IsPayPalEnabled,
                 PayPalAddress = user.PayPalAddress,
-                IsNanoEnabled = user.IsNanoEnabled,
-                NanoAddress = user.NanoAddress,
+                IsStripeEnabled = user.IsStripeEnabled,
+                StripeAccountId = user.StripeAccountId,
                 Role = user.Role,
                 TermsAndConditions = user.TermsAndConditions,
                 Biography = user.Biography,

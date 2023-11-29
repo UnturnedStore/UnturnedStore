@@ -123,7 +123,7 @@ namespace Website.Data.Repositories
         public async Task UpdateSellerAsync(MUser user)
         {
             const string sql = "UPDATE dbo.Users SET IsPayPalEnabled = @IsPayPalEnabled, PayPalAddress = @PayPalAddress, " +
-                "IsNanoEnabled = @IsNanoEnabled, NanoAddress = @NanoAddress, TermsAndConditions = @TermsAndConditions " + 
+                "IsStripeEnabled = @IsStripeEnabled, StripeAccountId = @StripeAccountId, TermsAndConditions = @TermsAndConditions " + 
                 "WHERE Id = @Id;";
 
             await connection.ExecuteAsync(sql, user);

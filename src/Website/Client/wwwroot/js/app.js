@@ -25,7 +25,7 @@ function ShowModalStatic(id) {
 
 function HideModal(id) {
     var myModalEl = document.getElementById(id);
-    var modal = bootstrap.Modal.getInstance(myModalEl);
+    var modal = bootstrap.Modal.getInstance(myModalEl); 
     modal.hide();
 }
 
