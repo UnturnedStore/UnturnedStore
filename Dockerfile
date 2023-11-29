@@ -6,7 +6,7 @@ COPY . .
 RUN dotnet publish src/Website/Server/Website.Server.csproj -o /app/compiled/unturnedstore/
 
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0
+FROM mcr.microsoft.com/dotnet/sdk:8.0
 
 EXPOSE 5000/tcp
 WORKDIR /var/www/unturnedstore/app
