@@ -8,8 +8,8 @@
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center">
             <div class="form-check form-switch">
-                <InputCheckbox class="form-check-input" @bind-Value="User.IsPayPalEnabled" id="IsPayPalEnabled" />
-                <label class="form-check-label" style="cursor: pointer;" for="IsPayPalEnabled">PayPal payments</label>
+                <InputCheckbox class="form-check-input cursor-pointer" @bind-Value="User.IsPayPalEnabled" id="IsPayPalEnabled" />
+                <label class="form-check-label" for="IsPayPalEnabled">PayPal payments</label>
             </div>
         </div>
 
@@ -28,9 +28,13 @@
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center">
             <div class="form-check form-switch">
-                <InputCheckbox class="form-check-input" @bind-Value="User.IsStripeEnabled" id="IsStripeEnabled" disabled="@(!User.IsStripeEnabled)" />
-                <label class="form-check-label" style="cursor: pointer;" for="IsStripeEnabled">Stripe payments</label>
+                <InputCheckbox class="form-check-input cursor-pointer" @bind-Value="User.IsStripeEnabled" id="IsStripeEnabled" />
+                <label class="form-check-label cursor-pointer" for="IsStripeEnabled">Stripe payments</label>
             </div>
+        </div>
+
+        <div class="alert alert-info m-2">
+            Before you enable Stripe payments, contact UnturnedStore administrators to register your Stripe account ID on the platform.
         </div>
 
         @if (User.IsStripeEnabled)
