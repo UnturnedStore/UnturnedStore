@@ -17,9 +17,9 @@
         {
             <div class="card-body">
                 <div class="mb-3">
-                    <label class="form-label">PayPal Email</label>
+                    <label class="form-label">PayPal Address</label>
                     <InputText class="form-control" @bind-Value="User.PayPalAddress" />
-                    <div class="form-text">Your PayPal email address you want to receive payments</div>
+                    <div class="form-text">Your PayPal address to receive payments</div>
                 </div>
             </div>
         }
@@ -28,18 +28,18 @@
     <div class="card mb-3">
         <div class="card-header d-flex align-items-center">
             <div class="form-check form-switch">
-                <InputCheckbox class="form-check-input" @bind-Value="User.IsNanoEnabled" id="IsNanoEnabled" disabled="@(!User.IsNanoEnabled)" />
-                <label class="form-check-label" style="cursor: pointer;" for="IsNanoEnabled">Nano payments</label>
+                <InputCheckbox class="form-check-input" @bind-Value="User.IsStripeEnabled" id="IsStripeEnabled" disabled="@(!User.IsStripeEnabled)" />
+                <label class="form-check-label" style="cursor: pointer;" for="IsStripeEnabled">Stripe payments</label>
             </div>
         </div>
 
-        @if (User.IsNanoEnabled)
+        @if (User.IsStripeEnabled)
         {
             <div class="card-body">
                 <div class="mb-3">
-                    <label class="form-label">Nano Address</label>
-                    <InputText class="form-control" @bind-Value="User.NanoAddress" />
-                    <div class="form-text">Your Nano address you want to receive payments</div>
+                    <label class="form-label">Stripe Account ID</label>
+                    <InputText class="form-control" @bind-Value="User.StripeAccountId" />
+                    <div class="form-text">Your Stripe account ID to receive payments</div>
                 </div>
             </div>
         }

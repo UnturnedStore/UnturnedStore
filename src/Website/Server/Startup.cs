@@ -59,10 +59,12 @@ namespace Website.Server
 
             services.AddOptions();
             services.AddMemoryCache();
+
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimit"));
-            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
-            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+            services.AddInMemoryRateLimiting();
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
             services.AddSingleton<ICrawlerIdentifier>(new FileBasedCrawlerIdentifier("CrawlerInfo.json"));
             services.AddHttpContextAccessor();
 
