@@ -45,7 +45,6 @@ namespace Website.Components.DataTable
         {
             Title = title;
             StateHasChanged();
-            Console.WriteLine("updated title hurrah!");
         }
     }
 }

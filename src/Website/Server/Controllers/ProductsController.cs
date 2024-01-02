@@ -226,7 +226,7 @@ namespace Website.Server.Controllers
                     return StatusCode(StatusCodes.Status409Conflict);
                 }
 
-                throw e;
+                throw;
             }
         }
 
@@ -255,7 +255,7 @@ namespace Website.Server.Controllers
                     return StatusCode(StatusCodes.Status409Conflict);
                 }
 
-                throw e;
+                throw;
             }
             
             await offersRepository.UpdateProductSaleProductPriceAsync(product.Id);
@@ -465,7 +465,7 @@ namespace Website.Server.Controllers
                     return StatusCode(StatusCodes.Status409Conflict);
                 }
 
-                throw e;
+                throw;
             }
         }
 
@@ -520,7 +520,7 @@ namespace Website.Server.Controllers
                     return StatusCode(StatusCodes.Status409Conflict);
                 }
 
-                throw e;
+                throw;
             }
         }
 

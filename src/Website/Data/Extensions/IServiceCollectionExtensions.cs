@@ -18,6 +18,7 @@ namespace Website.Data.Extensions
             services.AddScoped<MessagesRepository>();
             services.AddScoped<AdminRepository>();
             services.AddScoped<HomeRepository>();
+            services.AddScoped<CustomersRepository>();
         }
     }
 }
