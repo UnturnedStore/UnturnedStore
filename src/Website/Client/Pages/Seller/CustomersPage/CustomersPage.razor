@@ -33,15 +33,19 @@
                 </div>        
             </DataTableTitle>
             <DataTableColumn TItem="MProductCustomer" Name="ID" Field="x => x.Id" IsSearchable="true" SearchType="ESearchType.Exact" Context="customer">
-                <div class="d-flex">
+                <div class="d-flex align-items-center">
                     <div>
                         @customer.Id
                     </div>
-                    @if (customer.IsBlocked)
+                    @if (customer.Product.IsLoaderEnabled && customer.IsBlocked)
                     {
-                        <button class="ms-auto btn btn-danger btn-sm" disabled>
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </button>
+                        <div class="ms-auto">
+                            <Tooltip Text="License Suspended" OnHover="true">
+                                <div class="alert alert-danger p-1 px-2 mb-0">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </div>
+                            </Tooltip>                            
+                        </div>
                     }
                 </div>
             </DataTableColumn>
@@ -71,11 +75,14 @@
             </DataTableColumn>
             <DataTableColumn TItem="MProductCustomer" Name="" Context="customer" Field="x => string.Empty" IsSearchable="false">
                 <div class="d-flex">
-                    <div class="ms-2">
-                        <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowDetailsModalAsync(customer)">
-                            <i class="fas fa-info-circle"></i>
-                        </button>
-                    </div>
+                    @if (customer.Product.IsLoaderEnabled)
+                    {
+                        <div class="ms-2">
+                            <button class="btn btn-outline-primary btn-sm" @onclick="() => ShowDetailsModalAsync(customer)">
+                                <i class="fas fa-info-circle"></i>
+                            </button>
+                        </div>
+                    }                    
                     <div class="ms-2">
                         <button class="btn btn-outline-danger btn-sm" @onclick="() => ShowDeleteCustomerAsync(customer)">
                             <i class="fas fa-trash-alt"></i>
@@ -87,7 +94,7 @@
     </div>
     
     <ConfirmModal @ref="DeleteConfirmModal" Title="Delete customer?" TItem="MProductCustomer" ModalId="DeleteReviewConfirm" BtnClass="btn-outline-danger" BtnText="Delete" OnConfirm="DeleteCustomerAsync">
-        Are you sure you want to delete customer <span class="fw-bold">@DeleteConfirmModal.Item.Id</span>
+        Are you sure you want to delete customer <span class="fw-bold">@DeleteConfirmModal.Item.Id?</span> This means they will lose access to the product.
     </ConfirmModal>
     <AddCustomerModal Customers="Customers" @ref="AddModal" OnCustomerAdded="AddCustomer" />
     <DetailsCustomerModal Customers="Customers" @ref="DetailsModal" OnStateChanged="() => StateHasChanged()" />

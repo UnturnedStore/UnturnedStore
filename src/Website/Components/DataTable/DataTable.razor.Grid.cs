@@ -14,7 +14,7 @@ namespace Website.Components.DataTable
             return properties.Select(x => x.Name);            
         }
 
-        public IEnumerable<TItem> Items { get; private set; }
+        public ICollection<TItem> Items { get; private set; }
 
         public void RefreshItems()
         {
@@ -29,7 +29,7 @@ namespace Website.Components.DataTable
             public TItem Value { get; set; }
         }
 
-        public IEnumerable<TItem> GetItems()
+        public ICollection<TItem> GetItems()
         {
             //List<IEnumerable<string>> groups = new();
 
@@ -37,7 +37,8 @@ namespace Website.Components.DataTable
             
             ApplySearch(ref data);
             ApplyOrder(ref data);
-            return data;
+
+            return data.ToList();
 
             //foreach (TItem item in data)
             //{
