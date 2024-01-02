@@ -23,8 +23,10 @@ namespace Website.Client.Pages.Seller.CustomersPage.Components
         [Parameter] public EventCallback<MProductCustomer> OnStateChanged { get; set; }
 
         public MProductCustomer Model { get; set; }
+        public List<MCustomerServer> CustomerServers { get; set; }
 
         private bool isSuspended;
+        private bool isLoadingServers = false;
         public async Task ShowAsync(int customerId)
         {
             message = null;
@@ -32,6 +34,13 @@ namespace Website.Client.Pages.Seller.CustomersPage.Components
             isSuspended = Model.IsBlocked;
 
             await JsRuntime.ShowModalStaticAsync(nameof(DetailsCustomerModal));
+
+            isLoadingServers = true;
+            StateHasChanged();
+
+            CustomerServers = await HttpClient.GetFromJsonAsync<List<MCustomerServer>>($"api/customers/{customerId}/servers");
+            isLoadingServers = false;
+            StateHasChanged();
         }
 
         private string message = null;

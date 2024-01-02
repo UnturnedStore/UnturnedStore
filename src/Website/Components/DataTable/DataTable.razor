@@ -1,4 +1,5 @@
-﻿@typeparam TItem
+﻿@using Microsoft.AspNetCore.Components.Web.Virtualization
+@typeparam TItem
 
 @if (Data != null)
 {
@@ -53,8 +54,7 @@
         <tbody>
             @if (!isLoading)
             {
-                @foreach (TItem item in Items)
-                {
+                <Virtualize TItem="TItem" Items="Items.ToList()" Context="item"> 
                     <tr>
                         @foreach (DataTableColumn<TItem> column in Columns)
                         {
@@ -63,7 +63,8 @@
                                 <td class="@column.Class">
                                     @column.GetValue(item)
                                 </td>
-                            } else
+                            }
+                            else
                             {
                                 <td class="@column.Class">
                                     @column.GetRenderFragment(item)
@@ -71,7 +72,7 @@
                             }
                         }
                     </tr>
-                }
+                </Virtualize>
             }
         </tbody>
     </table>

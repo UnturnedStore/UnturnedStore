@@ -29,6 +29,52 @@
                         </div>
                     }
 
+                    @if (isLoadingServers)
+                    {
+                        <Progressbar />
+                    } else
+                    {  
+                        @if (CustomerServers == null || CustomerServers.Count == 0)
+                        {
+                            <div class="mb-3">
+                                <div class="text-danger">No servers used this license yet.</div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-sm small caption-top">
+                                    <caption>
+                                        List of servers (@CustomerServers.Count)
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>IP</th>
+                                            <th>Port</th>
+                                            <th>Loaded</th>
+                                            <th>Activity</th>
+                                            <th>Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (MCustomerServer customerServer in CustomerServers.OrderByDescending(x => x.UpdateDate))
+                                        {
+                                            <tr>
+                                                <td class="text-nowrap">@customerServer.ServerName</td>
+                                                <td>@customerServer.Host</td>
+                                                <td>@customerServer.Port</td>
+                                                <td class="text-center">@customerServer.TimesLoaded</td>
+                                                <td>@customerServer.UpdateDate.ToShortDateString()</td>
+                                                <td>@customerServer.CreateDate.ToShortDateString()</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+
                 </div>
 
                 <div class="modal-footer">
