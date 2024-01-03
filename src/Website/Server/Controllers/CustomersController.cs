@@ -26,7 +26,7 @@ namespace Website.Server.Controllers
         [Authorize(Roles = RoleConstants.AdminAndSeller)]
         public async Task<IActionResult> GetCustomerServersByCustomerIdAsync([FromRoute] int customerId)
         {
-            if (!User.IsInRole(RoleConstants.AdminRoleId) && await productsRepository.IsProductCustomerSellerAsync(customerId, int.Parse(User.Identity.Name)))
+            if (!User.IsInRole(RoleConstants.AdminRoleId) && !await productsRepository.IsProductCustomerSellerAsync(customerId, int.Parse(User.Identity.Name)))
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
