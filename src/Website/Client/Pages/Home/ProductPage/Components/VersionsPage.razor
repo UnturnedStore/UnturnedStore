@@ -27,9 +27,12 @@
                     <div class="fw-bold">
                         @Branch.Name @version.Name
                     </div>
-                    <div class="ms-auto">
-                        <small class="text-muted"><i class="bi bi-download"></i> @version.DownloadsCount</small>
-                    </div>                    
+                    @if (!Product.IsLoaderEnabled)
+                    {
+                        <div class="ms-auto">
+                            <small class="text-muted"><i class="bi bi-download"></i> @version.DownloadsCount</small>
+                        </div>
+                    }                    
                 </div>
                 <div class="card-body">
                     <p class="card-text">@((MarkupString)MarkdownHelper.ParseToHtml(version.Changelog, false))</p>
@@ -37,13 +40,15 @@
                         <div class="text-muted">
                             <HoverableDateTime Time="version.CreateDate" />
                         </div>
-                        <div class="ms-auto">
-                            <form method="get" action="api/versions/download/@version.Id">
-                                <button type="submit" class="btn btn-primary" @onclick="() => OnDownloadProduct.InvokeAsync()">Download this version</button>
-                            </form>                            
-                        </div>
-                    </div>
-                    
+                        @if (!Product.IsLoaderEnabled)
+                        {
+                            <div class="ms-auto">
+                                <form method="get" action="api/versions/download/@version.Id">
+                                    <button type="submit" class="btn btn-primary" @onclick="() => OnDownloadProduct.InvokeAsync()">Download this version</button>
+                                </form>
+                            </div>
+                        }                        
+                    </div>                    
                 </div>
             </div>
         </Virtualize>
