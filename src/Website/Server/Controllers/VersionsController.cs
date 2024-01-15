@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -106,7 +107,7 @@ namespace Website.Server.Controllers
                 await versionsRepository.IncrementDownloadsCount(versionId);
             }
 
-            Response.Headers.Add("Content-Disposition", "inline; filename=" + 
+            Response.Headers.Append("Content-Disposition", "inline; filename=" + 
                 string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
             return File(version.Content, version.ContentType);
         }
