@@ -1,4 +1,5 @@
-﻿using Markdig;
+﻿using Ganss.Xss;
+using Markdig;
 
 namespace Website.Components.Helpers
 {
@@ -18,9 +19,19 @@ namespace Website.Components.Helpers
                     .UseAutoLinks();
 
             if (disableHtml)
+            {
                 builder.DisableHtml();
+            }
+            
+            string html = Markdown.ToHtml(markdown, builder.Build());
+            
+            if (!disableHtml)
+            {
+                HtmlSanitizer sanitizer = new();
+                sanitizer.Sanitize(html);
+            }
 
-            return Markdown.ToHtml(markdown, builder.Build());
+            return html;
         }
     }
 }
