@@ -28,7 +28,7 @@ namespace Website.Components.Helpers
             if (!disableHtml)
             {
                 HtmlSanitizer sanitizer = new();
-                sanitizer.Sanitize(html);
+                html = sanitizer.Sanitize(html);
             }
 
             return html;
