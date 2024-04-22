@@ -1,5 +1,6 @@
 ﻿@page "/checkout/{SellerId:int}"
 @using Website.Client.Pages.User.CheckoutPage.Components
+@using Website.Client.Shared.Components.Alerts
 @using Website.Components.Alerts
 
 
@@ -87,10 +88,9 @@
                     </div>
                 </div>
             </div>
+            <UnturnedTrademarkAlert />
         </div>
         <div class="col-xl-4">
-
-
             <div class="ms-3 me-3 mb-2 mt-1">
                 @foreach (OrderItemParams item in OrderParams.Items)
                 {
