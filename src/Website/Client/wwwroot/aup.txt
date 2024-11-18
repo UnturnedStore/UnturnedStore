@@ -1,0 +1,84 @@
+Acceptable Use Policy (AUP) & Terms of Service (TOS) for UnturnedStore.com
+
+1. Definitions
+* "User" refers to any individual or legal entity accessing or using the services of UnturnedStore.com.
+* "Seller" refers to any individual or legal entity listing products on the marketplace.
+* "Buyer" refers to any individual or legal entity purchasing products from the marketplace.
+* "Products" refers to any items, plugins, scripts, or digital content sold or purchased through UnturnedStore.com.
+* "Service" refers to the UnturnedStore.com platform, including all associated features, functionalities, and services.
+
+2. Acceptable Use
+By using UnturnedStore.com, users agree to adhere to the following guidelines:
+
+2.1. Prohibited Activities: Users are prohibited from engaging in the following activities:
+* Illegal Activities: Engaging in or promoting any activities that violate applicable local, national, or international laws or regulations.
+* Fraudulent or Misleading Behavior: Providing false information, misrepresenting the quality of products, or engaging in any fraudulent or deceptive practices.
+* Intellectual Property Infringement: Uploading, selling, or distributing products that infringe on the intellectual property rights of others, including copyrighted material, trademarks, or patents.
+* Harmful or Malicious Content: Uploading products that contain malicious code, malware, spyware, viruses, or anything that could harm users' devices, networks, or data.
+* Harassment and Abuse: Engaging in harassment, discrimination, or hate speech directed at other users, including sellers or buyers.
+* Spam or Unauthorized Marketing: Using the platform for unsolicited advertising or marketing purposes, including spam emails or bulk messaging.
+* Circumventing Payment Systems: Attempting to bypass or fraudulently manipulate the payment system, including using stolen credit card details or other illicit payment methods.
+* Disrupting the Service: Interfering with, disrupting, or attempting to gain unauthorized access to the UnturnedStore.com platform, servers, or user accounts.
+
+2.2. Prohibited Industries/Products: The following types of products and industries are prohibited:
+* Illegal or Harmful Software: Products that promote cheating, exploiting bugs, hacking, or any software that negatively impacts gameplay or other users' experiences.
+* Adult Content: Any adult content, including pornographic material or services that cater to adult or explicit content.
+* Gambling or Betting: Products that involve or promote gambling, betting, or any form of unlawful online gaming.
+* Drugs, Alcohol, and Tobacco: Products related to the sale or promotion of illegal drugs, tobacco, or alcohol.
+* Weapons or Violence: Products promoting the sale or use of illegal weapons or content that incites violence.
+* Fraudulent or Fake Goods: Products that are counterfeit, stolen, or misrepresented.
+
+2.3. User Content:
+* Users are responsible for the content they upload or post on the platform. This includes ensuring that their content does not violate any intellectual property rights, laws, or the rights of others.
+* UnturnedStore.com reserves the right to remove any content that violates these terms or is deemed inappropriate at its discretion.
+
+3. Seller Responsibilities
+Sellers are responsible for:
+* Product Authenticity: Ensuring that all products listed on the marketplace are original, functional, and compliant with these Terms of Service and applicable laws.
+* Clear Descriptions: Providing accurate and complete product descriptions, including features, compatibility, and any required information for the buyer to understand the product.
+* Customer Support: Offering support to buyers in accordance with the product sold, including handling refunds, disputes, and technical issues.
+* Pricing and Payment: Setting clear pricing for products and ensuring that payments are processed securely. Sellers must adhere to all applicable tax laws and regulations.
+
+4. Buyer Responsibilities
+Buyers are responsible for:
+* Payment: Ensuring that payments for products are made using legitimate and authorized payment methods.
+* Proper Use: Using the products purchased on UnturnedStore.com only for lawful purposes and in accordance with the product's intended use.
+* Reviewing Products: Carefully reviewing product descriptions and ensuring that the product meets their needs before making a purchase.
+
+5. Payments and Refunds
+* Payment Processing: Payments for products on UnturnedStore.com are processed via PayPal or other approved payment methods. Buyers must ensure that they are authorized to use the payment methods provided.
+* Refund Policy: UnturnedStore.com provides a refund policy for certain products as specified by individual sellers. Buyers should refer to the specific seller's refund policy for details.
+* Chargebacks: Chargebacks or disputes initiated by buyers may result in penalties for the buyer and/or seller, depending on the outcome of the dispute.
+
+6. Digital Rights Management (DRM)
+Some products may include DRM features to prevent unauthorized usage. Sellers may choose to implement DRM, and buyers agree to abide by the terms associated with any DRM restrictions.
+
+7. Termination and Suspension
+UnturnedStore.com reserves the right to suspend or terminate any user's access to the platform at its discretion if the user violates these Terms of Service or engages in prohibited activities. This includes, but is not limited to:
+* Fraudulent activities
+* Violations of intellectual property rights
+* Breach of the Acceptable Use Policy
+
+8. Limitation of Liability
+To the fullest extent permitted by law, UnturnedStore.com shall not be held liable for any damages, losses, or liabilities resulting from the use of the platform or any products purchased or sold through the marketplace, including but not limited to:
+* Product defects or malfunctions
+* Loss of data or business interruptions
+* Indirect, incidental, or consequential damages
+
+9. Governing Law and Jurisdiction
+These Terms of Service shall be governed by the laws of the United Kingdom. Any disputes arising from these Terms of Service shall be resolved in the courts of the United Kingdom.
+
+10. Modifications to the Terms
+UnturnedStore.com reserves the right to modify these Terms of Service at any time. Users will be notified of any significant changes, and continued use of the platform constitutes acceptance of the modified terms.
+
+11. Contact Information
+For questions or concerns regarding these Terms of Service or the Acceptable Use Policy, please contact us at [support@unturnedstore.com].
+
+12. Ownership and Intellectual Property
+UnturnedStore.com is the property of Pine Hosting Ltd, a company registered in the United Kingdom. All content, software, trademarks, and intellectual property associated with UnturnedStore.com are owned by Pine Hosting Ltd, unless otherwise stated. Users agree not to infringe upon or misuse any of Pine Hosting Ltd's intellectual property rights.
+
+13. Privacy Policy
+UnturnedStore.com is committed to protecting the privacy and security of its users. We collect and process personal data only as necessary to provide our services and in compliance with applicable data protection laws. By using our platform, you consent to the collection and use of your personal data for the necessary amount of time to carry out the use of our services.
+
+14. Platform Fees
+UnturnedStore.com charges fees for the use of its platform, which may include transaction fees, listing fees, and other associated costs. These fees are subject to change at any time based on business needs and market conditions. We reserve the right to review and modify our fees periodically. Any changes to our fees will be communicated to users through appropriate channels, and continued use of the platform after such changes will constitute acceptance of the updated fee structure.
