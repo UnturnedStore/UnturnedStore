@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Website.Shared.Models.Database;
 using Website.Client.Services;
 using System.Linq;
+using System.Security.Cryptography;
 using Microsoft.JSInterop;
 using Website.Client.Extensions;
 using Website.Components.Alerts;
@@ -93,6 +95,13 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modal
 
             isZipping = true;
             
+            await using var stream = Plugin.OpenReadStream();
+            await using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var hashData = SHA256.HashData(memoryStream.ToArray());
+            
+            Version.PluginHash = BitConverter.ToString(hashData)
+                .Replace("-", "").ToUpperInvariant();
             Version.Content = await ZIPService.ZipAsync(new Dictionary<string, IEnumerable<IBrowserFile>>() 
             {
                 { "Plugins",  new IBrowserFile[]{ Plugin } }, 
