@@ -38,10 +38,10 @@ namespace Website.Data.Repositories
 
         public async Task<MVersion> AddVersionAsync(MVersion version)
         {
-            const string sql = "INSERT INTO dbo.Versions (BranchId, Name, Changelog, FileName, ContentType, Content, IsEnabled) " +
+            const string sql = "INSERT INTO dbo.Versions (BranchId, Name, Changelog, FileName, ContentType, Content, IsEnabled, PluginHash) " +
                 "OUTPUT INSERTED.Id, INSERTED.BranchId, INSERTED.Name, INSERTED.Changelog, INSERTED.ContentType, INSERTED.FileName, " +
-                "INSERTED.DownloadsCount, INSERTED.IsEnabled, INSERTED.CreateDate " +
-                "VALUES (@BranchId, @Name, @Changelog, @FileName, @ContentType, @Content, @IsEnabled);";
+                "INSERTED.DownloadsCount, INSERTED.IsEnabled, INSERTED.CreateDate, INSERTED.PluginHash " +
+                "VALUES (@BranchId, @Name, @Changelog, @FileName, @ContentType, @Content, @IsEnabled, @PluginHash);";
 
             var p = await connection.QuerySingleAsync<MVersion>(sql, version);
             return p;

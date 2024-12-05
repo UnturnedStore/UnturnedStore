@@ -21,6 +21,7 @@ namespace Website.Shared.Models.Database
         public string FileName { get; set; }
         public string ContentType { get; set; }
         public byte[] Content { get; set; }
+        public string PluginHash { get; set; }
         public int DownloadsCount { get; set; }
         public bool IsEnabled { get; set; }
         public DateTime CreateDate { get; set; }
