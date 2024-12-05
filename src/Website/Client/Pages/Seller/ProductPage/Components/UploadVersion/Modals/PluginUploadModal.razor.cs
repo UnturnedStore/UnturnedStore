@@ -98,10 +98,10 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modal
             await using var stream = Plugin.OpenReadStream();
             await using var memoryStream = new MemoryStream();
             await stream.CopyToAsync(memoryStream);
-            var hashData = SHA256.HashData(memoryStream.ToArray());
+            var hashData = SHA512.HashData(memoryStream.ToArray());
             
             Version.PluginHash = BitConverter.ToString(hashData)
-                .Replace("-", "").ToUpperInvariant();
+                .Replace("-", "").ToLowerInvariant();
             Version.Content = await ZIPService.ZipAsync(new Dictionary<string, IEnumerable<IBrowserFile>>() 
             {
                 { "Plugins",  new IBrowserFile[]{ Plugin } }, 

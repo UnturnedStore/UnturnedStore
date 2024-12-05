@@ -10,5 +10,5 @@
 	DownloadsCount INT NOT NULL CONSTRAINT DF_Versions_DownloadsCount DEFAULT 0,
 	IsEnabled BIT NOT NULL CONSTRAINT DF_Versions_IsEnabled DEFAULT 0,
 	CreateDate DATETIME2(0) NOT NULL CONSTRAINT DF_Versions_CreateDate DEFAULT SYSDATETIME(),
-    PluginHash NVARCHAR(64)
+    PluginHash NVARCHAR(128) COLLATE SQL_Latin1_General_CP1_CI_AS
 )
