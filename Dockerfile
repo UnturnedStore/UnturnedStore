@@ -1,4 +1,4 @@
-FROM bitnami/dotnet-sdk:latest as build
+FROM bitnami/dotnet-sdk:8.0.404 as build
 
 WORKDIR /app
 COPY . .

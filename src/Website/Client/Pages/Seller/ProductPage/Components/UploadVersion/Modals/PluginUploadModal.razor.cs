@@ -95,14 +95,13 @@ namespace Website.Client.Pages.Seller.ProductPage.Components.UploadVersion.Modal
 
             isZipping = true;
             
-            // TODO: Move to server side
-            //await using var stream = Plugin.OpenReadStream();
-            //await using var memoryStream = new MemoryStream();
-            //await stream.CopyToAsync(memoryStream);
-            //var hashData = SHA512.HashData(memoryStream.ToArray());
+            await using var stream = Plugin.OpenReadStream();
+            await using var memoryStream = new MemoryStream();
+            await stream.CopyToAsync(memoryStream);
+            var hashData = SHA512.HashData(memoryStream.ToArray());
             
-            //Version.PluginHash = BitConverter.ToString(hashData)
-            //    .Replace("-", "").ToLowerInvariant();
+            Version.PluginHash = BitConverter.ToString(hashData)
+                .Replace("-", "").ToLowerInvariant();
             
             Version.Content = await ZIPService.ZipAsync(new Dictionary<string, IEnumerable<IBrowserFile>>() 
             {
