@@ -23,6 +23,7 @@ namespace Website.Server.Controllers
             this.usersRepository = usersRepository;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync()
         {
