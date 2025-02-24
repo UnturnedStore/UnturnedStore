@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Net.Http.Headers;
 using Website.Data.Repositories;
 using Website.Server.Services;
 using Website.Shared.Constants;
@@ -106,9 +107,15 @@ namespace Website.Server.Controllers
             {
                 await versionsRepository.IncrementDownloadsCount(versionId);
             }
+            
+            var fileName = $"{version.Branch.Product.Name}-{version.Branch.Name}-{version.Name}.zip";
+            var contentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("inline")
+            {
+                FileName = $"\"{fileName}\"",
+                FileNameStar = fileName
+            };
+            Response.Headers.Append(HeaderNames.ContentDisposition, contentDisposition.ToString());
 
-            Response.Headers.Append("Content-Disposition", "inline; filename=" + 
-                string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
             return File(version.Content, version.ContentType);
         }
 
@@ -133,16 +140,22 @@ namespace Website.Server.Controllers
                 if (!isSeller && !await versionsRepository.IsVersionCustomerAsync(version.Id, userId))
                 {
                     return Unauthorized();
-                }                    
+                }
             }
 
             if (shouldCount)
             {
                 await versionsRepository.IncrementDownloadsCount(version.Id);
             }
+            
+            var fileName = $"{version.Branch.Product.Name}-{version.Branch.Name}-{version.Name}.zip";
+            var contentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("inline")
+            {
+                FileName = $"\"{fileName}\"",
+                FileNameStar = fileName
+            };
+            Response.Headers.Append(HeaderNames.ContentDisposition, contentDisposition.ToString());
 
-            Response.Headers.Add("Content-Disposition", "inline; filename=" +
-                string.Concat(version.Branch.Product.Name, "-", version.Branch.Name, "-", version.Name, ".zip"));
             return File(version.Content, version.ContentType);
         }
     }
