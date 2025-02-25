@@ -30,8 +30,8 @@ public class PluginsSearchController : ControllerBase
         if (result.Count > 0)
         {
             var cacheOptions = new MemoryCacheEntryOptions()
-                               .SetAbsoluteExpiration(TimeSpan.FromDays(7))
-                               .SetSlidingExpiration(TimeSpan.FromHours(24));
+                               .SetAbsoluteExpiration(TimeSpan.FromMinutes(8))
+                               .SetSlidingExpiration(TimeSpan.FromMinutes(4));
             cache.Set(key, result, cacheOptions);
         }
         
