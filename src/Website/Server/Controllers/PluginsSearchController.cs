@@ -20,7 +20,7 @@ public class PluginsSearchController : ControllerBase
             return BadRequest();
         }
 
-        var key = $"{nameof(PluginsSearchController)}_{nameof(Query)}:{hash}";
+        var key = $"{nameof(PluginsSearchController)}_{nameof(Query)}:{hash.ToUpperInvariant()}";
         if (cache.TryGetValue(key, out IReadOnlyCollection<PluginSearchDto> result))
         {
             return Ok(result);
@@ -30,8 +30,8 @@ public class PluginsSearchController : ControllerBase
         if (result.Count > 0)
         {
             var cacheOptions = new MemoryCacheEntryOptions()
-                               .SetAbsoluteExpiration(TimeSpan.FromDays(7))
-                               .SetSlidingExpiration(TimeSpan.FromHours(24));
+                               .SetAbsoluteExpiration(TimeSpan.FromSeconds(60))
+                               .SetSlidingExpiration(TimeSpan.FromSeconds(10));
             cache.Set(key, result, cacheOptions);
         }
         

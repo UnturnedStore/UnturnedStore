@@ -7,7 +7,7 @@ SELECT
     p.Name AS ProductName,
     p.ImageId AS ProductImageId,
     p.Price AS ProductPrice,
-    p.IsEnabled AS IsEnabled,
+    p.IsEnabled AS IsProductEnabled,
     p.IsLoaderEnabled AS IsLoaderRequired,
     (SELECT SUM(v.DownloadsCount) FROM dbo.Versions v JOIN dbo.Branches b ON v.BranchId = b.Id WHERE b.ProductId = p.Id) AS TotalProductDownloads,
     u.Id AS SellerId,
@@ -17,6 +17,7 @@ SELECT
     b.Name AS BranchName,
     v.Id AS VersionId,
     v.Name AS Version,
+    v.IsEnabled AS IsVersionEnabled,
     v.DownloadsCount AS Downloads
 FROM
     dbo.Versions v
