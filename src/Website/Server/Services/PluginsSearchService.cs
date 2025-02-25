@@ -61,7 +61,7 @@ public class PluginSearchDto
     [JsonIgnore] public int ProductImageId { get; set; }
     public string ProductImageUrl { get; set; }
     public decimal ProductPrice { get; set; }
-    public bool IsEnabled { get; set; }
+    public bool IsProductEnabled { get; set; }
     public bool IsLoaderRequired { get; set; }
     public int TotalProductDownloads { get; set; }
     
@@ -75,6 +75,7 @@ public class PluginSearchDto
     
     [JsonIgnore] public int VersionId { get; set; }
     public string Version { get; set; }
+    public bool IsVersionEnabled { get; set; }
     public string DownloadUrl { get; set; }
     public int Downloads { get; set; }
 }
