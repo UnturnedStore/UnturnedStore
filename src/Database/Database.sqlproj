@@ -56,10 +56,10 @@
   <ItemGroup>
     <Folder Include="Properties" />
     <Folder Include="tables" />
-    <Folder Include="procedures" />
     <Folder Include="scripts" />
   </ItemGroup>
   <ItemGroup>
+    <Build Include="procedures\SearchPluginsByHash.sql" />
     <Build Include="tables\Users.sql" />
     <Build Include="tables\Products.sql" />
     <Build Include="tables\ProductTabs.sql" />

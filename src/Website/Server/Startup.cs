@@ -32,6 +32,7 @@ namespace Website.Server
             services.AddTransient(x => new SqlConnection(Configuration.GetConnectionString("Default")));
             services.AddRepositories();
 
+            services.AddTransient<PluginsSearchService>();
             services.AddTransient<OrderService>();
             services.AddTransient<DiscordService>();
             services.AddTransient<IBaseUrl, BaseUrlService>();
