@@ -20,7 +20,7 @@ public class PluginsSearchController : ControllerBase
             return BadRequest();
         }
 
-        var key = $"{nameof(PluginsSearchController)}_{nameof(Query)}:{hash}";
+        var key = $"{nameof(PluginsSearchController)}_{nameof(Query)}:{hash.ToUpperInvariant()}";
         if (cache.TryGetValue(key, out IReadOnlyCollection<PluginSearchDto> result))
         {
             return Ok(result);
